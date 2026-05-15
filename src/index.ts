@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { loadConfig } from './config.js';
 import { startMcpServer } from './mcp.js';
 import { runSetup } from './setup.js';
+import { runConnect } from './connect.js';
 
 const program = new Command();
 
@@ -15,6 +16,23 @@ program
   .description('Configure backend URL, agent id, and optional API key (~/.agentpay/config.json)')
   .action(async () => {
     await runSetup();
+  });
+
+program
+  .command('connect')
+  .description('Pair your Android wallet via WalletConnect (QR code + deep link)')
+  .action(async () => {
+    const config = loadConfig();
+    if (!config) {
+      console.error('AgentPay is not configured. Run: agentpay setup');
+      process.exit(1);
+    }
+    try {
+      await runConnect(config);
+    } catch (err: unknown) {
+      console.error(err instanceof Error ? err.message : err);
+      process.exit(1);
+    }
   });
 
 program
