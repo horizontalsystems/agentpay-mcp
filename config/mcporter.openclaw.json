@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/steipete/mcporter/main/mcporter.schema.json",
+  "mcpServers": {
+    "agentpay": {
+      "description": "AgentPay payment firewall — paid tools with WalletConnect approval on Android",
+      "command": "node",
+      "args": ["__AGENTPAY_MCP_ROOT__/build/index.js", "start"],
+      "env": {
+        "AGENTPAY_BACKEND_URL": "__AGENTPAY_BACKEND_URL__"
+      }
+    }
+  }
+}

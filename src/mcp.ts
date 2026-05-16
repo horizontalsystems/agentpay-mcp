@@ -3,6 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { AgentPay } from '@agentpay/sdk';
 import { z } from 'zod';
 import type { AgentPayConfig } from './config.js';
+import { runConnect } from './connect.js';
 
 function textResult(payload: unknown, isError = false) {
   return {
@@ -78,6 +79,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'AgentPay is a payment firewall between autonomous agents and paid APIs or on-chain services.',
         'Use pay_and_call_service when the user or agent needs to spend money, call a paid API (x402), or execute a catalog service that requires WalletConnect approval.',
         'Use get_spending_status before large spends, when the user asks about budget or balance, or to audit recent agent payments.',
+        'Use get_pairing_link when the user asks to connect or pair their Android wallet; send the returned Reown URL to the user.',
         'Known service ids include exa_search and nansen_smart_money_holdings (see backend catalog).',
         'A paired mobile wallet (WalletConnect) must be active on the backend or pay_and_call_service will fail.'
       ].join(' ')
@@ -140,6 +142,33 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult({ success: false, serviceId, amountUsd, error: message }, true);
+      }
+    }
+  );
+
+  server.registerTool(
+    'get_pairing_link',
+    {
+      title: 'AgentPay: get WalletConnect pairing link',
+      description: [
+        'Use when the user asks to connect or pair their Android wallet.',
+        'Returns a Reown deep link (https://link.reown.com/wc?uri=...) to open in Unstoppable Wallet or any WalletConnect v2 wallet.',
+        'Do not use pay_and_call_service until pairing is complete.'
+      ].join(' '),
+      inputSchema: z.object({}),
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: true
+      }
+    },
+    async () => {
+      try {
+        const link = await runConnect(config, { urlOnly: true });
+        return textResult(link);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return textResult(message, true);
       }
     }
   );

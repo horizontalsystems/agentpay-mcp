@@ -3,6 +3,7 @@ import { loadConfig } from './config.js';
 import { startMcpServer } from './mcp.js';
 import { runSetup } from './setup.js';
 import { runConnect } from './connect.js';
+import { printInitResult, runInit } from './init.js';
 
 const program = new Command();
 
@@ -19,16 +20,37 @@ program
   });
 
 program
+  .command('init')
+  .description('Write ~/.agentpay/config.json from env (non-interactive; OpenClaw/Docker)')
+  .option('--backend-url <url>', 'AgentPay API base URL (no /v1 suffix)')
+  .option('--agent-id <id>', 'Agent id (default: agent_123)')
+  .option('--api-key <key>', 'Optional bearer token')
+  .action((opts: { backendUrl?: string; agentId?: string; apiKey?: string }) => {
+    try {
+      const config = runInit({
+        backendUrl: opts.backendUrl,
+        agentId: opts.agentId,
+        apiKey: opts.apiKey
+      });
+      printInitResult(config);
+    } catch (err: unknown) {
+      console.error(err instanceof Error ? err.message : err);
+      process.exit(1);
+    }
+  });
+
+program
   .command('connect')
   .description('Pair your Android wallet via WalletConnect (QR code + deep link)')
-  .action(async () => {
+  .option('--url-only', 'Print only the Reown deep link and exit (for agents; do not wait)')
+  .action(async (opts: { urlOnly?: boolean }) => {
     const config = loadConfig();
     if (!config) {
-      console.error('AgentPay is not configured. Run: agentpay setup');
+      console.error('AgentPay is not configured. Run: agentpay setup or agentpay init');
       process.exit(1);
     }
     try {
-      await runConnect(config);
+      await runConnect(config, { urlOnly: Boolean(opts.urlOnly) });
     } catch (err: unknown) {
       console.error(err instanceof Error ? err.message : err);
       process.exit(1);

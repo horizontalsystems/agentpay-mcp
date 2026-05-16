@@ -14,7 +14,7 @@ let store: Conf<AgentPayConfig> | null = null;
 function getStore(): Conf<AgentPayConfig> {
   if (!store) {
     store = new Conf<AgentPayConfig>({
-      cwd: path.join(os.homedir(), '.agentpay'),
+      cwd: process.env.AGENTPAY_CONFIG_DIR ?? path.join(os.homedir(), '.agentpay'),
       configName: 'config',
       schema: {
         backendUrl: { type: 'string' },

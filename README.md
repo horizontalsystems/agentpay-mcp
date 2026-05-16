@@ -113,20 +113,31 @@ agentpay setup
 
 Running `agentpay` with no subcommand also opens setup.
 
-### 2. `agentpay connect`
+### 2. `agentpay init` (non-interactive)
+
+Writes `~/.agentpay/config.json` from flags or env (for Docker / OpenClaw):
+
+```bash
+export AGENTPAY_BACKEND_URL=http://localhost:3000
+export AGENTPAY_AGENT_ID=agent_123
+agentpay init
+```
+
+### 3. `agentpay connect`
 
 Fetches a **WalletConnect pairing URI** from your backend and prints:
 
 - A **Reown deep link** (tap to open Unstoppable Wallet or any WC v2 wallet)
-- A **terminal QR code** (scan from the Android app)
+- A **terminal QR code** (human terminal only)
 
 ```bash
-agentpay connect
+agentpay connect              # human: link + QR
+agentpay connect --url-only   # agents: one Reown URL line, then exit (no wait)
 ```
 
-Requires the backend to be running and `WC_PROJECT_ID` configured server-side. Complete pairing on the phone before agents start spending.
+Requires the backend to be running and `WC_PROJECT_ID` configured server-side. The CLI **does not block** until the phone approves — agents must send the link and continue.
 
-### 3. `agentpay start`
+### 4. `agentpay start`
 
 Starts the **MCP server on stdio**. This is what your LLM host invokes—do not run it in a normal terminal session for manual use.
 
@@ -165,6 +176,47 @@ If `agentpay` is not on your `PATH`, use the absolute path to the bundled binary
 ```
 
 Restart Claude Desktop after editing the config.
+
+---
+
+## OpenClaw / Docker (persistent setup)
+
+Container restarts wipe **global npm** and non-mounted paths. Use **volumes** and the install script.
+
+| Path | Purpose |
+|------|---------|
+| `/home/node/.openclaw/workspace` | Agent workspace (persistent) |
+| `/home/node/.openclaw/agentpay-mcp/` | Built MCP CLI |
+| `/home/node/.agentpay/config.json` | `backendUrl`, `agentId` |
+| `/home/node/.openclaw/mcporter/mcporter.json` | mcporter MCP server registry |
+| `/home/node/.openclaw/tools/mcporter/` | mcporter npm prefix (not global) |
+
+**First run** (from this package after clone):
+
+```bash
+export AGENTPAY_BACKEND_URL=http://your-backend:3000
+export AGENTPAY_AGENT_ID=agent_123
+npm run install:openclaw
+source /home/node/.openclaw/agentpay-mcp/openclaw.env
+```
+
+**Env vars** (set in OpenClaw agent shell):
+
+```bash
+export MCPORTER_CONFIG=/home/node/.openclaw/mcporter/mcporter.json
+export AGENTPAY_CONFIG_DIR=/home/node/.openclaw/agentpay
+export PATH="/home/node/.openclaw/tools/mcporter/node_modules/.bin:$PATH"
+```
+
+**mcporter** must use the persistent config (Docker has no stable cwd):
+
+```bash
+mcporter --config "$MCPORTER_CONFIG" call agentpay.get_spending_status
+```
+
+**Skill:** install from `/home/node/.openclaw/agentpay-mcp/SKILL.md` (not `/app`). See `SKILL.md` for agent commands (`connect --url-only`, mcporter calls).
+
+Copy `openclaw.env.example` into your image or profile if you prefer manual env setup.
 
 ---
 

@@ -6,13 +6,20 @@
     "agentpay": "./build/index.js"
   },
   "files": [
-    "build"
+    "build",
+    "SKILL.md",
+    "README.md",
+    "openclaw.env.example",
+    "config",
+    "scripts"
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
     "prepublishOnly": "npm run build",
     "start": "node build/index.js start",
-    "setup": "node build/index.js setup"
+    "setup": "node build/index.js setup",
+    "init": "node build/index.js init",
+    "install:openclaw": "bash scripts/openclaw-install.sh"
   },
   "keywords": [
     "mcp",
