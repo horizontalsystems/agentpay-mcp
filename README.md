@@ -101,9 +101,11 @@ Interactive configuration. Writes **`~/.agentpay/config.json`**:
 
 | Field | Description |
 |-------|-------------|
-| `backendUrl` | Your AgentPay API (e.g. `https://api.agentpay.app`) |
+| `backendUrl` | Your AgentPay API base (e.g. `http://206.189.229.113:3000` — no `/v1` suffix) |
 | `agentId` | Agent identity (e.g. `agent_123`) |
 | `apiKey` | Optional bearer token if your backend requires it |
+
+**Runtime resolution** (for `connect` / `start`): `AGENTPAY_BACKEND_URL` or `AGENTPAY_API_BASE_URL` in the environment overrides `backendUrl` in the config file. If the file has no `backendUrl`, the CLI uses the hosted MVP default (`http://206.189.229.113:3000`). Only **`agentId`** is required in `~/.agentpay/config.json` for the MCP server to start.
 
 ```bash
 agentpay setup

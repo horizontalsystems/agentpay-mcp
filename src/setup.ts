@@ -1,5 +1,6 @@
 import inquirer from 'inquirer';
 import { getConfigPath, hasConfig, loadConfig, saveConfig, type AgentPayConfig } from './config.js';
+import { DEFAULT_BACKEND_URL } from './defaults.js';
 
 export async function runSetup(): Promise<void> {
   const existing = loadConfig();
@@ -13,14 +14,14 @@ export async function runSetup(): Promise<void> {
       type: 'input',
       name: 'backendUrl',
       message: 'AgentPay Backend URL',
-      default: existing?.backendUrl ?? 'https://api.agentpay.app',
+      default: existing?.backendUrl ?? DEFAULT_BACKEND_URL,
       validate: (value: string) => {
         try {
           const u = new URL(value.trim());
           if (!['http:', 'https:'].includes(u.protocol)) return 'Use http:// or https://';
           return true;
         } catch {
-          return 'Enter a valid URL (e.g. https://api.agentpay.app)';
+          return 'Enter a valid URL (e.g. http://206.189.229.113:3000)';
         }
       }
     },

@@ -46735,6 +46735,11 @@ var Conf = class {
 // src/config.ts
 var import_os = __toESM(require("os"));
 var import_path = __toESM(require("path"));
+
+// src/defaults.ts
+var DEFAULT_BACKEND_URL = "http://206.189.229.113:3000";
+
+// src/config.ts
 var store = null;
 function getStore() {
   if (!store) {
@@ -46753,14 +46758,20 @@ function getStore() {
 function getConfigPath() {
   return getStore().path;
 }
+function resolveBackendUrl(stored) {
+  const fromEnv = (process.env.AGENTPAY_BACKEND_URL || process.env.AGENTPAY_API_BASE_URL || "").trim() || void 0;
+  const storedStr = typeof stored === "string" && stored.trim() ? String(stored).trim().replace(/\/$/, "") : "";
+  return (fromEnv ? fromEnv.replace(/\/$/, "") : storedStr || DEFAULT_BACKEND_URL).replace(/\/$/, "");
+}
 function loadConfig() {
   const s = getStore();
-  if (!s.get("backendUrl") || !s.get("agentId")) {
+  const agentId = s.get("agentId");
+  if (!agentId) {
     return null;
   }
   return {
-    backendUrl: String(s.get("backendUrl")).replace(/\/$/, ""),
-    agentId: String(s.get("agentId")),
+    backendUrl: resolveBackendUrl(s.get("backendUrl")),
+    agentId: String(agentId),
     apiKey: s.get("apiKey") ? String(s.get("apiKey")) : void 0
   };
 }
@@ -46776,7 +46787,7 @@ function saveConfig(config2) {
 }
 function hasConfig() {
   const s = getStore();
-  return Boolean(s.get("backendUrl") && s.get("agentId"));
+  return Boolean(s.get("agentId"));
 }
 
 // ../node_modules/zod/v3/external.js
@@ -67693,14 +67704,14 @@ async function runSetup() {
       type: "input",
       name: "backendUrl",
       message: "AgentPay Backend URL",
-      default: existing?.backendUrl ?? "https://api.agentpay.app",
+      default: existing?.backendUrl ?? DEFAULT_BACKEND_URL,
       validate: (value) => {
         try {
           const u = new URL(value.trim());
           if (!["http:", "https:"].includes(u.protocol)) return "Use http:// or https://";
           return true;
         } catch {
-          return "Enter a valid URL (e.g. https://api.agentpay.app)";
+          return "Enter a valid URL (e.g. http://206.189.229.113:3000)";
         }
       }
     },
