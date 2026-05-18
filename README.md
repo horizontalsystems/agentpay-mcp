@@ -224,20 +224,36 @@ Copy `openclaw.env.example` into your image or profile if you prefer manual env 
 
 The server name exposed over MCP is **`agentpay-firewall`**.
 
-### `pay_and_call_service`
+### `list_x402_services`
 
-Request a **paid** agent action through AgentPay. The backend forwards the request to WalletConnect; the user approves on Android.
+Lists registered x402 services (built-in + `config/x402-services.json`). Returns `serviceId`, `url`, `method`, `argsHint`.
+
+### `fetch_paid_service` (preferred for all x402 APIs)
+
+Runs the **full x402 flow**: provider HTTP 402 → WalletConnect EIP-712 sign → paid retry → real API JSON.
 
 | Input | Type | Description |
 |-------|------|-------------|
-| `serviceId` | string | Backend catalog id (e.g. `exa_search`, `nansen_smart_money_holdings`) |
+| `serviceId` | string (optional) | Registered service from `list_x402_services` |
+| `args` | object (optional) | Request args per service `argsHint` |
+| `url` | string (optional) | Ad-hoc x402 endpoint (use instead of `serviceId`) |
+| `method` | GET \| POST \| … | Required with `url` |
+| `headers` / `body` | object | Optional ad-hoc overrides |
+
+**Use for:** any x402-paid HTTP API. Extend via `config/x402-services.json` or `AGENTPAY_X402_SERVICES_PATH`.  
+**Do not use** `pay_and_call_service` for x402 catalog services.
+
+### `pay_and_call_service` (advanced)
+
+Low-level signing with a custom payload. For catalog x402 services, use `fetch_paid_service` instead.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `serviceId` | string | Backend catalog id |
 | `amountUsd` | number | Intended payment amount in USD |
-| `description` | string | Short human-readable reason (logs & wallet context) |
+| `description` | string | Short human-readable reason |
 
-**Use when:** calling paid APIs (x402), billable tools, or any flow that must charge under user control.  
-**Do not use when:** free HTTP calls or read-only tasks.
-
-Returns success/failure JSON including backend / wallet response when approved.
+For manual x402, the payload must include `action: "x402_pay_generic"` plus `recipient`, `amount`, and `asset` from the provider 402 response.
 
 ### `get_spending_status`
 

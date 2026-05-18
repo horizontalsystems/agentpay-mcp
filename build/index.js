@@ -6,6 +6,9 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
@@ -963,8 +966,8 @@ var require_command = __commonJS({
   "node_modules/commander/lib/command.js"(exports2) {
     var EventEmitter2 = require("node:events").EventEmitter;
     var childProcess = require("node:child_process");
-    var path7 = require("node:path");
-    var fs3 = require("node:fs");
+    var path8 = require("node:path");
+    var fs4 = require("node:fs");
     var process11 = require("node:process");
     var { Argument: Argument2, humanReadableArgName } = require_argument();
     var { CommanderError: CommanderError2 } = require_error();
@@ -1896,11 +1899,11 @@ Expecting one of '${allowedValues.join("', '")}'`);
         let launchWithNode = false;
         const sourceExt = [".js", ".ts", ".tsx", ".mjs", ".cjs"];
         function findFile(baseDir, baseName) {
-          const localBin = path7.resolve(baseDir, baseName);
-          if (fs3.existsSync(localBin)) return localBin;
-          if (sourceExt.includes(path7.extname(baseName))) return void 0;
+          const localBin = path8.resolve(baseDir, baseName);
+          if (fs4.existsSync(localBin)) return localBin;
+          if (sourceExt.includes(path8.extname(baseName))) return void 0;
           const foundExt = sourceExt.find(
-            (ext) => fs3.existsSync(`${localBin}${ext}`)
+            (ext) => fs4.existsSync(`${localBin}${ext}`)
           );
           if (foundExt) return `${localBin}${foundExt}`;
           return void 0;
@@ -1912,21 +1915,21 @@ Expecting one of '${allowedValues.join("', '")}'`);
         if (this._scriptPath) {
           let resolvedScriptPath;
           try {
-            resolvedScriptPath = fs3.realpathSync(this._scriptPath);
+            resolvedScriptPath = fs4.realpathSync(this._scriptPath);
           } catch (err) {
             resolvedScriptPath = this._scriptPath;
           }
-          executableDir = path7.resolve(
-            path7.dirname(resolvedScriptPath),
+          executableDir = path8.resolve(
+            path8.dirname(resolvedScriptPath),
             executableDir
           );
         }
         if (executableDir) {
           let localFile = findFile(executableDir, executableFile);
           if (!localFile && !subcommand._executableFile && this._scriptPath) {
-            const legacyName = path7.basename(
+            const legacyName = path8.basename(
               this._scriptPath,
-              path7.extname(this._scriptPath)
+              path8.extname(this._scriptPath)
             );
             if (legacyName !== this._name) {
               localFile = findFile(
@@ -1937,7 +1940,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
           }
           executableFile = localFile || executableFile;
         }
-        launchWithNode = sourceExt.includes(path7.extname(executableFile));
+        launchWithNode = sourceExt.includes(path8.extname(executableFile));
         let proc;
         if (process11.platform !== "win32") {
           if (launchWithNode) {
@@ -2777,7 +2780,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
        * @return {Command}
        */
       nameFromFilename(filename) {
-        this._name = path7.basename(filename, path7.extname(filename));
+        this._name = path8.basename(filename, path8.extname(filename));
         return this;
       }
       /**
@@ -2791,9 +2794,9 @@ Expecting one of '${allowedValues.join("', '")}'`);
        * @param {string} [path]
        * @return {(string|null|Command)}
        */
-      executableDir(path8) {
-        if (path8 === void 0) return this._executableDir;
-        this._executableDir = path8;
+      executableDir(path9) {
+        if (path9 === void 0) return this._executableDir;
+        this._executableDir = path9;
         return this;
       }
       /**
@@ -6219,8 +6222,8 @@ var require_utils = __commonJS({
       }
       return ind;
     }
-    function removeDotSegments(path7) {
-      let input = path7;
+    function removeDotSegments(path8) {
+      let input = path8;
       const output = [];
       let nextSlash = -1;
       let len = 0;
@@ -6472,8 +6475,8 @@ var require_schemes = __commonJS({
         wsComponent.secure = void 0;
       }
       if (wsComponent.resourceName) {
-        const [path7, query] = wsComponent.resourceName.split("?");
-        wsComponent.path = path7 && path7 !== "/" ? path7 : void 0;
+        const [path8, query] = wsComponent.resourceName.split("?");
+        wsComponent.path = path8 && path8 !== "/" ? path8 : void 0;
         wsComponent.query = query;
         wsComponent.resourceName = void 0;
       }
@@ -10690,12 +10693,12 @@ var require_dist = __commonJS({
         throw new Error(`Unknown format "${name}"`);
       return f;
     };
-    function addFormats(ajv, list, fs3, exportName) {
+    function addFormats(ajv, list, fs4, exportName) {
       var _a;
       var _b;
       (_a = (_b = ajv.opts.code).formats) !== null && _a !== void 0 ? _a : _b.formats = (0, codegen_1._)`require("ajv-formats/dist/formats").${exportName}`;
       for (const f of list)
-        ajv.addFormat(f, fs3[f]);
+        ajv.addFormat(f, fs4[f]);
     }
     module2.exports = exports2 = formatsPlugin;
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -11686,7 +11689,7 @@ var require_range = __commonJS({
       parseRange(range) {
         const memoOpts = (this.options.includePrerelease && FLAG_INCLUDE_PRERELEASE) | (this.options.loose && FLAG_LOOSE);
         const memoKey = memoOpts + ":" + range;
-        const cached2 = cache.get(memoKey);
+        const cached2 = cache2.get(memoKey);
         if (cached2) {
           return cached2;
         }
@@ -11720,7 +11723,7 @@ var require_range = __commonJS({
           rangeMap.delete("");
         }
         const result = [...rangeMap.values()];
-        cache.set(memoKey, result);
+        cache2.set(memoKey, result);
         return result;
       }
       intersects(range, options) {
@@ -11759,7 +11762,7 @@ var require_range = __commonJS({
     };
     module2.exports = Range;
     var LRU = require_lrucache();
-    var cache = new LRU();
+    var cache2 = new LRU();
     var parseOptions = require_parse_options();
     var Comparator = require_comparator();
     var debug = require_debug();
@@ -21523,11 +21526,11 @@ var require_mime_types = __commonJS({
       }
       return exts[0];
     }
-    function lookup(path7) {
-      if (!path7 || typeof path7 !== "string") {
+    function lookup(path8) {
+      if (!path8 || typeof path8 !== "string") {
         return false;
       }
-      var extension2 = extname("x." + path7).toLowerCase().substr(1);
+      var extension2 = extname("x." + path8).toLowerCase().substr(1);
       if (!extension2) {
         return false;
       }
@@ -22632,11 +22635,11 @@ var require_form_data = __commonJS({
     "use strict";
     var CombinedStream = require_combined_stream();
     var util4 = require("util");
-    var path7 = require("path");
+    var path8 = require("path");
     var http3 = require("http");
     var https2 = require("https");
     var parseUrl2 = require("url").parse;
-    var fs3 = require("fs");
+    var fs4 = require("fs");
     var Stream = require("stream").Stream;
     var crypto3 = require("crypto");
     var mime = require_mime_types();
@@ -22703,7 +22706,7 @@ var require_form_data = __commonJS({
         if (value.end != void 0 && value.end != Infinity && value.start != void 0) {
           callback(null, value.end + 1 - (value.start ? value.start : 0));
         } else {
-          fs3.stat(value.path, function(err, stat) {
+          fs4.stat(value.path, function(err, stat) {
             if (err) {
               callback(err);
               return;
@@ -22760,11 +22763,11 @@ var require_form_data = __commonJS({
     FormData3.prototype._getContentDisposition = function(value, options) {
       var filename;
       if (typeof options.filepath === "string") {
-        filename = path7.normalize(options.filepath).replace(/\\/g, "/");
+        filename = path8.normalize(options.filepath).replace(/\\/g, "/");
       } else if (options.filename || value && (value.name || value.path)) {
-        filename = path7.basename(options.filename || value && (value.name || value.path));
+        filename = path8.basename(options.filename || value && (value.name || value.path));
       } else if (value && value.readable && hasOwn(value, "httpVersion")) {
-        filename = path7.basename(value.client._httpMessage.path || "");
+        filename = path8.basename(value.client._httpMessage.path || "");
       }
       if (filename) {
         return 'filename="' + filename + '"';
@@ -23321,8 +23324,8 @@ var require_node = __commonJS({
           }
           break;
         case "FILE":
-          var fs3 = require("fs");
-          stream5 = new fs3.SyncWriteStream(fd2, { autoClose: false });
+          var fs4 = require("fs");
+          stream5 = new fs4.SyncWriteStream(fd2, { autoClose: false });
           stream5._type = "fs";
           break;
         case "PIPE":
@@ -23882,6 +23885,169 @@ var require_follow_redirects = __commonJS({
     }
     module2.exports = wrap({ http: http3, https: https2 });
     module2.exports.wrap = wrap;
+  }
+});
+
+// ../sdk/x402/builtin.ts
+var BUILTIN_X402_SERVICES;
+var init_builtin = __esm({
+  "../sdk/x402/builtin.ts"() {
+    "use strict";
+    BUILTIN_X402_SERVICES = {
+      exa_search: {
+        label: "Exa",
+        url: "https://api.exa.ai/search",
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: (args) => ({
+          query: String(args.query ?? ""),
+          numResults: Number(args.numResults ?? 2) || 2
+        }),
+        validate: (args) => String(args.query ?? "").trim() ? null : 'exa_search requires args.query (e.g. "stablecoin USDC")',
+        argsHint: '{ "query": "stablecoin USDC", "numResults": 2 }'
+      },
+      nansen_smart_money_holdings: {
+        label: "Nansen",
+        url: "https://api.nansen.ai/api/v1/smart-money/holdings",
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: (args) => ({
+          chains: Array.isArray(args.chains) && args.chains.length ? args.chains : ["ethereum"]
+        }),
+        argsHint: '{ "chains": ["ethereum"] }'
+      }
+    };
+  }
+});
+
+// ../sdk/x402/registry.ts
+function jsonEntryToService(entry) {
+  const svc = {
+    label: entry.label,
+    url: entry.url,
+    method: entry.method,
+    headers: entry.headers,
+    argsHint: entry.argsHint
+  };
+  if (entry.bodyFromArgs) {
+    svc.body = (args) => args;
+  }
+  return svc;
+}
+function loadJsonFile(filePath) {
+  const raw = JSON.parse(import_fs.default.readFileSync(filePath, "utf8"));
+  const out = {};
+  for (const [id, entry] of Object.entries(raw)) {
+    if (!entry?.url || !entry?.method) continue;
+    out[id] = jsonEntryToService(entry);
+  }
+  return out;
+}
+function resolveJsonPaths() {
+  const paths = [];
+  const envPath = process.env.AGENTPAY_X402_SERVICES_PATH?.trim();
+  if (envPath) paths.push(envPath);
+  const cwd = process.cwd();
+  paths.push(
+    import_path2.default.join(cwd, "config", "x402-services.json"),
+    import_path2.default.join(cwd, "x402-services.json")
+  );
+  return paths;
+}
+function getX402Services() {
+  if (cache) return cache;
+  const merged = { ...BUILTIN_X402_SERVICES };
+  for (const filePath of resolveJsonPaths()) {
+    try {
+      if (import_fs.default.existsSync(filePath)) {
+        Object.assign(merged, loadJsonFile(filePath));
+      }
+    } catch {
+    }
+  }
+  cache = merged;
+  return merged;
+}
+function getX402Service(serviceId) {
+  return getX402Services()[serviceId];
+}
+function listX402Services() {
+  return Object.entries(getX402Services()).map(([serviceId, svc]) => ({
+    serviceId,
+    label: svc.label,
+    method: svc.method,
+    url: svc.url,
+    argsHint: svc.argsHint
+  }));
+}
+var import_fs, import_path2, cache;
+var init_registry = __esm({
+  "../sdk/x402/registry.ts"() {
+    "use strict";
+    import_fs = __toESM(require("fs"));
+    import_path2 = __toESM(require("path"));
+    init_builtin();
+    cache = null;
+  }
+});
+
+// ../sdk/x402/buildRequest.ts
+function interpolateUrl(template, args) {
+  return template.replace(/\$\{(\w+)\}/g, (_2, key) => encodeURIComponent(String(args[key] ?? "")));
+}
+function buildX402Request(serviceId, args = {}) {
+  const svc = getX402Service(serviceId);
+  if (!svc) {
+    const known = Object.keys(getX402Services()).join(", ") || "(none)";
+    throw new Error(
+      `Unknown x402 service "${serviceId}". Use list_x402_services or add config/x402-services.json. Known: ${known}`
+    );
+  }
+  const validationError = svc.validate?.(args) ?? null;
+  if (validationError) {
+    throw new Error(validationError);
+  }
+  const url2 = interpolateUrl(svc.url, args);
+  const method = svc.method;
+  const headers = new Headers(svc.headers ?? {});
+  const init = { method, headers };
+  if (METHODS_WITH_BODY.has(method)) {
+    const payload = svc.body ? svc.body(args) : args;
+    if (payload !== void 0 && payload !== null) {
+      if (!headers.has("content-type")) {
+        headers.set("content-type", "application/json");
+      }
+      init.body = typeof payload === "string" ? payload : JSON.stringify(payload);
+    }
+  }
+  return { url: url2, init, label: svc.label, serviceId };
+}
+function buildAdHocX402Request(input) {
+  const method = input.method ?? "POST";
+  const headers = new Headers(input.headers ?? {});
+  const init = { method, headers };
+  if (METHODS_WITH_BODY.has(method)) {
+    const payload = input.body !== void 0 ? input.body : input.args;
+    if (payload !== void 0 && payload !== null) {
+      if (!headers.has("content-type")) {
+        headers.set("content-type", "application/json");
+      }
+      init.body = typeof payload === "string" ? payload : JSON.stringify(payload);
+    }
+  }
+  return {
+    url: input.url,
+    init,
+    label: input.label ?? "x402 API",
+    serviceId: input.serviceId ?? "x402_custom"
+  };
+}
+var METHODS_WITH_BODY;
+var init_buildRequest = __esm({
+  "../sdk/x402/buildRequest.ts"() {
+    "use strict";
+    init_registry();
+    METHODS_WITH_BODY = /* @__PURE__ */ new Set(["POST", "PUT", "PATCH"]);
   }
 });
 
@@ -26047,15 +26213,15 @@ var require_route = __commonJS({
       };
     }
     function wrapConversion(toModel, graph) {
-      const path7 = [graph[toModel].parent, toModel];
+      const path8 = [graph[toModel].parent, toModel];
       let fn = conversions[graph[toModel].parent][toModel];
       let cur = graph[toModel].parent;
       while (graph[cur].parent) {
-        path7.unshift(graph[cur].parent);
+        path8.unshift(graph[cur].parent);
         fn = link(conversions[graph[cur].parent][cur], fn);
         cur = graph[cur].parent;
       }
-      fn.conversion = path7;
+      fn.conversion = path8;
       return fn;
     }
     module2.exports = function(fromModel) {
@@ -32111,10 +32277,10 @@ var require_lib2 = __commonJS({
     exports2.analyse = analyse;
     var detectFile = (filepath, opts = {}) => new Promise((resolve, reject) => {
       let fd;
-      const fs3 = (0, node_1.default)();
+      const fs4 = (0, node_1.default)();
       const handler = (err, buffer) => {
         if (fd) {
-          fs3.closeSync(fd);
+          fs4.closeSync(fd);
         }
         if (err) {
           reject(err);
@@ -32126,9 +32292,9 @@ var require_lib2 = __commonJS({
       };
       const sampleSize = (opts === null || opts === void 0 ? void 0 : opts.sampleSize) || 0;
       if (sampleSize > 0) {
-        fd = fs3.openSync(filepath, "r");
+        fd = fs4.openSync(filepath, "r");
         let sample = Buffer.allocUnsafe(sampleSize);
-        fs3.read(fd, sample, 0, sampleSize, opts.offset, (err, bytesRead) => {
+        fs4.read(fd, sample, 0, sampleSize, opts.offset, (err, bytesRead) => {
           if (err) {
             handler(err, null);
           } else {
@@ -32140,22 +32306,22 @@ var require_lib2 = __commonJS({
         });
         return;
       }
-      fs3.readFile(filepath, handler);
+      fs4.readFile(filepath, handler);
     });
     exports2.detectFile = detectFile;
     var detectFileSync = (filepath, opts = {}) => {
-      const fs3 = (0, node_1.default)();
+      const fs4 = (0, node_1.default)();
       if (opts && opts.sampleSize) {
-        const fd = fs3.openSync(filepath, "r");
+        const fd = fs4.openSync(filepath, "r");
         let sample = Buffer.allocUnsafe(opts.sampleSize);
-        const bytesRead = fs3.readSync(fd, sample, 0, opts.sampleSize, opts.offset);
+        const bytesRead = fs4.readSync(fd, sample, 0, opts.sampleSize, opts.offset);
         if (bytesRead < opts.sampleSize) {
           sample = sample.subarray(0, bytesRead);
         }
-        fs3.closeSync(fd);
+        fs4.closeSync(fd);
         return (0, exports2.detect)(sample);
       }
-      return (0, exports2.detect)(fs3.readFileSync(filepath));
+      return (0, exports2.detect)(fs4.readFileSync(filepath));
     };
     exports2.detectFileSync = detectFileSync;
     exports2.default = {
@@ -45491,12 +45657,12 @@ var disallowedKeys = /* @__PURE__ */ new Set([
   "constructor"
 ]);
 var digits = new Set("0123456789");
-function getPathSegments(path7) {
+function getPathSegments(path8) {
   const parts = [];
   let currentSegment = "";
   let currentPart = "start";
   let isIgnoring = false;
-  for (const character of path7) {
+  for (const character of path8) {
     switch (character) {
       case "\\": {
         if (currentPart === "index") {
@@ -45618,11 +45784,11 @@ function assertNotStringIndex(object3, key) {
     throw new Error("Cannot use string index");
   }
 }
-function getProperty(object3, path7, value) {
-  if (!isObject(object3) || typeof path7 !== "string") {
+function getProperty(object3, path8, value) {
+  if (!isObject(object3) || typeof path8 !== "string") {
     return value === void 0 ? object3 : value;
   }
-  const pathArray = getPathSegments(path7);
+  const pathArray = getPathSegments(path8);
   if (pathArray.length === 0) {
     return value;
   }
@@ -45642,12 +45808,12 @@ function getProperty(object3, path7, value) {
   }
   return object3 === void 0 ? value : object3;
 }
-function setProperty(object3, path7, value) {
-  if (!isObject(object3) || typeof path7 !== "string") {
+function setProperty(object3, path8, value) {
+  if (!isObject(object3) || typeof path8 !== "string") {
     return object3;
   }
   const root = object3;
-  const pathArray = getPathSegments(path7);
+  const pathArray = getPathSegments(path8);
   for (let index = 0; index < pathArray.length; index++) {
     const key = pathArray[index];
     assertNotStringIndex(object3, key);
@@ -45660,11 +45826,11 @@ function setProperty(object3, path7, value) {
   }
   return root;
 }
-function deleteProperty(object3, path7) {
-  if (!isObject(object3) || typeof path7 !== "string") {
+function deleteProperty(object3, path8) {
+  if (!isObject(object3) || typeof path8 !== "string") {
     return false;
   }
-  const pathArray = getPathSegments(path7);
+  const pathArray = getPathSegments(path8);
   for (let index = 0; index < pathArray.length; index++) {
     const key = pathArray[index];
     assertNotStringIndex(object3, key);
@@ -45678,11 +45844,11 @@ function deleteProperty(object3, path7) {
     }
   }
 }
-function hasProperty(object3, path7) {
-  if (!isObject(object3) || typeof path7 !== "string") {
+function hasProperty(object3, path8) {
+  if (!isObject(object3) || typeof path8 !== "string") {
     return false;
   }
-  const pathArray = getPathSegments(path7);
+  const pathArray = getPathSegments(path8);
   if (pathArray.length === 0) {
     return false;
   }
@@ -47268,8 +47434,8 @@ function getErrorMap() {
 
 // ../node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data, path: path7, errorMaps, issueData } = params;
-  const fullPath = [...path7, ...issueData.path || []];
+  const { data, path: path8, errorMaps, issueData } = params;
+  const fullPath = [...path8, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -47385,11 +47551,11 @@ var errorUtil;
 
 // ../node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value, path7, key) {
+  constructor(parent, value, path8, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value;
-    this._path = path7;
+    this._path = path8;
     this._key = key;
   }
   get path() {
@@ -51027,10 +51193,10 @@ function assignProp(target, prop, value) {
     configurable: true
   });
 }
-function getElementAtPath(obj, path7) {
-  if (!path7)
+function getElementAtPath(obj, path8) {
+  if (!path8)
     return obj;
-  return path7.reduce((acc, key) => acc?.[key], obj);
+  return path8.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -51350,11 +51516,11 @@ function aborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path7, issues) {
+function prefixIssues(path8, issues) {
   return issues.map((iss) => {
     var _a;
     (_a = iss).path ?? (_a.path = []);
-    iss.path.unshift(path7);
+    iss.path.unshift(path8);
     return iss;
   });
 }
@@ -61014,9 +61180,9 @@ function bind(fn, thisArg) {
 var { toString } = Object.prototype;
 var { getPrototypeOf } = Object;
 var { iterator, toStringTag } = Symbol;
-var kindOf = /* @__PURE__ */ ((cache) => (thing) => {
+var kindOf = /* @__PURE__ */ ((cache2) => (thing) => {
   const str = toString.call(thing);
-  return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
+  return cache2[str] || (cache2[str] = str.slice(8, -1).toLowerCase());
 })(/* @__PURE__ */ Object.create(null));
 var kindOfTest = (type) => {
   type = type.toLowerCase();
@@ -61523,9 +61689,9 @@ function isVisitable(thing) {
 function removeBrackets(key) {
   return utils_default.endsWith(key, "[]") ? key.slice(0, -2) : key;
 }
-function renderKey(path7, key, dots) {
-  if (!path7) return key;
-  return path7.concat(key).map(function each(token, i) {
+function renderKey(path8, key, dots) {
+  if (!path8) return key;
+  return path8.concat(key).map(function each(token, i) {
     token = removeBrackets(token);
     return !dots && i ? "[" + token + "]" : token;
   }).join(dots ? "." : "");
@@ -61578,13 +61744,13 @@ function toFormData(obj, formData, options) {
     }
     return value;
   }
-  function defaultVisitor(value, key, path7) {
+  function defaultVisitor(value, key, path8) {
     let arr = value;
     if (utils_default.isReactNative(formData) && utils_default.isReactNativeBlob(value)) {
-      formData.append(renderKey(path7, key, dots), convertValue(value));
+      formData.append(renderKey(path8, key, dots), convertValue(value));
       return false;
     }
-    if (value && !path7 && typeof value === "object") {
+    if (value && !path8 && typeof value === "object") {
       if (utils_default.endsWith(key, "{}")) {
         key = metaTokens ? key : key.slice(0, -2);
         value = JSON.stringify(value);
@@ -61603,7 +61769,7 @@ function toFormData(obj, formData, options) {
     if (isVisitable(value)) {
       return true;
     }
-    formData.append(renderKey(path7, key, dots), convertValue(value));
+    formData.append(renderKey(path8, key, dots), convertValue(value));
     return false;
   }
   const stack = [];
@@ -61612,16 +61778,16 @@ function toFormData(obj, formData, options) {
     convertValue,
     isVisitable
   });
-  function build(value, path7) {
+  function build(value, path8) {
     if (utils_default.isUndefined(value)) return;
     if (stack.indexOf(value) !== -1) {
-      throw Error("Circular reference detected in " + path7.join("."));
+      throw Error("Circular reference detected in " + path8.join("."));
     }
     stack.push(value);
     utils_default.forEach(value, function each(el, key) {
-      const result = !(utils_default.isUndefined(el) || el === null) && visitor.call(formData, el, utils_default.isString(key) ? key.trim() : key, path7, exposedHelpers);
+      const result = !(utils_default.isUndefined(el) || el === null) && visitor.call(formData, el, utils_default.isString(key) ? key.trim() : key, path8, exposedHelpers);
       if (result === true) {
-        build(el, path7 ? path7.concat(key) : [key]);
+        build(el, path8 ? path8.concat(key) : [key]);
       }
     });
     stack.pop();
@@ -61833,7 +61999,7 @@ var platform_default = {
 // ../node_modules/axios/lib/helpers/toURLEncodedForm.js
 function toURLEncodedForm(data, options) {
   return toFormData_default(data, new platform_default.classes.URLSearchParams(), {
-    visitor: function(value, key, path7, helpers) {
+    visitor: function(value, key, path8, helpers) {
       if (platform_default.isNode && utils_default.isBuffer(value)) {
         this.append(key, value.toString("base64"));
         return false;
@@ -61863,11 +62029,11 @@ function arrayToObject(arr) {
   return obj;
 }
 function formDataToJSON(formData) {
-  function buildPath(path7, value, target, index) {
-    let name = path7[index++];
+  function buildPath(path8, value, target, index) {
+    let name = path8[index++];
     if (name === "__proto__") return true;
     const isNumericKey = Number.isFinite(+name);
-    const isLast = index >= path7.length;
+    const isLast = index >= path8.length;
     name = !name && utils_default.isArray(target) ? target.length : name;
     if (isLast) {
       if (utils_default.hasOwnProp(target, name)) {
@@ -61880,7 +62046,7 @@ function formDataToJSON(formData) {
     if (!target[name] || !utils_default.isObject(target[name])) {
       target[name] = [];
     }
-    const result = buildPath(path7, value, target[name], index);
+    const result = buildPath(path8, value, target[name], index);
     if (result && utils_default.isArray(target[name])) {
       target[name] = arrayToObject(target[name]);
     }
@@ -63330,9 +63496,9 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
       auth = urlUsername + ":" + urlPassword;
     }
     auth && headers.delete("authorization");
-    let path7;
+    let path8;
     try {
-      path7 = buildURL(
+      path8 = buildURL(
         parsed.pathname + parsed.search,
         config2.params,
         config2.paramsSerializer
@@ -63350,7 +63516,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
       false
     );
     const options = {
-      path: path7,
+      path: path8,
       method,
       headers: headers.toJSON(),
       agents: { http: config2.httpAgent, https: config2.httpsAgent },
@@ -63599,14 +63765,14 @@ var isURLSameOrigin_default = platform_default.hasStandardBrowserEnv ? /* @__PUR
 var cookies_default = platform_default.hasStandardBrowserEnv ? (
   // Standard browser envs support document.cookie
   {
-    write(name, value, expires, path7, domain, secure, sameSite) {
+    write(name, value, expires, path8, domain, secure, sameSite) {
       if (typeof document === "undefined") return;
       const cookie = [`${name}=${encodeURIComponent(value)}`];
       if (utils_default.isNumber(expires)) {
         cookie.push(`expires=${new Date(expires).toUTCString()}`);
       }
-      if (utils_default.isString(path7)) {
-        cookie.push(`path=${path7}`);
+      if (utils_default.isString(path8)) {
+        cookie.push(`path=${path8}`);
       }
       if (utils_default.isString(domain)) {
         cookie.push(`domain=${domain}`);
@@ -64851,6 +65017,129 @@ var {
   mergeConfig: mergeConfig2
 } = axios_default;
 
+// ../sdk/x402/index.ts
+init_builtin();
+init_registry();
+init_buildRequest();
+
+// ../sdk/x402/fetch.ts
+function tryDecodeBase64Json(raw) {
+  try {
+    return JSON.parse(Buffer.from(raw, "base64").toString("utf8"));
+  } catch {
+    return null;
+  }
+}
+function parseSemicolonHeader(raw) {
+  const parts = raw.split(";").map((p) => p.trim()).filter(Boolean);
+  const network = parts[0] || "";
+  const kv = {};
+  for (const part of parts.slice(1)) {
+    const idx = part.indexOf("=");
+    if (idx === -1) continue;
+    kv[part.slice(0, idx).trim()] = part.slice(idx + 1).trim();
+  }
+  const payTo = kv.recipient || kv.to || "";
+  const amount = kv.amount || "";
+  if (!network || !payTo || !amount) return null;
+  return {
+    x402Version: 2,
+    accepts: [{ scheme: "exact", network, amount, payTo }]
+  };
+}
+function getPaymentRequiredHeader(headers) {
+  return headers.get("PAYMENT-REQUIRED") || headers.get("payment-required") || headers.get("X-Payment-Required") || headers.get("x-payment-required");
+}
+async function readJsonOrText(res) {
+  const ct = res.headers.get("content-type") || "";
+  const text = await res.text();
+  if (ct.includes("application/json")) {
+    try {
+      return JSON.parse(text);
+    } catch {
+    }
+  }
+  const trimmed = text.trim();
+  if (trimmed.startsWith("{") && trimmed.endsWith("}") || trimmed.startsWith("[") && trimmed.endsWith("]")) {
+    try {
+      return JSON.parse(trimmed);
+    } catch {
+    }
+  }
+  return text;
+}
+function previewBody(data, maxLen = 240) {
+  const raw = typeof data === "string" ? data : data == null ? "" : (() => {
+    try {
+      return JSON.stringify(data);
+    } catch {
+      return String(data);
+    }
+  })();
+  const oneLine = raw.replace(/\s+/g, " ").trim();
+  return oneLine.length <= maxLen ? oneLine : `${oneLine.slice(0, maxLen)}\u2026`;
+}
+async function fetchWithX402(request, agentPay) {
+  const { url: url2, init, label, serviceId } = request;
+  const first = await fetch(url2, init);
+  if (first.status !== 402) {
+    const data = await readJsonOrText(first).catch(() => null);
+    if (!first.ok) {
+      throw new Error(`${label} failed: ${first.status} ${first.statusText} body=${previewBody(data)}`);
+    }
+    return { status: first.status, data, paid: false };
+  }
+  const header = getPaymentRequiredHeader(first.headers);
+  const bodyOn402 = await readJsonOrText(first).catch(() => null);
+  const decodedFromBody = bodyOn402 && typeof bodyOn402 === "object" && bodyOn402.accepts ? bodyOn402 : null;
+  if (!header && !decodedFromBody) {
+    throw new Error(`x402: ${label} returned 402 without payment requirements in header/body`);
+  }
+  const decoded = decodedFromBody ?? (header ? tryDecodeBase64Json(header) : null) ?? (header ? parseSemicolonHeader(header) : null);
+  if (!decoded) {
+    throw new Error(`x402: Could not parse payment requirements from ${label}`);
+  }
+  const accept0 = decoded.accepts?.[0];
+  const amount = accept0?.amount ?? accept0?.maxAmountRequired;
+  const payTo = accept0?.payTo;
+  const asset = accept0?.asset;
+  const version2 = Number(decoded.x402Version ?? 2) || 2;
+  if (!amount || !payTo || !asset) {
+    throw new Error(`x402: Invalid accepts[0] from ${label}: ${previewBody(accept0)}`);
+  }
+  const paymentResult = await agentPay.payAndCall(serviceId, {
+    action: "x402_pay_generic",
+    x402Version: version2,
+    accepted: accept0,
+    recipient: payTo,
+    amount,
+    asset,
+    chainId: accept0?.network ?? "eip155:8453",
+    assetName: accept0?.extra?.name ?? null,
+    assetVersion: accept0?.extra?.version ?? null,
+    resource: decoded.resource ?? { url: url2, mimeType: "application/json" },
+    extensions: decoded.extensions ?? {}
+  });
+  const paymentSignature = typeof paymentResult?.signature === "string" ? paymentResult.signature : null;
+  if (!paymentSignature) {
+    throw new Error(
+      `x402: Backend did not return payment signature for ${label}: ${previewBody(paymentResult)}`
+    );
+  }
+  const retryHeaders = new Headers(init.headers);
+  retryHeaders.set("PAYMENT-SIGNATURE", paymentSignature);
+  retryHeaders.set("Payment-Signature", paymentSignature);
+  retryHeaders.set("payment-signature", paymentSignature);
+  retryHeaders.set("X-Payment", paymentSignature);
+  retryHeaders.set("X-PAYMENT", paymentSignature);
+  const second = await fetch(url2, { ...init, headers: retryHeaders });
+  const data2 = await readJsonOrText(second).catch(() => null);
+  if (!second.ok) {
+    throw new Error(`x402: Paid retry failed for ${label}: ${second.status} ${previewBody(data2)}`);
+  }
+  return { status: second.status, data: data2, paid: true, paymentSignaturePresent: true };
+}
+
 // ../sdk/index.ts
 function resolveBaseUrl(options) {
   const raw = options?.baseUrl ?? process.env.AGENTPAY_API_BASE_URL ?? process.env.AGENTPAY_BACKEND_URL ?? "http://localhost:3000";
@@ -64969,26 +65258,106 @@ async function startMcpServer(config2) {
     {
       instructions: [
         "AgentPay is a payment firewall between autonomous agents and paid APIs or on-chain services.",
-        "Use pay_and_call_service when the user or agent needs to spend money, call a paid API (x402), or execute a catalog service that requires WalletConnect approval.",
-        "Use get_spending_status before large spends, when the user asks about budget or balance, or to audit recent agent payments.",
-        "Use get_pairing_link when the user asks to connect or pair their Android wallet; send the returned Reown URL to the user.",
-        "Known service ids include exa_search and nansen_smart_money_holdings (see backend catalog).",
-        "A paired mobile wallet (WalletConnect) must be active on the backend or pay_and_call_service will fail."
+        "For any x402 paid API, use fetch_paid_service (402 \u2192 wallet EIP-712 sign \u2192 paid retry \u2192 real JSON).",
+        "Call list_x402_services to see registered service ids, URLs, and args hints.",
+        "Do not use pay_and_call_service for catalog x402 services \u2014 it returns demo mock data.",
+        "Use get_spending_status for budget/balance; get_pairing_link to connect the user wallet.",
+        "A paired mobile wallet (WalletConnect) must be active on the backend or paid tools will fail."
       ].join(" ")
+    }
+  );
+  server.registerTool(
+    "list_x402_services",
+    {
+      title: "AgentPay: list x402 services",
+      description: [
+        "List registered x402 services (built-in + config/x402-services.json).",
+        "Use before fetch_paid_service to pick the correct serviceId and args shape."
+      ].join(" "),
+      inputSchema: external_exports.object({}),
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false
+      }
+    },
+    async () => {
+      try {
+        return textResult({
+          services: listX402Services(),
+          note: "Add more services via config/x402-services.json or AGENTPAY_X402_SERVICES_PATH. For ad-hoc URLs use fetch_paid_service with url + method + body/args."
+        });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return textResult({ success: false, error: message }, true);
+      }
+    }
+  );
+  server.registerTool(
+    "fetch_paid_service",
+    {
+      title: "AgentPay: fetch any x402-paid HTTP API",
+      description: [
+        "Generic x402 flow: HTTP 402 \u2192 WalletConnect EIP-712 sign \u2192 retry with PAYMENT-SIGNATURE \u2192 return API JSON.",
+        "Mode A \u2014 registered service: provide serviceId + args (call list_x402_services first).",
+        "Mode B \u2014 ad-hoc URL: provide url + method + optional headers/body (uses backend serviceId x402_custom).",
+        "Do not use pay_and_call_service for x402 APIs \u2014 it only returns demo mock data."
+      ].join(" "),
+      inputSchema: external_exports.object({
+        serviceId: external_exports.string().optional().describe("Registered x402 service id from list_x402_services"),
+        args: external_exports.record(external_exports.unknown()).optional().describe("Arguments for the registered service (see argsHint from list_x402_services)"),
+        url: external_exports.string().url().optional().describe("Ad-hoc: full HTTP URL when not using serviceId"),
+        method: external_exports.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]).optional(),
+        headers: external_exports.record(external_exports.string()).optional(),
+        body: external_exports.unknown().optional().describe("Ad-hoc: JSON body (overrides args as body when set)")
+      }).refine((v) => Boolean(v.serviceId) || Boolean(v.url), {
+        message: "Provide either serviceId (registry) or url (ad-hoc x402 endpoint)"
+      }),
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        openWorldHint: true
+      }
+    },
+    async (input) => {
+      try {
+        const built = input.url ? buildAdHocX402Request({
+          url: input.url,
+          method: input.method,
+          headers: input.headers,
+          body: input.body,
+          args: input.args,
+          serviceId: input.serviceId
+        }) : buildX402Request(input.serviceId, input.args ?? {});
+        const result = await fetchWithX402(built, agentPay);
+        return textResult({
+          success: true,
+          serviceId: built.serviceId,
+          url: built.url,
+          paid: result.paid,
+          status: result.status,
+          data: result.data
+        });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        return textResult(
+          { success: false, serviceId: input.serviceId, url: input.url, error: message },
+          true
+        );
+      }
     }
   );
   server.registerTool(
     "pay_and_call_service",
     {
-      title: "AgentPay: pay and call a paid service",
+      title: "AgentPay: sign a custom payment (advanced)",
       description: [
-        "Route a paid agent action through the AgentPay backend so the owner wallet can approve via WalletConnect.",
-        "Use when: calling paid APIs (x402), executing billable agent tools, or any flow that must charge USDC under user control.",
-        "Do not use for: free HTTP calls, reading public data, or tasks that do not require payment.",
-        "Requires prior WalletConnect pairing on the AgentPay backend."
+        "Low-level: ask the wallet to sign via the backend with a custom payload.",
+        "Do not use for x402 catalog services \u2014 use fetch_paid_service instead.",
+        'For manual x402 flows, the payload must include action "x402_pay_generic" plus recipient, amount, and asset from the provider 402 response.'
       ].join(" "),
       inputSchema: external_exports.object({
-        serviceId: external_exports.string().min(1).describe("Backend catalog id, e.g. exa_search or nansen_smart_money_holdings"),
+        serviceId: external_exports.string().min(1).describe("Backend catalog id (non-x402 demo only; prefer fetch_paid_service for x402 APIs)"),
         amountUsd: external_exports.number().positive().describe("Payment amount in USD (used for x402 amount when applicable)"),
         description: external_exports.string().min(1).describe("Short justification shown in logs and wallet approval context")
       }),
@@ -65013,6 +65382,18 @@ async function startMcpServer(config2) {
               serviceId,
               amountUsd,
               message: "AgentPay returned no result. Verify backend URL, agent id, WalletConnect session, and service id."
+            },
+            true
+          );
+        }
+        const data = result?.data;
+        if (data?.tokens?.includes("$AI") && data?.tokens?.includes("$AGENT")) {
+          return textResult(
+            {
+              success: false,
+              serviceId,
+              message: "Backend returned demo mock data, not a real API response. For Exa/Nansen use fetch_paid_service with args.query (or args.chains), not pay_and_call_service.",
+              result
             },
             true
           );
@@ -66422,7 +66803,7 @@ var esm_default2 = createPrompt((config2, done) => {
 // ../node_modules/@inquirer/external-editor/dist/esm/index.js
 var import_chardet = __toESM(require_lib2(), 1);
 var import_child_process = require("child_process");
-var import_fs = require("fs");
+var import_fs2 = require("fs");
 var import_node_path5 = __toESM(require("node:path"), 1);
 var import_node_os2 = __toESM(require("node:os"), 1);
 var import_node_crypto2 = require("node:crypto");
@@ -66569,14 +66950,14 @@ var ExternalEditor = class {
       if (Object.prototype.hasOwnProperty.call(this.fileOptions, "mode")) {
         opt.mode = this.fileOptions.mode;
       }
-      (0, import_fs.writeFileSync)(this.tempFile, this.text, opt);
+      (0, import_fs2.writeFileSync)(this.tempFile, this.text, opt);
     } catch (createFileError) {
       throw new CreateFileError(createFileError);
     }
   }
   readTemporaryFile() {
     try {
-      const tempFileBuffer = (0, import_fs.readFileSync)(this.tempFile);
+      const tempFileBuffer = (0, import_fs2.readFileSync)(this.tempFile);
       if (tempFileBuffer.length === 0) {
         this.text = "";
       } else {
@@ -66592,7 +66973,7 @@ var ExternalEditor = class {
   }
   removeTemporaryFile() {
     try {
-      (0, import_fs.unlinkSync)(this.tempFile);
+      (0, import_fs2.unlinkSync)(this.tempFile);
     } catch (removeFileError) {
       throw new RemoveFileError(removeFileError);
     }
@@ -67495,9 +67876,9 @@ var import_rxjs = __toESM(require_cjs(), 1);
 var import_run_async = __toESM(require_run_async(), 1);
 var import_mute_stream2 = __toESM(require_lib(), 1);
 var _ = {
-  set: (obj, path7 = "", value) => {
+  set: (obj, path8 = "", value) => {
     let pointer = obj;
-    path7.split(".").forEach((key, index, arr) => {
+    path8.split(".").forEach((key, index, arr) => {
       if (key === "__proto__" || key === "constructor")
         return;
       if (index === arr.length - 1) {
@@ -67508,8 +67889,8 @@ var _ = {
       pointer = pointer[key];
     });
   },
-  get: (obj, path7 = "", defaultValue) => {
-    const travel = (regexp) => String.prototype.split.call(path7, regexp).filter(Boolean).reduce(
+  get: (obj, path8 = "", defaultValue) => {
+    const travel = (regexp) => String.prototype.split.call(path8, regexp).filter(Boolean).reduce(
       // @ts-expect-error implicit any on res[key]
       (res, key) => res == null ? res : res[key],
       obj

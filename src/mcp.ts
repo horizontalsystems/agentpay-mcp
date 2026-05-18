@@ -4,6 +4,12 @@ import { AgentPay } from '@agentpay/sdk';
 import { z } from 'zod';
 import type { AgentPayConfig } from './config.js';
 import { runConnect } from './connect.js';
+import {
+  buildAdHocX402Request,
+  buildX402Request,
+  fetchWithX402,
+  listX402Services
+} from '@agentpay/sdk';
 
 function textResult(payload: unknown, isError = false) {
   return {
@@ -77,30 +83,123 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     {
       instructions: [
         'AgentPay is a payment firewall between autonomous agents and paid APIs or on-chain services.',
-        'Use pay_and_call_service when the user or agent needs to spend money, call a paid API (x402), or execute a catalog service that requires WalletConnect approval.',
-        'Use get_spending_status before large spends, when the user asks about budget or balance, or to audit recent agent payments.',
-        'Use get_pairing_link when the user asks to connect or pair their Android wallet; send the returned Reown URL to the user.',
-        'Known service ids include exa_search and nansen_smart_money_holdings (see backend catalog).',
-        'A paired mobile wallet (WalletConnect) must be active on the backend or pay_and_call_service will fail.'
+        'For any x402 paid API, use fetch_paid_service (402 → wallet EIP-712 sign → paid retry → real JSON).',
+        'Call list_x402_services to see registered service ids, URLs, and args hints.',
+        'Do not use pay_and_call_service for catalog x402 services — it returns demo mock data.',
+        'Use get_spending_status for budget/balance; get_pairing_link to connect the user wallet.',
+        'A paired mobile wallet (WalletConnect) must be active on the backend or paid tools will fail.'
       ].join(' ')
+    }
+  );
+
+  server.registerTool(
+    'list_x402_services',
+    {
+      title: 'AgentPay: list x402 services',
+      description: [
+        'List registered x402 services (built-in + config/x402-services.json).',
+        'Use before fetch_paid_service to pick the correct serviceId and args shape.'
+      ].join(' '),
+      inputSchema: z.object({}),
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false
+      }
+    },
+    async () => {
+      try {
+        return textResult({
+          services: listX402Services(),
+          note: 'Add more services via config/x402-services.json or AGENTPAY_X402_SERVICES_PATH. For ad-hoc URLs use fetch_paid_service with url + method + body/args.'
+        });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return textResult({ success: false, error: message }, true);
+      }
+    }
+  );
+
+  server.registerTool(
+    'fetch_paid_service',
+    {
+      title: 'AgentPay: fetch any x402-paid HTTP API',
+      description: [
+        'Generic x402 flow: HTTP 402 → WalletConnect EIP-712 sign → retry with PAYMENT-SIGNATURE → return API JSON.',
+        'Mode A — registered service: provide serviceId + args (call list_x402_services first).',
+        'Mode B — ad-hoc URL: provide url + method + optional headers/body (uses backend serviceId x402_custom).',
+        'Do not use pay_and_call_service for x402 APIs — it only returns demo mock data.'
+      ].join(' '),
+      inputSchema: z
+        .object({
+          serviceId: z
+            .string()
+            .optional()
+            .describe('Registered x402 service id from list_x402_services'),
+          args: z
+            .record(z.unknown())
+            .optional()
+            .describe('Arguments for the registered service (see argsHint from list_x402_services)'),
+          url: z.string().url().optional().describe('Ad-hoc: full HTTP URL when not using serviceId'),
+          method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD']).optional(),
+          headers: z.record(z.string()).optional(),
+          body: z.unknown().optional().describe('Ad-hoc: JSON body (overrides args as body when set)')
+        })
+        .refine((v) => Boolean(v.serviceId) || Boolean(v.url), {
+          message: 'Provide either serviceId (registry) or url (ad-hoc x402 endpoint)'
+        }),
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        openWorldHint: true
+      }
+    },
+    async (input) => {
+      try {
+        const built = input.url
+          ? buildAdHocX402Request({
+              url: input.url,
+              method: input.method,
+              headers: input.headers,
+              body: input.body,
+              args: input.args,
+              serviceId: input.serviceId
+            })
+          : buildX402Request(input.serviceId!, input.args ?? {});
+
+        const result = await fetchWithX402(built, agentPay);
+        return textResult({
+          success: true,
+          serviceId: built.serviceId,
+          url: built.url,
+          paid: result.paid,
+          status: result.status,
+          data: result.data
+        });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        return textResult(
+          { success: false, serviceId: input.serviceId, url: input.url, error: message },
+          true
+        );
+      }
     }
   );
 
   server.registerTool(
     'pay_and_call_service',
     {
-      title: 'AgentPay: pay and call a paid service',
+      title: 'AgentPay: sign a custom payment (advanced)',
       description: [
-        'Route a paid agent action through the AgentPay backend so the owner wallet can approve via WalletConnect.',
-        'Use when: calling paid APIs (x402), executing billable agent tools, or any flow that must charge USDC under user control.',
-        'Do not use for: free HTTP calls, reading public data, or tasks that do not require payment.',
-        'Requires prior WalletConnect pairing on the AgentPay backend.'
+        'Low-level: ask the wallet to sign via the backend with a custom payload.',
+        'Do not use for x402 catalog services — use fetch_paid_service instead.',
+        'For manual x402 flows, the payload must include action "x402_pay_generic" plus recipient, amount, and asset from the provider 402 response.'
       ].join(' '),
       inputSchema: z.object({
         serviceId: z
           .string()
           .min(1)
-          .describe('Backend catalog id, e.g. exa_search or nansen_smart_money_holdings'),
+          .describe('Backend catalog id (non-x402 demo only; prefer fetch_paid_service for x402 APIs)'),
         amountUsd: z.number().positive().describe('Payment amount in USD (used for x402 amount when applicable)'),
         description: z.string().min(1).describe('Short justification shown in logs and wallet approval context')
       }),
@@ -127,6 +226,20 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
               amountUsd,
               message:
                 'AgentPay returned no result. Verify backend URL, agent id, WalletConnect session, and service id.'
+            },
+            true
+          );
+        }
+
+        const data = (result as { data?: { tokens?: string[] } })?.data;
+        if (data?.tokens?.includes('$AI') && data?.tokens?.includes('$AGENT')) {
+          return textResult(
+            {
+              success: false,
+              serviceId,
+              message:
+                'Backend returned demo mock data, not a real API response. For Exa/Nansen use fetch_paid_service with args.query (or args.chains), not pay_and_call_service.',
+              result
             },
             true
           );
