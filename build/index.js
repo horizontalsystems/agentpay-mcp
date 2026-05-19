@@ -23915,19 +23915,61 @@ var init_builtin = __esm({
           chains: Array.isArray(args.chains) && args.chains.length ? args.chains : ["ethereum"]
         }),
         argsHint: '{ "chains": ["ethereum"] }'
+      },
+      /** https://twit.sh — X/Twitter data via x402 on Base (USDC). */
+      twit_user_by_username: {
+        label: "twit.sh user lookup",
+        url: "https://x402.twit.sh/users/by/username?username=${username}",
+        method: "GET",
+        validate: (args) => String(args.username ?? "").trim() ? null : "twit_user_by_username requires args.username (no @)",
+        argsHint: '{ "username": "vitalik" }'
+      },
+      twit_tweet_by_id: {
+        label: "twit.sh tweet lookup",
+        url: "https://x402.twit.sh/tweets/by/id?id=${id}",
+        method: "GET",
+        validate: (args) => String(args.id ?? "").trim() ? null : "twit_tweet_by_id requires args.id (tweet id string)",
+        argsHint: '{ "id": "1234567890123456789" }'
+      },
+      /**
+       * Alchemy agentic gateway — JSON-RPC with SIWE + x402 USDC.
+       * URL shape from https://github.com/alchemyplatform/skills (rules/x402/reference.md): /:chainNetwork/v2
+       */
+      alchemy_x402_eth_blockNumber: {
+        label: "Alchemy x402 eth_blockNumber (eth-mainnet)",
+        auth: { type: "alchemy_siwe" },
+        url: "https://x402.alchemy.com/eth-mainnet/v2",
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: () => ({
+          jsonrpc: "2.0",
+          id: 1,
+          method: "eth_blockNumber",
+          params: []
+        }),
+        argsHint: "{}"
       }
     };
   }
 });
 
 // ../sdk/x402/registry.ts
+var registry_exports = {};
+__export(registry_exports, {
+  getX402Service: () => getX402Service,
+  getX402Services: () => getX402Services,
+  isKnownX402Service: () => isKnownX402Service,
+  listX402Services: () => listX402Services,
+  resetX402ServiceCache: () => resetX402ServiceCache
+});
 function jsonEntryToService(entry) {
   const svc = {
     label: entry.label,
     url: entry.url,
     method: entry.method,
     headers: entry.headers,
-    argsHint: entry.argsHint
+    argsHint: entry.argsHint,
+    auth: entry.auth
   };
   if (entry.bodyFromArgs) {
     svc.body = (args) => args;
@@ -23977,8 +24019,15 @@ function listX402Services() {
     label: svc.label,
     method: svc.method,
     url: svc.url,
-    argsHint: svc.argsHint
+    argsHint: svc.argsHint,
+    auth: svc.auth ? { type: svc.auth.type } : void 0
   }));
+}
+function isKnownX402Service(serviceId) {
+  return Boolean(getX402Service(serviceId));
+}
+function resetX402ServiceCache() {
+  cache = null;
 }
 var import_fs, import_path2, cache;
 var init_registry = __esm({
@@ -23992,6 +24041,11 @@ var init_registry = __esm({
 });
 
 // ../sdk/x402/buildRequest.ts
+var buildRequest_exports = {};
+__export(buildRequest_exports, {
+  buildAdHocX402Request: () => buildAdHocX402Request,
+  buildX402Request: () => buildX402Request
+});
 function interpolateUrl(template, args) {
   return template.replace(/\$\{(\w+)\}/g, (_2, key) => encodeURIComponent(String(args[key] ?? "")));
 }
@@ -24020,7 +24074,7 @@ function buildX402Request(serviceId, args = {}) {
       init.body = typeof payload === "string" ? payload : JSON.stringify(payload);
     }
   }
-  return { url: url2, init, label: svc.label, serviceId };
+  return { url: url2, init, label: svc.label, serviceId, auth: svc.auth };
 }
 function buildAdHocX402Request(input) {
   const method = input.method ?? "POST";
@@ -24039,7 +24093,8 @@ function buildAdHocX402Request(input) {
     url: input.url,
     init,
     label: input.label ?? "x402 API",
-    serviceId: input.serviceId ?? "x402_custom"
+    serviceId: input.serviceId ?? input.url,
+    auth: input.auth
   };
 }
 var METHODS_WITH_BODY;
@@ -65017,15 +65072,19 @@ var {
   mergeConfig: mergeConfig2
 } = axios_default;
 
+// ../sdk/x402/constants.ts
+var X402_SIGNING_SERVICE_ID = "x402_custom";
+
 // ../sdk/x402/index.ts
 init_builtin();
 init_registry();
 init_buildRequest();
 
-// ../sdk/x402/fetch.ts
+// ../sdk/x402/paymentRequired.ts
 function tryDecodeBase64Json(raw) {
   try {
-    return JSON.parse(Buffer.from(raw, "base64").toString("utf8"));
+    const parsed = JSON.parse(Buffer.from(raw, "base64").toString("utf8"));
+    return normalizePaymentRequired(parsed);
   } catch {
     return null;
   }
@@ -65040,15 +65099,40 @@ function parseSemicolonHeader(raw) {
     kv[part.slice(0, idx).trim()] = part.slice(idx + 1).trim();
   }
   const payTo = kv.recipient || kv.to || "";
-  const amount = kv.amount || "";
+  const amount = kv.amount || kv.maxAmountRequired || "";
   if (!network || !payTo || !amount) return null;
   return {
     x402Version: 2,
-    accepts: [{ scheme: "exact", network, amount, payTo }]
+    accepts: [{ scheme: "exact", network, amount, payTo, asset: kv.asset }]
+  };
+}
+function normalizePaymentRequired(raw) {
+  if (!raw) return null;
+  const version2 = Number(raw.x402Version ?? 2) === 1 ? 1 : 2;
+  const accepts = (raw.accepts ?? []).map((a) => ({
+    ...a,
+    amount: a.amount ?? a.maxAmountRequired
+  }));
+  return {
+    x402Version: version2,
+    error: raw.error,
+    resource: typeof raw.resource === "string" ? { url: raw.resource, mimeType: "application/json" } : raw.resource,
+    accepts,
+    extensions: raw.extensions
   };
 }
 function getPaymentRequiredHeader(headers) {
-  return headers.get("PAYMENT-REQUIRED") || headers.get("payment-required") || headers.get("X-Payment-Required") || headers.get("x-payment-required");
+  return headers.get("PAYMENT-REQUIRED") || headers.get("payment-required") || headers.get("X-Payment-Required") || headers.get("x-payment-required") || headers.get("X-PAYMENT-REQUIRED") || headers.get("x-payment-required");
+}
+async function parsePaymentRequiredFrom402(response) {
+  const header = getPaymentRequiredHeader(response.headers);
+  const body = await readJsonOrText(response);
+  const fromBody = body && typeof body === "object" && Array.isArray(body.accepts) ? normalizePaymentRequired(body) : null;
+  const decoded = fromBody ?? (header ? tryDecodeBase64Json(header) : null) ?? (header ? parseSemicolonHeader(header) : null);
+  if (!decoded?.accepts?.length) {
+    throw new Error("x402: 402 response missing payment requirements (PAYMENT-REQUIRED header or accepts[] body)");
+  }
+  return decoded;
 }
 async function readJsonOrText(res) {
   const ct = res.headers.get("content-type") || "";
@@ -65068,8 +65152,97 @@ async function readJsonOrText(res) {
   }
   return text;
 }
+async function readHttpBody(res) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    return text;
+  }
+}
+
+// ../sdk/x402/selectAccept.ts
+var BASE_NATIVE_USDC = "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913";
+var EVM_BASE_NETWORKS = /* @__PURE__ */ new Set([
+  "eip155:8453",
+  "base",
+  "base-mainnet",
+  "base-main",
+  "8453"
+]);
+function isBatchedOrUnsupportedScheme(a) {
+  const name = String(a.extra?.name ?? "").trim();
+  if (name === "GatewayWalletBatched") return true;
+  const vc = a.extra?.verifyingContract;
+  return typeof vc === "string" && vc.startsWith("0x") && name !== "USD Coin" && name !== "USDC";
+}
+function isEvmBaseUsdcAccept(a) {
+  if (a.scheme !== "exact") return false;
+  const network = String(a.network ?? "").toLowerCase();
+  if (!EVM_BASE_NETWORKS.has(network) && !network.includes("8453")) return false;
+  if (typeof a.payTo !== "string" || !a.payTo.startsWith("0x")) return false;
+  if (typeof a.asset !== "string" || !a.asset.startsWith("0x")) return false;
+  return a.asset.toLowerCase() === BASE_NATIVE_USDC;
+}
+function acceptScore(a) {
+  let score = 0;
+  const name = String(a.extra?.name ?? "").trim();
+  if (name === "USD Coin") score += 4;
+  if (String(a.extra?.version ?? "") === "2") score += 2;
+  if (String(a.network ?? "").startsWith("eip155:")) score += 1;
+  return score;
+}
+function selectWalletUsdcAccept(accepts, label) {
+  if (!accepts?.length) {
+    throw new Error(`x402: No accepts[] for ${label}`);
+  }
+  const candidates = accepts.filter((a) => !isBatchedOrUnsupportedScheme(a) && isEvmBaseUsdcAccept(a));
+  if (!candidates.length) {
+    const nets = accepts.map((a) => `${a.scheme ?? "?"}/${a.network ?? "?"} asset=${a.asset?.slice(0, 10) ?? "?"}`).join(", ");
+    throw new Error(
+      `x402: No Base USDC (EIP-3009) accept for ${label}. Need exact scheme + Base USDC ${BASE_NATIVE_USDC}. Saw: ${nets}`
+    );
+  }
+  return candidates.sort((a, b) => acceptScore(b) - acceptScore(a))[0];
+}
+function networkToChainId(network) {
+  const n = String(network ?? "eip155:8453").toLowerCase();
+  if (n === "base" || n === "base-mainnet" || n === "base-main") return 8453;
+  if (n === "base-sepolia" || n === "eip155:84532") return 84532;
+  const m = n.match(/^eip155:(\d+)$/);
+  if (m) return Number(m[1]);
+  if (n === "8453") return 8453;
+  return 8453;
+}
+function networkToChainIdString(network) {
+  const n = String(network ?? "").toLowerCase();
+  if (n.startsWith("eip155:")) return n;
+  if (n === "base" || n === "base-mainnet") return "eip155:8453";
+  if (n === "base-sepolia") return "eip155:84532";
+  return `eip155:${networkToChainId(network)}`;
+}
+
+// ../sdk/x402/session.ts
+async function createAlchemySiweSession(agentPay, registryId) {
+  const res = await agentPay.payAndCall(X402_SIGNING_SERVICE_ID, {
+    action: "alchemy_siwe",
+    registryId
+  });
+  const token = typeof res?.siweToken === "string" ? res.siweToken.trim() : "";
+  if (!token) {
+    throw new Error("Alchemy SIWE: approve personal_sign on the wallet.");
+  }
+  return { kind: "alchemy_siwe", token };
+}
+function applySessionToHeaders(headers, session) {
+  if (session?.kind === "alchemy_siwe") {
+    headers.set("Authorization", `SIWE ${session.token}`);
+  }
+}
+
+// ../sdk/x402/client.ts
 function previewBody(data, maxLen = 240) {
-  const raw = typeof data === "string" ? data : data == null ? "" : (() => {
+  const raw = typeof data === "string" ? data : (() => {
     try {
       return JSON.stringify(data);
     } catch {
@@ -65079,65 +65252,127 @@ function previewBody(data, maxLen = 240) {
   const oneLine = raw.replace(/\s+/g, " ").trim();
   return oneLine.length <= maxLen ? oneLine : `${oneLine.slice(0, maxLen)}\u2026`;
 }
-async function fetchWithX402(request, agentPay) {
-  const { url: url2, init, label, serviceId } = request;
-  const first = await fetch(url2, init);
-  if (first.status !== 402) {
-    const data = await readJsonOrText(first).catch(() => null);
-    if (!first.ok) {
-      throw new Error(`${label} failed: ${first.status} ${first.statusText} body=${previewBody(data)}`);
-    }
-    return { status: first.status, data, paid: false };
+function resolveAuth(built) {
+  if (built.auth) return built.auth;
+  if (built.url.includes("x402.alchemy.com")) return { type: "alchemy_siwe" };
+  return void 0;
+}
+async function ensureSession(auth, agentPay, registryId, existing) {
+  if (existing) return existing;
+  if (auth?.type === "alchemy_siwe") {
+    return createAlchemySiweSession(agentPay, registryId);
   }
-  const header = getPaymentRequiredHeader(first.headers);
-  const bodyOn402 = await readJsonOrText(first).catch(() => null);
-  const decodedFromBody = bodyOn402 && typeof bodyOn402 === "object" && bodyOn402.accepts ? bodyOn402 : null;
-  if (!header && !decodedFromBody) {
-    throw new Error(`x402: ${label} returned 402 without payment requirements in header/body`);
+  return void 0;
+}
+function applyPaymentHeaders(headers, signature, x402Version) {
+  if (x402Version === 1) {
+    headers.set("X-PAYMENT", signature);
+    headers.set("x-payment", signature);
+  } else {
+    headers.set("PAYMENT-SIGNATURE", signature);
+    headers.set("Payment-Signature", signature);
+    headers.set("payment-signature", signature);
+    headers.set("X-PAYMENT", signature);
+    headers.set("x-payment", signature);
   }
-  const decoded = decodedFromBody ?? (header ? tryDecodeBase64Json(header) : null) ?? (header ? parseSemicolonHeader(header) : null);
-  if (!decoded) {
-    throw new Error(`x402: Could not parse payment requirements from ${label}`);
-  }
-  const accept0 = decoded.accepts?.[0];
-  const amount = accept0?.amount ?? accept0?.maxAmountRequired;
-  const payTo = accept0?.payTo;
-  const asset = accept0?.asset;
-  const version2 = Number(decoded.x402Version ?? 2) || 2;
+}
+async function payFrom402(url2, init, label, registryId, agentPay, decoded, session) {
+  const accept = selectWalletUsdcAccept(decoded.accepts, label);
+  const amount = accept.amount ?? accept.maxAmountRequired;
+  const payTo = accept.payTo;
+  const asset = accept.asset;
+  const x402Version = decoded.x402Version;
   if (!amount || !payTo || !asset) {
-    throw new Error(`x402: Invalid accepts[0] from ${label}: ${previewBody(accept0)}`);
+    throw new Error(`x402: Invalid accept for ${label}: ${previewBody(accept)}`);
   }
-  const paymentResult = await agentPay.payAndCall(serviceId, {
+  const paymentResult = await agentPay.payAndCall(X402_SIGNING_SERVICE_ID, {
     action: "x402_pay_generic",
-    x402Version: version2,
-    accepted: accept0,
+    registryId,
+    x402Version,
+    accepted: accept,
     recipient: payTo,
     amount,
     asset,
-    chainId: accept0?.network ?? "eip155:8453",
-    assetName: accept0?.extra?.name ?? null,
-    assetVersion: accept0?.extra?.version ?? null,
+    chainId: networkToChainIdString(accept.network),
+    assetName: accept.extra?.name ?? null,
+    assetVersion: accept.extra?.version ?? null,
     resource: decoded.resource ?? { url: url2, mimeType: "application/json" },
     extensions: decoded.extensions ?? {}
   });
-  const paymentSignature = typeof paymentResult?.signature === "string" ? paymentResult.signature : null;
+  const paymentSignature = typeof paymentResult?.signature === "string" ? paymentResult.signature.trim() : "";
   if (!paymentSignature) {
-    throw new Error(
-      `x402: Backend did not return payment signature for ${label}: ${previewBody(paymentResult)}`
-    );
+    throw new Error(`x402: No payment signature from backend for ${label}`);
   }
   const retryHeaders = new Headers(init.headers);
-  retryHeaders.set("PAYMENT-SIGNATURE", paymentSignature);
-  retryHeaders.set("Payment-Signature", paymentSignature);
-  retryHeaders.set("payment-signature", paymentSignature);
-  retryHeaders.set("X-Payment", paymentSignature);
-  retryHeaders.set("X-PAYMENT", paymentSignature);
+  applyPaymentHeaders(retryHeaders, paymentSignature, x402Version);
+  applySessionToHeaders(retryHeaders, session);
+  if (!retryHeaders.has("Accept")) retryHeaders.set("Accept", "application/json");
+  if (!retryHeaders.has("Content-Type") && (init.method === "POST" || init.method === "PUT" || init.method === "PATCH")) {
+    retryHeaders.set("Content-Type", "application/json");
+  }
   const second = await fetch(url2, { ...init, headers: retryHeaders });
-  const data2 = await readJsonOrText(second).catch(() => null);
+  const data2 = await readHttpBody(second);
   if (!second.ok) {
     throw new Error(`x402: Paid retry failed for ${label}: ${second.status} ${previewBody(data2)}`);
   }
-  return { status: second.status, data: data2, paid: true, paymentSignaturePresent: true };
+  return {
+    status: second.status,
+    data: data2,
+    paid: true,
+    paymentSignaturePresent: true,
+    paidAmountBaseUnits: String(amount),
+    x402Version,
+    session
+  };
+}
+async function executeX402Request(built, agentPay, options) {
+  const { url: url2, init, label, serviceId: registryId } = built;
+  const auth = resolveAuth(built);
+  const session = await ensureSession(auth, agentPay, registryId, options?.session);
+  const headers = new Headers(init.headers);
+  applySessionToHeaders(headers, session);
+  const authedInit = { ...init, headers };
+  const first = await fetch(url2, authedInit);
+  if (first.status !== 402) {
+    const data = await readHttpBody(first);
+    if (!first.ok) {
+      throw new Error(`${label} failed: ${first.status} ${first.statusText} body=${previewBody(data)}`);
+    }
+    return { status: first.status, data, paid: false, session };
+  }
+  const decoded = await parsePaymentRequiredFrom402(first);
+  return payFrom402(url2, authedInit, label, registryId, agentPay, decoded, session);
+}
+async function fetchX402Service(serviceId, args, agentPay, options) {
+  const { buildX402Request: buildX402Request2 } = await Promise.resolve().then(() => (init_buildRequest(), buildRequest_exports));
+  const { isKnownX402Service: isKnownX402Service2 } = await Promise.resolve().then(() => (init_registry(), registry_exports));
+  if (!isKnownX402Service2(serviceId)) {
+    const known = (await Promise.resolve().then(() => (init_registry(), registry_exports))).listX402Services().map((s) => s.serviceId);
+    throw new Error(
+      `Unknown x402 service "${serviceId}". Known: ${known.join(", ") || "(none)"}. Add config/x402-services.json or call listX402Services().`
+    );
+  }
+  const built = buildX402Request2(serviceId, args);
+  return executeX402Request(built, agentPay, options);
+}
+async function fetchPaidService(input, agentPay, options) {
+  const { buildX402Request: buildX402Request2, buildAdHocX402Request: buildAdHocX402Request2 } = await Promise.resolve().then(() => (init_buildRequest(), buildRequest_exports));
+  if (input.serviceId?.trim()) {
+    return fetchX402Service(input.serviceId.trim(), input.args ?? {}, agentPay, options);
+  }
+  if (!input.url?.trim()) {
+    throw new Error("fetchPaidService: provide serviceId (registry) or url (ad-hoc x402 API).");
+  }
+  const built = buildAdHocX402Request2({
+    url: input.url.trim(),
+    method: input.method,
+    headers: input.headers,
+    body: input.body,
+    args: input.args,
+    serviceId: input.registryId ?? input.url,
+    auth: input.auth
+  });
+  return executeX402Request(built, agentPay, options);
 }
 
 // ../sdk/index.ts
@@ -65257,12 +65492,13 @@ async function startMcpServer(config2) {
     },
     {
       instructions: [
-        "AgentPay is a payment firewall between autonomous agents and paid APIs or on-chain services.",
-        "For any x402 paid API, use fetch_paid_service (402 \u2192 wallet EIP-712 sign \u2192 paid retry \u2192 real JSON).",
-        "Call list_x402_services to see registered service ids, URLs, and args hints.",
-        "Do not use pay_and_call_service for catalog x402 services \u2014 it returns demo mock data.",
-        "Use get_spending_status for budget/balance; get_pairing_link to connect the user wallet.",
-        "A paired mobile wallet (WalletConnect) must be active on the backend or paid tools will fail."
+        "AgentPay is a payment firewall between agents and paid HTTP APIs (x402 protocol).",
+        "For ANY x402-paid API: call list_x402_services, then fetch_paid_service with serviceId + args.",
+        "If the API is not in the registry, use fetch_paid_service with url + method + body (ad-hoc mode).",
+        "Payment flow is automatic: HTTP 402 \u2192 wallet signs USDC (x402 V1 or V2 detected from the response) \u2192 retry.",
+        "Some services need provider login first (auth in registry, e.g. alchemy_siwe); that is handled automatically.",
+        "Do not use pay_and_call_service for real x402 APIs \u2014 it returns demo mock data only.",
+        "Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet."
       ].join(" ")
     }
   );
@@ -65271,8 +65507,9 @@ async function startMcpServer(config2) {
     {
       title: "AgentPay: list x402 services",
       description: [
-        "List registered x402 services (built-in + config/x402-services.json).",
-        "Use before fetch_paid_service to pick the correct serviceId and args shape."
+        "List all registered x402 HTTP services (built-in SDK registry + config/x402-services.json).",
+        "Returns serviceId, url, method, argsHint, and optional auth (e.g. alchemy_siwe for gateway login).",
+        "Always call this before fetch_paid_service when you do not already know the serviceId."
       ].join(" "),
       inputSchema: external_exports.object({}),
       annotations: {
@@ -65283,9 +65520,13 @@ async function startMcpServer(config2) {
     },
     async () => {
       try {
+        const services = listX402Services();
         return textResult({
-          services: listX402Services(),
-          note: "Add more services via config/x402-services.json or AGENTPAY_X402_SERVICES_PATH. For ad-hoc URLs use fetch_paid_service with url + method + body/args."
+          services,
+          count: services.length,
+          howToCall: "fetch_paid_service({ serviceId, args })",
+          adHoc: "fetch_paid_service({ url, method, body? }) for APIs not listed here",
+          extend: "Add entries to config/x402-services.json or set AGENTPAY_X402_SERVICES_PATH"
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
@@ -65296,22 +65537,24 @@ async function startMcpServer(config2) {
   server.registerTool(
     "fetch_paid_service",
     {
-      title: "AgentPay: fetch any x402-paid HTTP API",
+      title: "AgentPay: call any x402-paid HTTP API",
       description: [
-        "Generic x402 flow: HTTP 402 \u2192 WalletConnect EIP-712 sign \u2192 retry with PAYMENT-SIGNATURE \u2192 return API JSON.",
-        "Mode A \u2014 registered service: provide serviceId + args (call list_x402_services first).",
-        "Mode B \u2014 ad-hoc URL: provide url + method + optional headers/body (uses backend serviceId x402_custom).",
-        "Do not use pay_and_call_service for x402 APIs \u2014 it only returns demo mock data."
+        "Universal x402 client: works with any provider that returns HTTP 402 + payment requirements.",
+        "Detects x402 protocol V1 (X-PAYMENT) or V2 (PAYMENT-SIGNATURE) from the 402 response.",
+        "Registry mode: serviceId + args (from list_x402_services).",
+        "Ad-hoc mode: url + method + optional headers/body for APIs not in the registry.",
+        "WalletConnect on the backend signs EIP-3009 USDC on Base when payment is required."
       ].join(" "),
       inputSchema: external_exports.object({
-        serviceId: external_exports.string().optional().describe("Registered x402 service id from list_x402_services"),
-        args: external_exports.record(external_exports.unknown()).optional().describe("Arguments for the registered service (see argsHint from list_x402_services)"),
-        url: external_exports.string().url().optional().describe("Ad-hoc: full HTTP URL when not using serviceId"),
+        serviceId: external_exports.string().optional().describe("Registered service id from list_x402_services"),
+        args: external_exports.record(external_exports.unknown()).optional().describe("Arguments for the registered service (see argsHint)"),
+        url: external_exports.string().url().optional().describe("Ad-hoc: full URL when serviceId is not registered"),
         method: external_exports.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]).optional(),
         headers: external_exports.record(external_exports.string()).optional(),
-        body: external_exports.unknown().optional().describe("Ad-hoc: JSON body (overrides args as body when set)")
-      }).refine((v) => Boolean(v.serviceId) || Boolean(v.url), {
-        message: "Provide either serviceId (registry) or url (ad-hoc x402 endpoint)"
+        body: external_exports.unknown().optional().describe("Ad-hoc JSON body"),
+        registryId: external_exports.string().optional().describe("Optional audit label for ad-hoc calls (defaults to url)")
+      }).refine((v) => Boolean(v.serviceId?.trim()) || Boolean(v.url), {
+        message: "Provide serviceId (registry) or url (ad-hoc x402 endpoint)"
       }),
       annotations: {
         readOnlyHint: false,
@@ -65321,27 +65564,37 @@ async function startMcpServer(config2) {
     },
     async (input) => {
       try {
-        const built = input.url ? buildAdHocX402Request({
-          url: input.url,
-          method: input.method,
-          headers: input.headers,
-          body: input.body,
-          args: input.args,
-          serviceId: input.serviceId
-        }) : buildX402Request(input.serviceId, input.args ?? {});
-        const result = await fetchWithX402(built, agentPay);
+        const result = await fetchPaidService(
+          {
+            serviceId: input.serviceId?.trim() || void 0,
+            args: input.args,
+            url: input.url,
+            method: input.method,
+            headers: input.headers,
+            body: input.body,
+            registryId: input.registryId
+          },
+          agentPay
+        );
         return textResult({
           success: true,
-          serviceId: built.serviceId,
-          url: built.url,
+          serviceId: input.serviceId ?? input.registryId ?? input.url,
           paid: result.paid,
+          x402Version: result.x402Version,
           status: result.status,
+          paidAmountBaseUnits: result.paidAmountBaseUnits,
           data: result.data
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult(
-          { success: false, serviceId: input.serviceId, url: input.url, error: message },
+          {
+            success: false,
+            serviceId: input.serviceId,
+            url: input.url,
+            error: message,
+            hint: "Run list_x402_services or check url/method/args. Ensure the wallet is paired on the backend."
+          },
           true
         );
       }
@@ -65350,16 +65603,15 @@ async function startMcpServer(config2) {
   server.registerTool(
     "pay_and_call_service",
     {
-      title: "AgentPay: sign a custom payment (advanced)",
+      title: "AgentPay: demo signing only (not x402 APIs)",
       description: [
-        "Low-level: ask the wallet to sign via the backend with a custom payload.",
-        "Do not use for x402 catalog services \u2014 use fetch_paid_service instead.",
-        'For manual x402 flows, the payload must include action "x402_pay_generic" plus recipient, amount, and asset from the provider 402 response.'
+        "Demo path only \u2014 returns mock data, not a real paid API response.",
+        "For any x402 HTTP API use fetch_paid_service instead (registry or ad-hoc url)."
       ].join(" "),
       inputSchema: external_exports.object({
-        serviceId: external_exports.string().min(1).describe("Backend catalog id (non-x402 demo only; prefer fetch_paid_service for x402 APIs)"),
-        amountUsd: external_exports.number().positive().describe("Payment amount in USD (used for x402 amount when applicable)"),
-        description: external_exports.string().min(1).describe("Short justification shown in logs and wallet approval context")
+        serviceId: external_exports.string().optional().describe("Ignored for demo; use fetch_paid_service for real APIs"),
+        amountUsd: external_exports.number().positive(),
+        description: external_exports.string().min(1)
       }),
       annotations: {
         readOnlyHint: false,
@@ -65370,7 +65622,7 @@ async function startMcpServer(config2) {
     async ({ serviceId, amountUsd, description }) => {
       try {
         const amountBaseUnits = String(Math.round(amountUsd * 1e6));
-        const result = await agentPay.payAndCall(serviceId, {
+        const result = await agentPay.payAndCall("demo", {
           description,
           amountUsd,
           amount: amountBaseUnits
@@ -65381,7 +65633,7 @@ async function startMcpServer(config2) {
               success: false,
               serviceId,
               amountUsd,
-              message: "AgentPay returned no result. Verify backend URL, agent id, WalletConnect session, and service id."
+              message: "No result from backend. Check pairing and AGENTPAY_BACKEND_URL."
             },
             true
           );
@@ -65392,19 +65644,13 @@ async function startMcpServer(config2) {
             {
               success: false,
               serviceId,
-              message: "Backend returned demo mock data, not a real API response. For Exa/Nansen use fetch_paid_service with args.query (or args.chains), not pay_and_call_service.",
+              message: "Demo mock response \u2014 not a real API. Use fetch_paid_service with serviceId or url for x402 APIs.",
               result
             },
             true
           );
         }
-        return textResult({
-          success: true,
-          serviceId,
-          amountUsd,
-          description,
-          result
-        });
+        return textResult({ success: true, serviceId, amountUsd, description, result });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult({ success: false, serviceId, amountUsd, error: message }, true);
@@ -65415,11 +65661,7 @@ async function startMcpServer(config2) {
     "get_pairing_link",
     {
       title: "AgentPay: get WalletConnect pairing link",
-      description: [
-        "Use when the user asks to connect or pair their Android wallet.",
-        "Returns a Reown deep link (https://link.reown.com/wc?uri=...) to open in Unstoppable Wallet or any WalletConnect v2 wallet.",
-        "Do not use pay_and_call_service until pairing is complete."
-      ].join(" "),
+      description: "Returns a WalletConnect deep link for the user to pair their mobile wallet.",
       inputSchema: external_exports.object({}),
       annotations: {
         readOnlyHint: true,
@@ -65441,12 +65683,7 @@ async function startMcpServer(config2) {
     "get_spending_status",
     {
       title: "AgentPay: get spending status",
-      description: [
-        "Read the agent wallet balance and recent payment activity from the AgentPay backend.",
-        "Use when: the user asks how much was spent today, whether the agent can afford a payment, or to verify past approvals/blocks.",
-        "Do not use for: initiating payments (use pay_and_call_service instead).",
-        "Spending limits are enforced on the Android app; this tool reports backend logs and mock balance only."
-      ].join(" "),
+      description: "Wallet balance and recent payment activity from the backend.",
       inputSchema: external_exports.object({}),
       annotations: {
         readOnlyHint: true,
@@ -65456,8 +65693,7 @@ async function startMcpServer(config2) {
     },
     async () => {
       try {
-        const status = await fetchSpendingStatus();
-        return textResult(status);
+        return textResult(await fetchSpendingStatus());
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult({ success: false, error: message }, true);

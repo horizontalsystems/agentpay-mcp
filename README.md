@@ -224,6 +224,11 @@ Copy `openclaw.env.example` into your image or profile if you prefer manual env 
 
 The server name exposed over MCP is **`agentpay-firewall`**.
 
+### Backend catalog vs client registry
+
+- **Client registry** (`list_x402_services`, `sdk/x402/builtin.ts`, `config/x402-services.json`): where you add Exa, twit.sh, Bazaar APIs — **no backend deploy**.
+- **Backend catalog** (`x402_custom` only): one signing slot. All paid calls use `serviceId: x402_custom` with `payload.registryId` (e.g. `twit_user_by_username`) and `payload.resource.url` for audit logs.
+
 ### `list_x402_services`
 
 Lists registered x402 services (built-in + `config/x402-services.json`). Returns `serviceId`, `url`, `method`, `argsHint`.

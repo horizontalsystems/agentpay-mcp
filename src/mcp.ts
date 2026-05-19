@@ -1,15 +1,9 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { AgentPay } from '@agentpay/sdk';
+import { AgentPay, fetchPaidService, listX402Services } from '@agentpay/sdk';
 import { z } from 'zod';
 import type { AgentPayConfig } from './config.js';
 import { runConnect } from './connect.js';
-import {
-  buildAdHocX402Request,
-  buildX402Request,
-  fetchWithX402,
-  listX402Services
-} from '@agentpay/sdk';
 
 function textResult(payload: unknown, isError = false) {
   return {
@@ -82,12 +76,13 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     },
     {
       instructions: [
-        'AgentPay is a payment firewall between autonomous agents and paid APIs or on-chain services.',
-        'For any x402 paid API, use fetch_paid_service (402 → wallet EIP-712 sign → paid retry → real JSON).',
-        'Call list_x402_services to see registered service ids, URLs, and args hints.',
-        'Do not use pay_and_call_service for catalog x402 services — it returns demo mock data.',
-        'Use get_spending_status for budget/balance; get_pairing_link to connect the user wallet.',
-        'A paired mobile wallet (WalletConnect) must be active on the backend or paid tools will fail.'
+        'AgentPay is a payment firewall between agents and paid HTTP APIs (x402 protocol).',
+        'For ANY x402-paid API: call list_x402_services, then fetch_paid_service with serviceId + args.',
+        'If the API is not in the registry, use fetch_paid_service with url + method + body (ad-hoc mode).',
+        'Payment flow is automatic: HTTP 402 → wallet signs USDC (x402 V1 or V2 detected from the response) → retry.',
+        'Some services need provider login first (auth in registry, e.g. alchemy_siwe); that is handled automatically.',
+        'Do not use pay_and_call_service for real x402 APIs — it returns demo mock data only.',
+        'Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet.'
       ].join(' ')
     }
   );
@@ -97,8 +92,9 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     {
       title: 'AgentPay: list x402 services',
       description: [
-        'List registered x402 services (built-in + config/x402-services.json).',
-        'Use before fetch_paid_service to pick the correct serviceId and args shape.'
+        'List all registered x402 HTTP services (built-in SDK registry + config/x402-services.json).',
+        'Returns serviceId, url, method, argsHint, and optional auth (e.g. alchemy_siwe for gateway login).',
+        'Always call this before fetch_paid_service when you do not already know the serviceId.'
       ].join(' '),
       inputSchema: z.object({}),
       annotations: {
@@ -109,9 +105,13 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     },
     async () => {
       try {
+        const services = listX402Services();
         return textResult({
-          services: listX402Services(),
-          note: 'Add more services via config/x402-services.json or AGENTPAY_X402_SERVICES_PATH. For ad-hoc URLs use fetch_paid_service with url + method + body/args.'
+          services,
+          count: services.length,
+          howToCall: 'fetch_paid_service({ serviceId, args })',
+          adHoc: 'fetch_paid_service({ url, method, body? }) for APIs not listed here',
+          extend: 'Add entries to config/x402-services.json or set AGENTPAY_X402_SERVICES_PATH'
         });
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
@@ -123,30 +123,35 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
   server.registerTool(
     'fetch_paid_service',
     {
-      title: 'AgentPay: fetch any x402-paid HTTP API',
+      title: 'AgentPay: call any x402-paid HTTP API',
       description: [
-        'Generic x402 flow: HTTP 402 → WalletConnect EIP-712 sign → retry with PAYMENT-SIGNATURE → return API JSON.',
-        'Mode A — registered service: provide serviceId + args (call list_x402_services first).',
-        'Mode B — ad-hoc URL: provide url + method + optional headers/body (uses backend serviceId x402_custom).',
-        'Do not use pay_and_call_service for x402 APIs — it only returns demo mock data.'
+        'Universal x402 client: works with any provider that returns HTTP 402 + payment requirements.',
+        'Detects x402 protocol V1 (X-PAYMENT) or V2 (PAYMENT-SIGNATURE) from the 402 response.',
+        'Registry mode: serviceId + args (from list_x402_services).',
+        'Ad-hoc mode: url + method + optional headers/body for APIs not in the registry.',
+        'WalletConnect on the backend signs EIP-3009 USDC on Base when payment is required.'
       ].join(' '),
       inputSchema: z
         .object({
           serviceId: z
             .string()
             .optional()
-            .describe('Registered x402 service id from list_x402_services'),
+            .describe('Registered service id from list_x402_services'),
           args: z
             .record(z.unknown())
             .optional()
-            .describe('Arguments for the registered service (see argsHint from list_x402_services)'),
-          url: z.string().url().optional().describe('Ad-hoc: full HTTP URL when not using serviceId'),
+            .describe('Arguments for the registered service (see argsHint)'),
+          url: z.string().url().optional().describe('Ad-hoc: full URL when serviceId is not registered'),
           method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD']).optional(),
           headers: z.record(z.string()).optional(),
-          body: z.unknown().optional().describe('Ad-hoc: JSON body (overrides args as body when set)')
+          body: z.unknown().optional().describe('Ad-hoc JSON body'),
+          registryId: z
+            .string()
+            .optional()
+            .describe('Optional audit label for ad-hoc calls (defaults to url)')
         })
-        .refine((v) => Boolean(v.serviceId) || Boolean(v.url), {
-          message: 'Provide either serviceId (registry) or url (ad-hoc x402 endpoint)'
+        .refine((v) => Boolean(v.serviceId?.trim()) || Boolean(v.url), {
+          message: 'Provide serviceId (registry) or url (ad-hoc x402 endpoint)'
         }),
       annotations: {
         readOnlyHint: false,
@@ -156,30 +161,38 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     },
     async (input) => {
       try {
-        const built = input.url
-          ? buildAdHocX402Request({
-              url: input.url,
-              method: input.method,
-              headers: input.headers,
-              body: input.body,
-              args: input.args,
-              serviceId: input.serviceId
-            })
-          : buildX402Request(input.serviceId!, input.args ?? {});
+        const result = await fetchPaidService(
+          {
+            serviceId: input.serviceId?.trim() || undefined,
+            args: input.args,
+            url: input.url,
+            method: input.method,
+            headers: input.headers,
+            body: input.body,
+            registryId: input.registryId
+          },
+          agentPay
+        );
 
-        const result = await fetchWithX402(built, agentPay);
         return textResult({
           success: true,
-          serviceId: built.serviceId,
-          url: built.url,
+          serviceId: input.serviceId ?? input.registryId ?? input.url,
           paid: result.paid,
+          x402Version: result.x402Version,
           status: result.status,
+          paidAmountBaseUnits: result.paidAmountBaseUnits,
           data: result.data
         });
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult(
-          { success: false, serviceId: input.serviceId, url: input.url, error: message },
+          {
+            success: false,
+            serviceId: input.serviceId,
+            url: input.url,
+            error: message,
+            hint: 'Run list_x402_services or check url/method/args. Ensure the wallet is paired on the backend.'
+          },
           true
         );
       }
@@ -189,19 +202,15 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
   server.registerTool(
     'pay_and_call_service',
     {
-      title: 'AgentPay: sign a custom payment (advanced)',
+      title: 'AgentPay: demo signing only (not x402 APIs)',
       description: [
-        'Low-level: ask the wallet to sign via the backend with a custom payload.',
-        'Do not use for x402 catalog services — use fetch_paid_service instead.',
-        'For manual x402 flows, the payload must include action "x402_pay_generic" plus recipient, amount, and asset from the provider 402 response.'
+        'Demo path only — returns mock data, not a real paid API response.',
+        'For any x402 HTTP API use fetch_paid_service instead (registry or ad-hoc url).'
       ].join(' '),
       inputSchema: z.object({
-        serviceId: z
-          .string()
-          .min(1)
-          .describe('Backend catalog id (non-x402 demo only; prefer fetch_paid_service for x402 APIs)'),
-        amountUsd: z.number().positive().describe('Payment amount in USD (used for x402 amount when applicable)'),
-        description: z.string().min(1).describe('Short justification shown in logs and wallet approval context')
+        serviceId: z.string().optional().describe('Ignored for demo; use fetch_paid_service for real APIs'),
+        amountUsd: z.number().positive(),
+        description: z.string().min(1)
       }),
       annotations: {
         readOnlyHint: false,
@@ -212,7 +221,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     async ({ serviceId, amountUsd, description }) => {
       try {
         const amountBaseUnits = String(Math.round(amountUsd * 1_000_000));
-        const result = await agentPay.payAndCall(serviceId, {
+        const result = await agentPay.payAndCall('demo', {
           description,
           amountUsd,
           amount: amountBaseUnits
@@ -224,8 +233,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
               success: false,
               serviceId,
               amountUsd,
-              message:
-                'AgentPay returned no result. Verify backend URL, agent id, WalletConnect session, and service id.'
+              message: 'No result from backend. Check pairing and AGENTPAY_BACKEND_URL.'
             },
             true
           );
@@ -238,20 +246,14 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
               success: false,
               serviceId,
               message:
-                'Backend returned demo mock data, not a real API response. For Exa/Nansen use fetch_paid_service with args.query (or args.chains), not pay_and_call_service.',
+                'Demo mock response — not a real API. Use fetch_paid_service with serviceId or url for x402 APIs.',
               result
             },
             true
           );
         }
 
-        return textResult({
-          success: true,
-          serviceId,
-          amountUsd,
-          description,
-          result
-        });
+        return textResult({ success: true, serviceId, amountUsd, description, result });
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult({ success: false, serviceId, amountUsd, error: message }, true);
@@ -263,11 +265,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     'get_pairing_link',
     {
       title: 'AgentPay: get WalletConnect pairing link',
-      description: [
-        'Use when the user asks to connect or pair their Android wallet.',
-        'Returns a Reown deep link (https://link.reown.com/wc?uri=...) to open in Unstoppable Wallet or any WalletConnect v2 wallet.',
-        'Do not use pay_and_call_service until pairing is complete.'
-      ].join(' '),
+      description: 'Returns a WalletConnect deep link for the user to pair their mobile wallet.',
       inputSchema: z.object({}),
       annotations: {
         readOnlyHint: true,
@@ -290,12 +288,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     'get_spending_status',
     {
       title: 'AgentPay: get spending status',
-      description: [
-        'Read the agent wallet balance and recent payment activity from the AgentPay backend.',
-        'Use when: the user asks how much was spent today, whether the agent can afford a payment, or to verify past approvals/blocks.',
-        'Do not use for: initiating payments (use pay_and_call_service instead).',
-        'Spending limits are enforced on the Android app; this tool reports backend logs and mock balance only.'
-      ].join(' '),
+      description: 'Wallet balance and recent payment activity from the backend.',
       inputSchema: z.object({}),
       annotations: {
         readOnlyHint: true,
@@ -305,8 +298,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     },
     async () => {
       try {
-        const status = await fetchSpendingStatus();
-        return textResult(status);
+        return textResult(await fetchSpendingStatus());
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult({ success: false, error: message }, true);
