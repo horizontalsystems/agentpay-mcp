@@ -23935,6 +23935,39 @@ var init_builtin = __esm({
        * Alchemy agentic gateway — JSON-RPC with SIWE + x402 USDC.
        * URL shape from https://github.com/alchemyplatform/skills (rules/x402/reference.md): /:chainNetwork/v2
        */
+      /**
+       * Messari x402 — https://docs.messari.io/api-reference/x402-payments
+       * Gateway discovery: GET https://api.messari.io/.well-known/x402
+       * (Landing page https://messari.io/x402 — API host is api.messari.io)
+       */
+      messari_signal_assets: {
+        label: "Messari Signal \u2014 assets (x402)",
+        url: "https://api.messari.io/signal/v1/assets?limit=${limit}",
+        method: "GET",
+        headers: { accept: "application/json" },
+        validate: (args) => {
+          const n = Number(args.limit ?? 2);
+          if (!Number.isFinite(n) || n < 1 || n > 100) {
+            return "messari_signal_assets: limit must be 1\u2013100";
+          }
+          return null;
+        },
+        argsHint: '{ "limit": 2 }'
+      },
+      messari_metrics_assets_details: {
+        label: "Messari Metrics \u2014 asset details snapshot (x402)",
+        url: "https://api.messari.io/metrics/v2/assets/details?limit=${limit}",
+        method: "GET",
+        headers: { accept: "application/json" },
+        validate: (args) => {
+          const n = Number(args.limit ?? 2);
+          if (!Number.isFinite(n) || n < 1 || n > 50) {
+            return "messari_metrics_assets_details: limit must be 1\u201350";
+          }
+          return null;
+        },
+        argsHint: '{ "limit": 2 }'
+      },
       alchemy_x402_eth_blockNumber: {
         label: "Alchemy x402 eth_blockNumber (eth-mainnet)",
         auth: { type: "alchemy_siwe" },
@@ -65404,7 +65437,13 @@ var AgentPay = class {
       );
       return response.data;
     } catch (error2) {
-      console.error(`[SDK ERROR] ${error2.response?.data?.error || error2.message}`);
+      const errMsg = error2.response?.data?.error || error2.message;
+      console.error(`[SDK ERROR] ${errMsg}`);
+      if (error2.response?.status === 409 || String(errMsg).includes("no active session")) {
+        throw new Error(
+          "WalletConnect session expired or not paired. User must open a new pairing link on their phone and tap Connect (Unstoppable Wallet). Agent: call get_pairing_link once, send the URL, then retry fetch_paid_service."
+        );
+      }
       return null;
     }
   }
@@ -65498,7 +65537,9 @@ async function startMcpServer(config2) {
         "Payment flow is automatic: HTTP 402 \u2192 wallet signs USDC (x402 V1 or V2 detected from the response) \u2192 retry.",
         "Some services need provider login first (auth in registry, e.g. alchemy_siwe); that is handled automatically.",
         "Do not use pay_and_call_service for real x402 APIs \u2014 it returns demo mock data only.",
-        "Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet."
+        "Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet.",
+        "If fetch_paid_service fails with no payment signature or no active session: call get_pairing_link once, send URL to user, retry \u2014 do not ask many clarifying questions.",
+        'On install/setup: use defaults AGENTPAY_BACKEND_URL=http://206.189.229.113:3000 and agent_123, run init+mcporter without interviewing the user; end with "say pair my wallet when ready".'
       ].join(" ")
     }
   );
@@ -65593,7 +65634,7 @@ async function startMcpServer(config2) {
             serviceId: input.serviceId,
             url: input.url,
             error: message,
-            hint: "Run list_x402_services or check url/method/args. Ensure the wallet is paired on the backend."
+            hint: "If error mentions session expired or no active session: call get_pairing_link, user reconnects Unstoppable Wallet, retry fetch_paid_service. Else: list_x402_services, check args, approve sign on phone."
           },
           true
         );

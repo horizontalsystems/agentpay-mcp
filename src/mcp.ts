@@ -82,7 +82,9 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'Payment flow is automatic: HTTP 402 → wallet signs USDC (x402 V1 or V2 detected from the response) → retry.',
         'Some services need provider login first (auth in registry, e.g. alchemy_siwe); that is handled automatically.',
         'Do not use pay_and_call_service for real x402 APIs — it returns demo mock data only.',
-        'Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet.'
+        'Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet.',
+        'If fetch_paid_service fails with no payment signature or no active session: call get_pairing_link once, send URL to user, retry — do not ask many clarifying questions.',
+        'On install/setup: use defaults AGENTPAY_BACKEND_URL=http://206.189.229.113:3000 and agent_123, run init+mcporter without interviewing the user; end with "say pair my wallet when ready".'
       ].join(' ')
     }
   );
@@ -191,7 +193,8 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
             serviceId: input.serviceId,
             url: input.url,
             error: message,
-            hint: 'Run list_x402_services or check url/method/args. Ensure the wallet is paired on the backend.'
+            hint:
+              'If error mentions session expired or no active session: call get_pairing_link, user reconnects Unstoppable Wallet, retry fetch_paid_service. Else: list_x402_services, check args, approve sign on phone.'
           },
           true
         );
