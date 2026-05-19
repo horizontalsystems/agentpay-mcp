@@ -81,7 +81,6 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'If the API is not in the registry, use fetch_paid_service with url + method + body (ad-hoc mode).',
         'Payment flow is automatic: HTTP 402 → wallet signs USDC (x402 V1 or V2 detected from the response) → retry.',
         'Some services need provider login first (auth in registry, e.g. alchemy_siwe); that is handled automatically.',
-        'Do not use pay_and_call_service for real x402 APIs — it returns demo mock data only.',
         'Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet.',
         'If fetch_paid_service fails with no payment signature or no active session: call get_pairing_link once, send URL to user, retry — do not ask many clarifying questions.',
         'On install/setup: use defaults AGENTPAY_BACKEND_URL=http://206.189.229.113:3000 and agent_123, run init+mcporter without interviewing the user; end with "say pair my wallet when ready".'
@@ -198,68 +197,6 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
           },
           true
         );
-      }
-    }
-  );
-
-  server.registerTool(
-    'pay_and_call_service',
-    {
-      title: 'AgentPay: demo signing only (not x402 APIs)',
-      description: [
-        'Demo path only — returns mock data, not a real paid API response.',
-        'For any x402 HTTP API use fetch_paid_service instead (registry or ad-hoc url).'
-      ].join(' '),
-      inputSchema: z.object({
-        serviceId: z.string().optional().describe('Ignored for demo; use fetch_paid_service for real APIs'),
-        amountUsd: z.number().positive(),
-        description: z.string().min(1)
-      }),
-      annotations: {
-        readOnlyHint: false,
-        destructiveHint: true,
-        openWorldHint: true
-      }
-    },
-    async ({ serviceId, amountUsd, description }) => {
-      try {
-        const amountBaseUnits = String(Math.round(amountUsd * 1_000_000));
-        const result = await agentPay.payAndCall('demo', {
-          description,
-          amountUsd,
-          amount: amountBaseUnits
-        });
-
-        if (result == null) {
-          return textResult(
-            {
-              success: false,
-              serviceId,
-              amountUsd,
-              message: 'No result from backend. Check pairing and AGENTPAY_BACKEND_URL.'
-            },
-            true
-          );
-        }
-
-        const data = (result as { data?: { tokens?: string[] } })?.data;
-        if (data?.tokens?.includes('$AI') && data?.tokens?.includes('$AGENT')) {
-          return textResult(
-            {
-              success: false,
-              serviceId,
-              message:
-                'Demo mock response — not a real API. Use fetch_paid_service with serviceId or url for x402 APIs.',
-              result
-            },
-            true
-          );
-        }
-
-        return textResult({ success: true, serviceId, amountUsd, description, result });
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : String(err);
-        return textResult({ success: false, serviceId, amountUsd, error: message }, true);
       }
     }
   );
