@@ -127,12 +127,12 @@ agentpay init
 
 Fetches a **WalletConnect pairing URI** from your backend and prints:
 
-- A **Reown deep link** (tap to open Unstoppable Wallet or any WC v2 wallet)
+- A raw **`wc:` pairing URI** (open in Unstoppable Wallet — do not wrap in `link.reown.com`)
 - A **terminal QR code** (human terminal only)
 
 ```bash
-agentpay connect              # human: link + QR
-agentpay connect --url-only   # agents: one Reown URL line, then exit (no wait)
+agentpay connect              # human: wc: URI + QR
+agentpay connect --url-only   # agents: one wc: URI line, then exit (no wait)
 ```
 
 Requires the backend to be running and `WC_PROJECT_ID` configured server-side. The CLI **does not block** until the phone approves — agents must send the link and continue.
@@ -227,7 +227,7 @@ The server name exposed over MCP is **`agentpay-firewall`**.
 ### Backend catalog vs client registry
 
 - **Client registry** (`list_x402_services`, `sdk/x402/builtin.ts`, `config/x402-services.json`): where you add Exa, twit.sh, Bazaar APIs — **no backend deploy**.
-- **Backend catalog** (`x402_custom` only): one signing slot. All paid calls use `serviceId: x402_custom` with `payload.registryId` (e.g. `twit_user_by_username`) and `payload.resource.url` for audit logs.
+- **Backend catalog** (`x402_custom` only): one signing slot. All paid calls use `serviceId: x402_custom` with `payload.registryId` (e.g. `twit_user_by_username`, `twit_list_by_id`) and `payload.resource.url` for audit logs.
 
 ### `list_x402_services`
 

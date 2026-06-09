@@ -49,7 +49,7 @@ Backend must be running with `WC_PROJECT_ID` set (server-side) before pairing or
 
 - Config: `~/.agentpay/config.json` (or `$AGENTPAY_CONFIG_DIR/config.json` on OpenClaw)
 - MCP registered in mcporter as `agentpay`
-- Next: say **“pair my wallet”** → you call **`get_pairing_link`** and send the Reown URL
+- Next: say **“pair my wallet”** → you call **`get_pairing_link`** and send the raw `wc:` URI
 
 ## Discover x402 services
 
@@ -63,8 +63,8 @@ Returns registered services (built-in + `config/x402-services.json`). Each entry
 
 When the user asks to connect or pair their wallet, call **`get_pairing_link`** (not shell `connect`).
 
-1. Call `agentpay.get_pairing_link`
-2. Send the `https://link.reown.com/wc?uri=...` URL to the user
+1. Call `agentpay.get_pairing_link` — it returns **two messages**: paste instructions, then the raw `wc:` URI alone
+2. Forward **both** to the user as separate messages so they can copy only the URL (do **not** wrap it in `https://link.reown.com/wc?uri=...`)
 3. Do **not** wait for approval on the phone
 
 ## Calling paid APIs (any x402 service)
@@ -147,7 +147,7 @@ source /home/node/.openclaw/agentpay-mcp/openclaw.env
 ## Agent behavior (important)
 
 - On **any** paid API task: use `fetch_paid_service` directly when you know `serviceId` + `args`. Do **not** interview the user about Exa vs Nansen vs x402 unless they asked.
-- If signing fails with **no active session** / **expired** / **no payment signature**: call **`get_pairing_link` once**, send the Reown URL, tell the user to tap **Connect** in Unstoppable Wallet, then **retry the same** `fetch_paid_service` call. Do not ask five clarifying questions.
+- If signing fails with **no active session** / **expired** / **no payment signature**: call **`get_pairing_link` once**, send the raw `wc:` URI, tell the user to tap **Connect** in Unstoppable Wallet, then **retry the same** `fetch_paid_service` call. Do not ask five clarifying questions.
 - Check wallet: `curl "$AGENTPAY_BACKEND_URL/v1/wc/status"` — need `"active": true` and an `address` before paid calls work.
 
 ## Troubleshooting

@@ -1,13 +1,20 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { AgentPay, fetchPaidService, listX402Services } from '@agentpay/sdk';
+import { AgentPay, explorerTxUrl, fetchPaidService, listX402Services } from '@agentpay/sdk';
 import { z } from 'zod';
 import type { AgentPayConfig } from './config.js';
-import { runConnect } from './connect.js';
+import { fetchPairingUri, PAIRING_INSTRUCTIONS } from './connect.js';
 
 function textResult(payload: unknown, isError = false) {
   return {
     content: [{ type: 'text' as const, text: typeof payload === 'string' ? payload : JSON.stringify(payload, null, 2) }],
+    isError
+  };
+}
+
+function multiTextResult(parts: string[], isError = false) {
+  return {
+    content: parts.map((text) => ({ type: 'text' as const, text })),
     isError
   };
 }
@@ -82,7 +89,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'Payment flow is automatic: HTTP 402 → wallet signs USDC (x402 V1 or V2 detected from the response) → retry.',
         'Some services need provider login first (auth in registry, e.g. alchemy_siwe); that is handled automatically.',
         'Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet.',
-        'If fetch_paid_service fails with no payment signature or no active session: call get_pairing_link once, send URL to user, retry — do not ask many clarifying questions.',
+        'If fetch_paid_service fails with no payment signature or no active session: call get_pairing_link once, forward both messages (instructions then wc: URI) to the user, retry — do not ask many clarifying questions.',
         'On install/setup: use defaults AGENTPAY_BACKEND_URL=http://206.189.229.113:3000 and agent_123, run init+mcporter without interviewing the user; end with "say pair my wallet when ready".'
       ].join(' ')
     }
@@ -175,6 +182,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
           agentPay
         );
 
+        const settlement = result.settlement;
         return textResult({
           success: true,
           serviceId: input.serviceId ?? input.registryId ?? input.url,
@@ -182,6 +190,12 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
           x402Version: result.x402Version,
           status: result.status,
           paidAmountBaseUnits: result.paidAmountBaseUnits,
+          settlement: settlement?.transaction
+            ? {
+                ...settlement,
+                explorerUrl: explorerTxUrl(settlement.transaction, settlement.network)
+              }
+            : settlement,
           data: result.data
         });
       } catch (err: unknown) {
@@ -205,7 +219,8 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     'get_pairing_link',
     {
       title: 'AgentPay: get WalletConnect pairing link',
-      description: 'Returns a WalletConnect deep link for the user to pair their mobile wallet.',
+      description:
+        'Returns two text blocks: (1) paste instructions for Unstoppable Wallet Android, (2) raw wc: URI only — do not wrap in link.reown.com.',
       inputSchema: z.object({}),
       annotations: {
         readOnlyHint: true,
@@ -215,8 +230,8 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     },
     async () => {
       try {
-        const link = await runConnect(config, { urlOnly: true });
-        return textResult(link);
+        const pairingUri = await fetchPairingUri(config);
+        return multiTextResult([PAIRING_INSTRUCTIONS, pairingUri]);
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult(message, true);
