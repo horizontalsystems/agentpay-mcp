@@ -24017,7 +24017,8 @@ __export(registry_exports, {
   getX402Services: () => getX402Services,
   isKnownX402Service: () => isKnownX402Service,
   listX402Services: () => listX402Services,
-  resetX402ServiceCache: () => resetX402ServiceCache
+  resetX402ServiceCache: () => resetX402ServiceCache,
+  resolveX402ServiceId: () => resolveX402ServiceId
 });
 function jsonEntryToService(entry) {
   const svc = {
@@ -24067,8 +24068,12 @@ function getX402Services() {
   cache = merged;
   return merged;
 }
+function resolveX402ServiceId(serviceId) {
+  const trimmed = serviceId.trim();
+  return SERVICE_ALIASES[trimmed] ?? trimmed;
+}
 function getX402Service(serviceId) {
-  return getX402Services()[serviceId];
+  return getX402Services()[resolveX402ServiceId(serviceId)];
 }
 function listX402Services() {
   return Object.entries(getX402Services()).map(([serviceId, svc]) => ({
@@ -24086,7 +24091,7 @@ function isKnownX402Service(serviceId) {
 function resetX402ServiceCache() {
   cache = null;
 }
-var import_fs, import_path3, cache;
+var import_fs, import_path3, cache, SERVICE_ALIASES;
 var init_registry = __esm({
   "../sdk/x402/registry.ts"() {
     "use strict";
@@ -24094,6 +24099,12 @@ var init_registry = __esm({
     import_path3 = __toESM(require("path"));
     init_builtin();
     cache = null;
+    SERVICE_ALIASES = {
+      exasearch: "exa_search",
+      exa: "exa_search",
+      nansen: "nansen_smart_money_holdings",
+      nansen_smart_money: "nansen_smart_money_holdings"
+    };
   }
 });
 
@@ -66185,13 +66196,15 @@ async function executeX402Request(built, agentPay, options) {
 async function fetchX402Service(serviceId, args, agentPay, options) {
   const { buildX402Request: buildX402Request2 } = await Promise.resolve().then(() => (init_buildRequest(), buildRequest_exports));
   const { isKnownX402Service: isKnownX402Service2 } = await Promise.resolve().then(() => (init_registry(), registry_exports));
-  if (!isKnownX402Service2(serviceId)) {
+  const { resolveX402ServiceId: resolveX402ServiceId2 } = await Promise.resolve().then(() => (init_registry(), registry_exports));
+  const resolvedId = resolveX402ServiceId2(serviceId);
+  if (!isKnownX402Service2(resolvedId)) {
     const known = (await Promise.resolve().then(() => (init_registry(), registry_exports))).listX402Services().map((s) => s.serviceId);
     throw new Error(
       `Unknown x402 service "${serviceId}". Known: ${known.join(", ") || "(none)"}. Add config/x402-services.json or call listX402Services().`
     );
   }
-  const built = buildX402Request2(serviceId, args);
+  const built = buildX402Request2(resolvedId, args);
   return executeX402Request(built, agentPay, options);
 }
 async function fetchPaidService(input, agentPay, options) {
@@ -66258,6 +66271,11 @@ var AgentPay = class {
       if (error2.response?.status === 409 || String(errMsg).includes("no active session")) {
         throw new Error(
           "WalletConnect session expired or not paired. User must open a new pairing link on their phone and tap Connect (Unstoppable Wallet). Agent: call get_pairing_link once, send the URL, then retry fetch_paid_service."
+        );
+      }
+      if (String(errMsg).includes("Invalid agent or service")) {
+        throw new Error(
+          "Backend rejected pay-and-call: use AgentPay MCP tool fetch_paid_service (not direct /v1/pay-and-call). Backend only accepts serviceId x402_custom for signing; Exa/Nansen/etc. are registry ids passed to fetch_paid_service."
         );
       }
       return null;
@@ -66361,14 +66379,16 @@ async function startMcpServer(config2) {
     },
     {
       instructions: [
-        "AgentPay is a payment firewall between agents and paid HTTP APIs (x402 protocol).",
-        "For ANY x402-paid API: call list_x402_services, then fetch_paid_service with serviceId + args.",
-        "If the API is not in the registry, use fetch_paid_service with url + method + body (ad-hoc mode).",
-        "Payment flow is automatic: HTTP 402 \u2192 wallet signs USDC (x402 V1 or V2 detected from the response) \u2192 retry.",
-        "Some services need provider login first (auth in registry, e.g. alchemy_siwe); that is handled automatically.",
-        "Use get_spending_status for budget/activity; get_pairing_link to connect the mobile wallet.",
-        "If fetch_paid_service fails with no payment signature or no active session: call get_pairing_link once, forward both messages (instructions then wc: URI) to the user, retry \u2014 do not ask many clarifying questions.",
-        'On install/setup: use defaults AGENTPAY_BACKEND_URL=http://206.189.229.113:3000 and agent_123, run init+mcporter without interviewing the user; end with "say pair my wallet when ready".'
+        "AgentPay IS the x402 payment client for this agent. All paid HTTP APIs (Exa, Nansen, twit.sh, etc.) go through fetch_paid_service.",
+        "NEVER ask for AGENT_PRIVATE_KEY, hot wallet private key, or ETH signing keys \u2014 payments are signed on the user Android wallet via WalletConnect.",
+        "NEVER use generic x402 tools (x402_session_start, x402_session_fetch, x402_pay, x402_pay_and_call) \u2014 they are not AgentPay. Use list_x402_services and fetch_paid_service only.",
+        'Exa search: fetch_paid_service({ serviceId: "exa_search", args: { query: "...", numResults: 3 } }). Aliases: exasearch, exa.',
+        'Nansen: fetch_paid_service({ serviceId: "nansen_smart_money_holdings", args: { chains: ["ethereum"] } }).',
+        "Payment flow: HTTP 402 \u2192 backend asks phone to sign USDC \u2192 paid retry. No API keys or private keys on the agent.",
+        "Use get_spending_status for budget/activity; get_pairing_link to pair the mobile wallet (raw wc: URI, two messages).",
+        'If "Invalid agent or service": you called pay-and-call wrong \u2014 use fetch_paid_service, not direct backend calls with nansen/exa as serviceId.',
+        "If no active session: get_pairing_link once, forward both messages, retry fetch_paid_service.",
+        "Defaults: AGENTPAY_BACKEND_URL=http://206.189.229.113:3000, agentId agent_123."
       ].join(" ")
     }
   );
@@ -66396,7 +66416,9 @@ async function startMcpServer(config2) {
           count: services.length,
           howToCall: "fetch_paid_service({ serviceId, args })",
           adHoc: "fetch_paid_service({ url, method, body? }) for APIs not listed here",
-          extend: "Add entries to config/x402-services.json or set AGENTPAY_X402_SERVICES_PATH"
+          extend: "Add entries to config/x402-services.json or set AGENTPAY_X402_SERVICES_PATH",
+          important: "AgentPay handles full x402 (402 \u2192 WalletConnect USDC sign \u2192 retry). Do NOT use AGENT_PRIVATE_KEY or x402_session_* tools.",
+          exaExample: 'fetch_paid_service({ serviceId: "exa_search", args: { query: "smart money tokens Base", numResults: 5 } })'
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
@@ -66409,11 +66431,11 @@ async function startMcpServer(config2) {
     {
       title: "AgentPay: call any x402-paid HTTP API",
       description: [
-        "Universal x402 client: works with any provider that returns HTTP 402 + payment requirements.",
-        "Detects x402 protocol V1 (X-PAYMENT) or V2 (PAYMENT-SIGNATURE) from the 402 response.",
-        "Registry mode: serviceId + args (from list_x402_services).",
-        "Ad-hoc mode: url + method + optional headers/body for APIs not in the registry.",
-        "WalletConnect on the backend signs EIP-3009 USDC on Base when payment is required."
+        "THE x402 client for this agent \u2014 use this for ALL paid APIs (Exa, Nansen, etc.).",
+        "Do NOT use AGENT_PRIVATE_KEY, hot wallet keys, or x402_session_start/x402_pay tools.",
+        "Registry: serviceId + args (e.g. exa_search, nansen_smart_money_holdings). Aliases: exasearch, exa, nansen.",
+        "Ad-hoc: url + method + body for APIs not in list_x402_services.",
+        "Full flow: HTTP 402 \u2192 WalletConnect signs USDC on user phone \u2192 paid retry. No keys on agent machine."
       ].join(" "),
       inputSchema: external_exports.object({
         serviceId: external_exports.string().optional().describe("Registered service id from list_x402_services"),
@@ -66468,7 +66490,7 @@ async function startMcpServer(config2) {
             serviceId: input.serviceId,
             url: input.url,
             error: message,
-            hint: "If error mentions session expired or no active session: call get_pairing_link, user reconnects Unstoppable Wallet, retry fetch_paid_service. Else: list_x402_services, check args, approve sign on phone."
+            hint: 'If "Invalid agent or service": use fetch_paid_service (not direct /v1/pay-and-call with nansen/exa as serviceId). If session expired: get_pairing_link, re-pair, retry. Never use AGENT_PRIVATE_KEY \u2014 AgentPay signs via WalletConnect on Android.'
           },
           true
         );

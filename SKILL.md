@@ -1,14 +1,38 @@
 ---
 name: agentpay
 description: >-
-  AgentPay payment firewall: pair Android wallet, call paid x402 APIs via MCP.
-  Use for AgentPay install/setup, connect/pair wallet, fetch_paid_service, spending.
-  On setup: run commands with defaults — do not interview the user.
+  AgentPay x402 payment client: fetch_paid_service for Exa/Nansen/paid APIs via WalletConnect on Android.
+  NEVER use AGENT_PRIVATE_KEY or x402_session_* tools. Pair wallet with get_pairing_link.
 ---
 
 # AgentPay
 
 AgentPay lets the agent request paid actions that are approved on the user's Android wallet. Keys never leave the phone.
+
+## x402 — read this before any paid API call
+
+**AgentPay MCP is the x402 client.** It runs the full protocol: HTTP 402 → WalletConnect sign on Android → paid retry.
+
+| Do | Don't |
+|----|-------|
+| `fetch_paid_service` with `serviceId` + `args` | `AGENT_PRIVATE_KEY` / hot wallet private key |
+| `list_x402_services` to discover APIs | `x402_session_start`, `x402_session_fetch`, `x402_pay` |
+| `get_pairing_link` when WC session is dead | Direct `POST /v1/pay-and-call` with `serviceId=nansen_*` or `exa_*` |
+| mcporter: `agentpay.fetch_paid_service` | DuckDuckGo/web fallback when Exa x402 is available |
+
+**Exa search (x402, ~$0.05/query):**
+
+```bash
+mcporter call agentpay.fetch_paid_service \
+  serviceId=exa_search \
+  args='{"query":"smart money new tokens Base last 24h","numResults":5}'
+```
+
+Aliases: `exasearch`, `exa` → same as `exa_search`.
+
+**OpenClaw:** ensure mcporter has `agentpay` registered (`mcporter call agentpay.list_x402_services`). Wallet must show `"active": true` at `$AGENTPAY_BACKEND_URL/v1/wc/status` before paid calls.
+
+**"Invalid agent or service"** means something called the backend with the wrong `serviceId` (e.g. `nansen_smart_money_holdings` on `/v1/pay-and-call`). Fix: use **`fetch_paid_service`** — the SDK sends `x402_custom` for signing automatically.
 
 ## First-time setup — agent rules (read first)
 
@@ -147,6 +171,8 @@ source /home/node/.openclaw/agentpay-mcp/openclaw.env
 ## Agent behavior (important)
 
 - On **any** paid API task: use `fetch_paid_service` directly when you know `serviceId` + `args`. Do **not** interview the user about Exa vs Nansen vs x402 unless they asked.
+- **Never** tell the user to set `AGENT_PRIVATE_KEY` — AgentPay does not use agent-held private keys.
+- **Never** substitute DuckDuckGo/web search when `exa_search` is available and wallet is paired — call `fetch_paid_service` and report the real error if it fails.
 - If signing fails with **no active session** / **expired** / **no payment signature**: call **`get_pairing_link` once**, send the raw `wc:` URI, tell the user to tap **Connect** in Unstoppable Wallet, then **retry the same** `fetch_paid_service` call. Do not ask five clarifying questions.
 - Check wallet: `curl "$AGENTPAY_BACKEND_URL/v1/wc/status"` — need `"active": true` and an `address` before paid calls work.
 
