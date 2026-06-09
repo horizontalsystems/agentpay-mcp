@@ -101,10 +101,12 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'Exa search: fetch_paid_service({ serviceId: "exa_search", args: { query: "...", numResults: 3 } }). Aliases: exasearch, exa.',
         'Nansen: fetch_paid_service({ serviceId: "nansen_smart_money_holdings", args: { chains: ["ethereum"] } }).',
         'Payment flow: HTTP 402 → backend asks phone to sign USDC → paid retry. No API keys or private keys on the agent.',
-        'Use get_spending_status for budget/activity; get_pairing_link to pair the mobile wallet (raw wc: URI, two messages).',
+        'SPENDS REAL MONEY: each fetch_paid_service call transfers real USDC on Base and prompts the user to approve on their phone. Tell the user the cost and report paidAmountBaseUnits + the settlement tx after each paid call.',
+        'Use get_spending_status for budget/activity; get_pairing_link to pair the mobile wallet (raw wc: URI, two messages). Pair with the funded account — the account that signs on the phone must match the paired session.',
         'If "Invalid agent or service": you called pay-and-call wrong — use fetch_paid_service, not direct backend calls with nansen/exa as serviceId.',
+        'If "payment verification failed" / "simulation failed": the phone approval likely timed out, or the phone signed with a different account than the paired one — retry and approve promptly, or re-pair with get_pairing_link using the correct account.',
         'If no active session: get_pairing_link once, forward both messages, retry fetch_paid_service.',
-        'Defaults: AGENTPAY_BACKEND_URL=http://206.189.229.113:3000, agentId agent_123.',
+        'Backend URL and agentId are configured via AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID (use the deployment values your operator set; do not hardcode a dev server).',
         'OpenClaw: register with openclaw mcp add (scripts/openclaw-register-mcp.sh). Never gateway config.patch on mcp.servers.'
       ].join(' ')
     }
@@ -152,6 +154,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
       title: 'AgentPay: call any x402-paid HTTP API',
       description: [
         'THE x402 client for this agent — use this for ALL paid APIs (Exa, Nansen, etc.).',
+        'SPENDS REAL USDC on Base and prompts the user to approve the payment on their phone. Surface the expected cost to the user, and after the call report paidAmountBaseUnits and the settlement tx hash.',
         'Do NOT use AGENT_PRIVATE_KEY, hot wallet keys, or x402_session_start/x402_pay tools.',
         'Registry: serviceId + args (e.g. exa_search, nansen_smart_money_holdings). Aliases: exasearch, exa, nansen.',
         'Ad-hoc: url + method + body for APIs not in list_x402_services.',
@@ -243,6 +246,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
             error: message,
             hint:
               'If "Invalid agent or service": use fetch_paid_service (not direct /v1/pay-and-call with nansen/exa as serviceId). ' +
+              'If "payment verification failed" / "simulation failed" / "signer mismatch": the phone approval likely timed out or signed with a different account than the paired session — retry and approve promptly, or re-pair via get_pairing_link with the funded account. ' +
               'If session expired: get_pairing_link, re-pair, retry. Never use AGENT_PRIVATE_KEY — AgentPay signs via WalletConnect on Android.'
           },
           true
@@ -256,10 +260,11 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     {
       title: 'AgentPay: get WalletConnect pairing link',
       description:
-        'Returns two text blocks: (1) paste instructions for Unstoppable Wallet Android, (2) raw wc: URI only — do not wrap in link.reown.com.',
+        'Creates a new WalletConnect pairing proposal and returns two text blocks: (1) paste instructions for Unstoppable Wallet Android, (2) raw wc: URI only — do not wrap in link.reown.com. ' +
+        'The user must pair/approve with their FUNDED account: the account that signs on the phone must match the paired session, or payments will be rejected by the facilitator.',
       inputSchema: z.object({}),
       annotations: {
-        readOnlyHint: true,
+        readOnlyHint: false,
         destructiveHint: false,
         openWorldHint: true
       }
