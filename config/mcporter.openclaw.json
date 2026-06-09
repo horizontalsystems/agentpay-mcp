@@ -6,7 +6,9 @@
       "command": "node",
       "args": ["__AGENTPAY_MCP_ROOT__/build/index.js", "start"],
       "env": {
-        "AGENTPAY_BACKEND_URL": "__AGENTPAY_BACKEND_URL__"
+        "AGENTPAY_BACKEND_URL": "__AGENTPAY_BACKEND_URL__",
+        "AGENTPAY_AGENT_ID": "__AGENTPAY_AGENT_ID__",
+        "AGENTPAY_CONFIG_DIR": "__AGENTPAY_CONFIG_DIR__"
       }
     }
   }

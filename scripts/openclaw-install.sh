@@ -15,12 +15,14 @@ MCPORTER_PREFIX="${MCPORTER_PREFIX:-$OPENCLAW_HOME/tools/mcporter}"
 AGENTPAY_BACKEND_URL="${AGENTPAY_BACKEND_URL:-http://206.189.229.113:3000}"
 AGENTPAY_AGENT_ID="${AGENTPAY_AGENT_ID:-agent_123}"
 AGENTPAY_API_KEY="${AGENTPAY_API_KEY:-}"
+AGENTPAY_CONFIG_DIR="${AGENTPAY_CONFIG_DIR:-$OPENCLAW_HOME/agentpay}"
 
 echo "[openclaw-install] OPENCLAW_HOME=$OPENCLAW_HOME"
 echo "[openclaw-install] AGENTPAY_MCP_ROOT=$AGENTPAY_MCP_ROOT"
 echo "[openclaw-install] MCPORTER_CONFIG=$MCPORTER_CONFIG"
 
-mkdir -p "$(dirname "$MCPORTER_CONFIG")" "$MCPORTER_PREFIX" "$OPENCLAW_HOME"
+mkdir -p "$(dirname "$MCPORTER_CONFIG")" "$MCPORTER_PREFIX" "$OPENCLAW_HOME" "$AGENTPAY_CONFIG_DIR"
+export AGENTPAY_CONFIG_DIR AGENTPAY_BACKEND_URL AGENTPAY_AGENT_ID AGENTPAY_API_KEY
 
 MCP_ROOT_ABS="$(cd "$MCP_ROOT" && pwd)"
 mkdir -p "$AGENTPAY_MCP_ROOT"
@@ -46,8 +48,7 @@ fi
 echo "[openclaw-install] Installing mcporter to $MCPORTER_PREFIX"
 npm install --prefix "$MCPORTER_PREFIX" mcporter@latest
 
-# AgentPay CLI config (~/.agentpay/config.json — on persistent $HOME)
-export AGENTPAY_BACKEND_URL AGENTPAY_AGENT_ID AGENTPAY_API_KEY
+# AgentPay CLI config ($AGENTPAY_CONFIG_DIR/config.json — persistent volume)
 node "$AGENTPAY_MCP_ROOT/build/index.js" init \
   --backend-url "$AGENTPAY_BACKEND_URL" \
   --agent-id "$AGENTPAY_AGENT_ID" \
@@ -63,6 +64,8 @@ mkdir -p "$(dirname "$MCPORTER_CONFIG")"
 sed \
   -e "s|__AGENTPAY_MCP_ROOT__|$AGENTPAY_MCP_ROOT|g" \
   -e "s|__AGENTPAY_BACKEND_URL__|$AGENTPAY_BACKEND_URL|g" \
+  -e "s|__AGENTPAY_AGENT_ID__|$AGENTPAY_AGENT_ID|g" \
+  -e "s|__AGENTPAY_CONFIG_DIR__|$AGENTPAY_CONFIG_DIR|g" \
   "$TEMPLATE" > "$MCPORTER_CONFIG"
 
 ENV_FILE="$AGENTPAY_MCP_ROOT/openclaw.env"
@@ -74,15 +77,27 @@ export MCPORTER_CONFIG="$MCPORTER_CONFIG"
 export MCPORTER_PREFIX="$MCPORTER_PREFIX"
 export AGENTPAY_BACKEND_URL="$AGENTPAY_BACKEND_URL"
 export AGENTPAY_AGENT_ID="$AGENTPAY_AGENT_ID"
+export AGENTPAY_CONFIG_DIR="$AGENTPAY_CONFIG_DIR"
 export PATH="\$MCPORTER_PREFIX/node_modules/.bin:\$PATH"
 EOF
 
+REGISTER_SCRIPT="$AGENTPAY_MCP_ROOT/scripts/openclaw-register-mcp.sh"
+chmod +x "$REGISTER_SCRIPT" 2>/dev/null || true
+
 echo ""
 echo "[openclaw-install] Done."
-echo "  AgentPay config:  \$(node -e \"console.log(require('os').homedir()+'/.agentpay/config.json')\")"
+echo "  AgentPay config:  $AGENTPAY_CONFIG_DIR/config.json"
 echo "  mcporter config:  $MCPORTER_CONFIG"
 echo "  mcporter binary:  $MCPORTER_PREFIX/node_modules/.bin/mcporter"
 echo "  Env bootstrap:    source $ENV_FILE"
 echo ""
-echo "Add to OpenClaw workspace (persistent): $OPENCLAW_HOME/workspace"
+echo "Register native OpenClaw MCP (required — agents cannot config.patch mcp.servers):"
+echo "  source $ENV_FILE"
+echo "  $REGISTER_SCRIPT"
+echo ""
+echo "Verify:"
+echo "  openclaw mcp list"
+echo "  openclaw mcp probe agentpay"
+echo "  mcporter --config \"$MCPORTER_CONFIG\" call agentpay.list_x402_services"
+echo ""
 echo "Install skill from: $AGENTPAY_MCP_ROOT/SKILL.md"

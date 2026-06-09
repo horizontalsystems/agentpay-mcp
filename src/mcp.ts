@@ -92,7 +92,8 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'Use get_spending_status for budget/activity; get_pairing_link to pair the mobile wallet (raw wc: URI, two messages).',
         'If "Invalid agent or service": you called pay-and-call wrong — use fetch_paid_service, not direct backend calls with nansen/exa as serviceId.',
         'If no active session: get_pairing_link once, forward both messages, retry fetch_paid_service.',
-        'Defaults: AGENTPAY_BACKEND_URL=http://206.189.229.113:3000, agentId agent_123.'
+        'Defaults: AGENTPAY_BACKEND_URL=http://206.189.229.113:3000, agentId agent_123.',
+        'OpenClaw: register with openclaw mcp add (scripts/openclaw-register-mcp.sh). Never gateway config.patch on mcp.servers.'
       ].join(' ')
     }
   );
