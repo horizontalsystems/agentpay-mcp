@@ -66273,9 +66273,9 @@ var AgentPay = class {
           "WalletConnect session expired or not paired. User must open a new pairing link on their phone and tap Connect (Unstoppable Wallet). Agent: call get_pairing_link once, send the URL, then retry fetch_paid_service."
         );
       }
-      if (String(errMsg).includes("Invalid agent or service")) {
+      if (String(errMsg).includes("Invalid agent or service") || String(errMsg).includes("Unknown catalog service") || String(errMsg).includes("Unknown agent")) {
         throw new Error(
-          "Backend rejected pay-and-call: use AgentPay MCP tool fetch_paid_service (not direct /v1/pay-and-call). Backend only accepts serviceId x402_custom for signing; Exa/Nansen/etc. are registry ids passed to fetch_paid_service."
+          `${errMsg}. Use AgentPay MCP fetch_paid_service (not direct /v1/pay-and-call with exa_search or nansen_* as serviceId). Signing uses catalog id x402_custom automatically. This is NOT a WalletConnect session error unless the message says "no active session".`
         );
       }
       return null;
@@ -66292,7 +66292,10 @@ var PAIRING_INSTRUCTIONS = [
   "3. Copy the connection URL from the next message and paste it into the app.",
   "4. Tap Connect and approve the AgentPay session.",
   "",
-  "Send the next message to the user as a separate block so they can copy only the URL."
+  "IMPORTANT: send the next message exactly as-is (starts with wc:).",
+  "NEVER wrap it in https://link.reown.com/wc?uri=... \u2014 Unstoppable Wallet will fail.",
+  "",
+  "Send the wc: URI to the user as a separate message so they can copy only the URL."
 ].join("\n");
 async function fetchPairingUri(config2) {
   const base = config2.backendUrl.replace(/\/$/, "");
@@ -66357,9 +66360,18 @@ async function startMcpServer(config2) {
     const logs = data.logs ?? [];
     const spentTodayUsd = logs.filter((row) => row.status === "APPROVED" && new Date(row.time).toDateString() === today).reduce((sum, row) => sum + (row.cost ?? 0), 0);
     const recent = logs.slice(-10).reverse();
+    let walletConnect = null;
+    try {
+      walletConnect = await agentPay.getWalletConnectStatus();
+    } catch {
+      walletConnect = null;
+    }
     return {
       agentId: config2.agentId,
       backendUrl: config2.backendUrl,
+      configPath: getConfigPath(),
+      walletConnect,
+      readyForPaidCalls: Boolean(walletConnect?.active && walletConnect?.address),
       walletBalanceUsd: data.wallet?.balance ?? null,
       spentTodayUsd,
       note: "Daily spending limits are enforced in the Android app; this summary is from backend activity logs.",
@@ -66457,6 +66469,21 @@ async function startMcpServer(config2) {
     },
     async (input) => {
       try {
+        const wc = await agentPay.getWalletConnectStatus();
+        if (!wc.active || !wc.address) {
+          return textResult(
+            {
+              success: false,
+              error: "WalletConnect session not active on backend",
+              walletConnect: wc,
+              action: "Call get_pairing_link, forward BOTH messages to the user (instructions + raw wc: URI only). Never use link.reown.com. Then retry fetch_paid_service.",
+              configPath: getConfigPath(),
+              agentId: config2.agentId,
+              backendUrl: config2.backendUrl
+            },
+            true
+          );
+        }
         const result = await fetchPaidService(
           {
             serviceId: input.serviceId?.trim() || void 0,
@@ -69297,7 +69324,7 @@ program2.command("init").description("Write ~/.agentpay/config.json from env (no
     process.exit(1);
   }
 });
-program2.command("connect").description("Pair your Android wallet via WalletConnect (QR code + deep link)").option("--url-only", "Print only the Reown deep link and exit (for agents; do not wait)").action(async (opts) => {
+program2.command("connect").description("Pair your Android wallet via WalletConnect (QR code + deep link)").option("--url-only", "Print only the raw wc: pairing URI and exit (for agents; do not wait)").action(async (opts) => {
   const config2 = loadConfig();
   if (!config2) {
     console.error("AgentPay is not configured. Run: agentpay setup or agentpay init");

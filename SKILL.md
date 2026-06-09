@@ -215,6 +215,8 @@ source /home/node/.openclaw/agentpay-mcp/openclaw.env
 
 | Issue | Fix |
 |-------|-----|
+| `Invalid agent or service` | **Not** always a session issue — usually wrong API path. Use `fetch_paid_service`, not direct `pay-and-call` with `exa_search` / `nansen_*` as serviceId. Run `get_spending_status` to see `readyForPaidCalls`. |
+| `WalletConnect session not active` | Call `get_pairing_link`; send **raw `wc:`** URI only (never `link.reown.com`) |
 | Worked yesterday, fails today (Nansen/Exa) | WalletConnect session dropped — **re-pair** via `get_pairing_link` |
 | `No payment signature from backend` | Usually dead WC session or user rejected sign on phone — re-pair or approve prompt |
 | Mock `$AI` / `$AGENT` result | Use `fetch_paid_service`, not `pay_and_call_service` |

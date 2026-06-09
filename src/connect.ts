@@ -8,7 +8,10 @@ export const PAIRING_INSTRUCTIONS = [
   '3. Copy the connection URL from the next message and paste it into the app.',
   '4. Tap Connect and approve the AgentPay session.',
   '',
-  'Send the next message to the user as a separate block so they can copy only the URL.'
+  'IMPORTANT: send the next message exactly as-is (starts with wc:).',
+  'NEVER wrap it in https://link.reown.com/wc?uri=... — Unstoppable Wallet will fail.',
+  '',
+  'Send the wc: URI to the user as a separate message so they can copy only the URL.'
 ].join('\n');
 
 export async function fetchPairingUri(config: AgentPayConfig): Promise<string> {

@@ -42,7 +42,7 @@ program
 program
   .command('connect')
   .description('Pair your Android wallet via WalletConnect (QR code + deep link)')
-  .option('--url-only', 'Print only the Reown deep link and exit (for agents; do not wait)')
+  .option('--url-only', 'Print only the raw wc: pairing URI and exit (for agents; do not wait)')
   .action(async (opts: { urlOnly?: boolean }) => {
     const config = loadConfig();
     if (!config) {

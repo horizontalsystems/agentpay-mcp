@@ -3,6 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { AgentPay, explorerTxUrl, fetchPaidService, listX402Services } from '@agentpay/sdk';
 import { z } from 'zod';
 import type { AgentPayConfig } from './config.js';
+import { getConfigPath } from './config.js';
 import { fetchPairingUri, PAIRING_INSTRUCTIONS } from './connect.js';
 
 function textResult(payload: unknown, isError = false) {
@@ -60,9 +61,20 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
 
     const recent = logs.slice(-10).reverse();
 
+    let walletConnect: { active: boolean; address: string | null; topic: string | null } | null =
+      null;
+    try {
+      walletConnect = await agentPay.getWalletConnectStatus();
+    } catch {
+      walletConnect = null;
+    }
+
     return {
       agentId: config.agentId,
       backendUrl: config.backendUrl,
+      configPath: getConfigPath(),
+      walletConnect,
+      readyForPaidCalls: Boolean(walletConnect?.active && walletConnect?.address),
       walletBalanceUsd: data.wallet?.balance ?? null,
       spentTodayUsd,
       note: 'Daily spending limits are enforced in the Android app; this summary is from backend activity logs.',
@@ -175,6 +187,23 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     },
     async (input) => {
       try {
+        const wc = await agentPay.getWalletConnectStatus();
+        if (!wc.active || !wc.address) {
+          return textResult(
+            {
+              success: false,
+              error: 'WalletConnect session not active on backend',
+              walletConnect: wc,
+              action:
+                'Call get_pairing_link, forward BOTH messages to the user (instructions + raw wc: URI only). Never use link.reown.com. Then retry fetch_paid_service.',
+              configPath: getConfigPath(),
+              agentId: config.agentId,
+              backendUrl: config.backendUrl
+            },
+            true
+          );
+        }
+
         const result = await fetchPaidService(
           {
             serviceId: input.serviceId?.trim() || undefined,
