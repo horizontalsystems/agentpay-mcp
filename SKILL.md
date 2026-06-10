@@ -218,7 +218,8 @@ source /home/node/.openclaw/agentpay-mcp/openclaw.env
 | `Invalid agent or service` | **Not** always a session issue — usually wrong API path. Use `fetch_paid_service`, not direct `pay-and-call` with `exa_search` / `nansen_*` as serviceId. Run `get_spending_status` to see `readyForPaidCalls`. |
 | `WalletConnect session not active` | Call `get_pairing_link`; send **raw `wc:`** URI only (never `link.reown.com`) |
 | Worked yesterday, fails today (Nansen/Exa) | WalletConnect session dropped — **re-pair** via `get_pairing_link` |
-| `No payment signature from backend` | Usually dead WC session or user rejected sign on phone — re-pair or approve prompt |
+| `Payment rejected on phone` / `PAYMENT_REJECTED` | User declined USDC prompt — tell them, retry same call; session still valid |
+| `No payment signature from backend` | Often user rejection (older SDK) or timeout — ask if they declined before re-pairing |
 | Mock `$AI` / `$AGENT` result | Use `fetch_paid_service`, not `pay_and_call_service` |
 | Unknown serviceId | Run `list_x402_services` or add `config/x402-services.json` |
 | Config lost after Docker restart | Set `AGENTPAY_CONFIG_DIR` to a mounted path |

@@ -65718,6 +65718,19 @@ var {
   create
 } = axios_default;
 
+// ../sdk/errors.ts
+var AgentPayError = class extends Error {
+  code;
+  constructor(message, code) {
+    super(message);
+    this.name = "AgentPayError";
+    this.code = code;
+  }
+};
+var PAYMENT_REJECTED_MESSAGE = "Payment rejected on phone. The user declined the USDC approval in Unstoppable Wallet. Session is still paired \u2014 retry fetch_paid_service and tap Approve.";
+var WC_SESSION_DEAD_MESSAGE = "WalletConnect session dead on relay (no response from phone). Call get_pairing_link, reconnect Unstoppable Wallet, then retry fetch_paid_service.";
+var NO_ACTIVE_SESSION_MESSAGE = "WalletConnect session not active on backend. Call get_pairing_link, send the raw wc: URI, user taps Connect, then retry fetch_paid_service.";
+
 // ../sdk/x402/constants.ts
 var X402_SIGNING_SERVICE_ID = "x402_custom";
 
@@ -66121,23 +66134,32 @@ async function payFrom402(url2, init, label, registryId, agentPay, decoded, sess
     (process.env.AGENTPAY_X402_OMIT_EXTENSIONS || "").trim().toLowerCase()
   );
   const extensions = omitExtensions && x402Version === 2 ? {} : decoded.extensions ?? {};
-  const paymentResult = await agentPay.payAndCall(X402_SIGNING_SERVICE_ID, {
-    action: "x402_pay_generic",
-    registryId,
-    x402Version,
-    accepted: accept,
-    recipient: payTo,
-    amount,
-    asset,
-    chainId: networkToChainIdString(accept.network),
-    assetName: accept.extra?.name ?? null,
-    assetVersion: accept.extra?.version ?? null,
-    resource: decoded.resource ?? { url: url2, mimeType: "application/json" },
-    extensions
-  });
-  const paymentSignature = typeof paymentResult?.signature === "string" ? paymentResult.signature.trim() : "";
+  let paymentResult;
+  try {
+    paymentResult = await agentPay.payAndCall(X402_SIGNING_SERVICE_ID, {
+      action: "x402_pay_generic",
+      registryId,
+      x402Version,
+      accepted: accept,
+      recipient: payTo,
+      amount,
+      asset,
+      chainId: networkToChainIdString(accept.network),
+      assetName: accept.extra?.name ?? null,
+      assetVersion: accept.extra?.version ?? null,
+      resource: decoded.resource ?? { url: url2, mimeType: "application/json" },
+      extensions
+    });
+  } catch (err) {
+    if (err instanceof AgentPayError) throw err;
+    throw err;
+  }
+  const paymentSignature = String(paymentResult.signature ?? "").trim();
   if (!paymentSignature) {
-    throw new Error(`x402: No payment signature from backend for ${label}`);
+    throw new AgentPayError(
+      `x402: No payment signature from backend for ${label}`,
+      "NO_PAYMENT_SIGNATURE"
+    );
   }
   logSignedPaymentPayload(label, paymentSignature);
   const retryHeaders = new Headers(init.headers);
@@ -66233,6 +66255,36 @@ init_registry();
 init_buildRequest();
 
 // ../sdk/index.ts
+function mapBackendCode(code) {
+  const c = String(code ?? "").toUpperCase();
+  if (c === "PAYMENT_REJECTED") return "PAYMENT_REJECTED";
+  if (c === "NO_ACTIVE_SESSION") return "NO_ACTIVE_SESSION";
+  if (c === "WC_SESSION_DEAD") return "WC_SESSION_DEAD";
+  if (c === "SIGNING_FAILED") return "SIGNING_FAILED";
+  return "UNKNOWN";
+}
+function messageForCode(code, fallback) {
+  switch (code) {
+    case "PAYMENT_REJECTED":
+      return PAYMENT_REJECTED_MESSAGE;
+    case "NO_ACTIVE_SESSION":
+      return NO_ACTIVE_SESSION_MESSAGE;
+    case "WC_SESSION_DEAD":
+      return WC_SESSION_DEAD_MESSAGE;
+    default:
+      return fallback;
+  }
+}
+function inferCodeFromMessage(errMsg, status) {
+  const m = errMsg.toLowerCase();
+  if (status === 402 || m.includes("payment rejected")) return "PAYMENT_REJECTED";
+  if (m.includes("session dead on relay")) return "WC_SESSION_DEAD";
+  if (status === 409 || m.includes("no active session")) return "NO_ACTIVE_SESSION";
+  if (m.includes("invalid agent") || m.includes("unknown catalog") || m.includes("unknown agent")) {
+    return "CATALOG_MISMATCH";
+  }
+  return "UNKNOWN";
+}
 function resolveBaseUrl(options) {
   const raw = options?.baseUrl ?? process.env.AGENTPAY_API_BASE_URL ?? process.env.AGENTPAY_BACKEND_URL ?? "http://localhost:3000";
   const trimmed = raw.replace(/\/$/, "");
@@ -66264,21 +66316,34 @@ var AgentPay = class {
         },
         { headers }
       );
+      const data = response.data;
+      if (!data?.signature || typeof data.signature !== "string" || !data.signature.trim()) {
+        throw new AgentPayError(
+          "Backend returned no payment signature",
+          "NO_PAYMENT_SIGNATURE"
+        );
+      }
       return response.data;
     } catch (error2) {
-      const errMsg = error2.response?.data?.error || error2.message;
-      console.error(`[SDK ERROR] ${errMsg}`);
-      if (error2.response?.status === 409 || String(errMsg).includes("no active session")) {
-        throw new Error(
-          "WalletConnect session expired or not paired. User must open a new pairing link on their phone and tap Connect (Unstoppable Wallet). Agent: call get_pairing_link once, send the URL, then retry fetch_paid_service."
+      if (error2 instanceof AgentPayError) throw error2;
+      const body = error2.response?.data;
+      const errMsg = body?.error || error2.message;
+      const status = error2.response?.status;
+      const backendCode = body?.code ? mapBackendCode(body.code) : inferCodeFromMessage(String(errMsg), status);
+      console.error(`[SDK ERROR] code=${backendCode} ${errMsg}`);
+      if (backendCode === "CATALOG_MISMATCH") {
+        throw new AgentPayError(
+          `${errMsg}. Use AgentPay MCP fetch_paid_service (SDK signs via x402_custom automatically).`,
+          "CATALOG_MISMATCH"
         );
       }
-      if (String(errMsg).includes("Invalid agent or service") || String(errMsg).includes("Unknown catalog service") || String(errMsg).includes("Unknown agent")) {
-        throw new Error(
-          `${errMsg}. Use AgentPay MCP fetch_paid_service (not direct /v1/pay-and-call with exa_search or nansen_* as serviceId). Signing uses catalog id x402_custom automatically. This is NOT a WalletConnect session error unless the message says "no active session".`
-        );
+      if (backendCode !== "UNKNOWN") {
+        throw new AgentPayError(messageForCode(backendCode, String(errMsg)), backendCode);
       }
-      return null;
+      if (errMsg) {
+        throw new AgentPayError(String(errMsg), "UNKNOWN");
+      }
+      throw error2;
     }
   }
 };
@@ -66340,6 +66405,35 @@ function multiTextResult(parts, isError = false) {
     isError
   };
 }
+function hintForErrorCode(code, message) {
+  switch (code) {
+    case "PAYMENT_REJECTED":
+      return 'code=PAYMENT_REJECTED: User declined USDC on phone. Say "You rejected the payment \u2014 tap Approve and I will retry." Retry the same fetch_paid_service. Do NOT re-pair.';
+    case "WC_SESSION_DEAD":
+    case "NO_ACTIVE_SESSION":
+      return `code=${code}: WalletConnect session is dead or not paired. Call get_pairing_link, send raw wc: URI, user taps Connect, retry.`;
+    case "NO_PAYMENT_SIGNATURE":
+      return "code=NO_PAYMENT_SIGNATURE: Stale MCP/SDK \u2014 redeploy agentpay-mcp. If updated: ask user if they saw a signing prompt; rejection vs dead session need backend code field.";
+    case "CATALOG_MISMATCH":
+      return "code=CATALOG_MISMATCH: Backend missing x402_custom catalog \u2014 deploy latest backend or fix AGENTPAY_BACKEND_URL.";
+    default:
+      break;
+  }
+  const m = message.toLowerCase();
+  if (m.includes("payment verification failed") || m.includes("simulation failed") || m.includes("signer mismatch")) {
+    return "On-chain payment failed after signing \u2014 wrong account, insufficient USDC, or facilitator timeout. Re-pair with funded account via get_pairing_link.";
+  }
+  return 'Read the "code" field in this JSON \u2014 never guess from timing alone.';
+}
+function resolveErrorCode(err, message) {
+  if (err instanceof AgentPayError) return err.code;
+  const m = message.toLowerCase();
+  if (m.includes("payment rejected")) return "PAYMENT_REJECTED";
+  if (m.includes("session dead on relay")) return "WC_SESSION_DEAD";
+  if (m.includes("no active session")) return "NO_ACTIVE_SESSION";
+  if (m.includes("no payment signature")) return "NO_PAYMENT_SIGNATURE";
+  return void 0;
+}
 function authHeaders(apiKey) {
   if (!apiKey) return void 0;
   return { Authorization: `Bearer ${apiKey}` };
@@ -66400,7 +66494,7 @@ async function startMcpServer(config2) {
         "SPENDS REAL MONEY: each fetch_paid_service call transfers real USDC on Base and prompts the user to approve on their phone. Tell the user the cost and report paidAmountBaseUnits + the settlement tx after each paid call.",
         "Use get_spending_status for budget/activity; get_pairing_link to pair the mobile wallet (raw wc: URI, two messages). Pair with the funded account \u2014 the account that signs on the phone must match the paired session.",
         'If "Invalid agent or service": you called pay-and-call wrong \u2014 use fetch_paid_service, not direct backend calls with nansen/exa as serviceId.',
-        'If "payment verification failed" / "simulation failed": the phone approval likely timed out, or the phone signed with a different account than the paired one \u2014 retry and approve promptly, or re-pair with get_pairing_link using the correct account.',
+        'fetch_paid_service errors include a "code" field \u2014 use it, never guess from timing: PAYMENT_REJECTED = user declined on phone (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = call get_pairing_link; NO_PAYMENT_SIGNATURE = stale MCP bundle.',
         "If no active session: get_pairing_link once, forward both messages, retry fetch_paid_service.",
         "Backend URL and agentId are configured via AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID (use the deployment values your operator set; do not hardcode a dev server).",
         "OpenClaw: register with openclaw mcp add (scripts/openclaw-register-mcp.sh). Never gateway config.patch on mcp.servers."
@@ -66515,13 +66609,15 @@ async function startMcpServer(config2) {
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
+        const code = resolveErrorCode(err, message);
         return textResult(
           {
             success: false,
             serviceId: input.serviceId,
             url: input.url,
+            code: code ?? "UNKNOWN",
             error: message,
-            hint: 'If "Invalid agent or service": use fetch_paid_service (not direct /v1/pay-and-call with nansen/exa as serviceId). If "payment verification failed" / "simulation failed" / "signer mismatch": the phone approval likely timed out or signed with a different account than the paired session \u2014 retry and approve promptly, or re-pair via get_pairing_link with the funded account. If session expired: get_pairing_link, re-pair, retry. Never use AGENT_PRIVATE_KEY \u2014 AgentPay signs via WalletConnect on Android.'
+            hint: hintForErrorCode(code, message)
           },
           true
         );

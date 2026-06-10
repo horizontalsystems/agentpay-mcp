@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { AgentPay, explorerTxUrl, fetchPaidService, listX402Services } from '@agentpay/sdk';
+import { AgentPay, AgentPayError, explorerTxUrl, fetchPaidService, listX402Services } from '@agentpay/sdk';
+import type { AgentPayErrorCode } from '@agentpay/sdk';
 import { z } from 'zod';
 import type { AgentPayConfig } from './config.js';
 import { getConfigPath } from './config.js';
@@ -18,6 +19,45 @@ function multiTextResult(parts: string[], isError = false) {
     content: parts.map((text) => ({ type: 'text' as const, text })),
     isError
   };
+}
+
+function hintForErrorCode(code: AgentPayErrorCode | undefined, message: string): string {
+  switch (code) {
+    case 'PAYMENT_REJECTED':
+      return (
+        'code=PAYMENT_REJECTED: User declined USDC on phone. Say "You rejected the payment — tap Approve and I will retry." ' +
+        'Retry the same fetch_paid_service. Do NOT re-pair.'
+      );
+    case 'WC_SESSION_DEAD':
+    case 'NO_ACTIVE_SESSION':
+      return (
+        `code=${code}: WalletConnect session is dead or not paired. Call get_pairing_link, send raw wc: URI, user taps Connect, retry.`
+      );
+    case 'NO_PAYMENT_SIGNATURE':
+      return (
+        'code=NO_PAYMENT_SIGNATURE: Stale MCP/SDK — redeploy agentpay-mcp. If updated: ask user if they saw a signing prompt; rejection vs dead session need backend code field.'
+      );
+    case 'CATALOG_MISMATCH':
+      return 'code=CATALOG_MISMATCH: Backend missing x402_custom catalog — deploy latest backend or fix AGENTPAY_BACKEND_URL.';
+    default:
+      break;
+  }
+
+  const m = message.toLowerCase();
+  if (m.includes('payment verification failed') || m.includes('simulation failed') || m.includes('signer mismatch')) {
+    return 'On-chain payment failed after signing — wrong account, insufficient USDC, or facilitator timeout. Re-pair with funded account via get_pairing_link.';
+  }
+  return 'Read the "code" field in this JSON — never guess from timing alone.';
+}
+
+function resolveErrorCode(err: unknown, message: string): AgentPayErrorCode | undefined {
+  if (err instanceof AgentPayError) return err.code;
+  const m = message.toLowerCase();
+  if (m.includes('payment rejected')) return 'PAYMENT_REJECTED';
+  if (m.includes('session dead on relay')) return 'WC_SESSION_DEAD';
+  if (m.includes('no active session')) return 'NO_ACTIVE_SESSION';
+  if (m.includes('no payment signature')) return 'NO_PAYMENT_SIGNATURE';
+  return undefined;
 }
 
 type StatusLog = {
@@ -104,7 +144,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'SPENDS REAL MONEY: each fetch_paid_service call transfers real USDC on Base and prompts the user to approve on their phone. Tell the user the cost and report paidAmountBaseUnits + the settlement tx after each paid call.',
         'Use get_spending_status for budget/activity; get_pairing_link to pair the mobile wallet (raw wc: URI, two messages). Pair with the funded account — the account that signs on the phone must match the paired session.',
         'If "Invalid agent or service": you called pay-and-call wrong — use fetch_paid_service, not direct backend calls with nansen/exa as serviceId.',
-        'If "payment verification failed" / "simulation failed": the phone approval likely timed out, or the phone signed with a different account than the paired one — retry and approve promptly, or re-pair with get_pairing_link using the correct account.',
+        'fetch_paid_service errors include a "code" field — use it, never guess from timing: PAYMENT_REJECTED = user declined on phone (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = call get_pairing_link; NO_PAYMENT_SIGNATURE = stale MCP bundle.',
         'If no active session: get_pairing_link once, forward both messages, retry fetch_paid_service.',
         'Backend URL and agentId are configured via AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID (use the deployment values your operator set; do not hardcode a dev server).',
         'OpenClaw: register with openclaw mcp add (scripts/openclaw-register-mcp.sh). Never gateway config.patch on mcp.servers.'
@@ -238,16 +278,15 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         });
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
+        const code = resolveErrorCode(err, message);
         return textResult(
           {
             success: false,
             serviceId: input.serviceId,
             url: input.url,
+            code: code ?? 'UNKNOWN',
             error: message,
-            hint:
-              'If "Invalid agent or service": use fetch_paid_service (not direct /v1/pay-and-call with nansen/exa as serviceId). ' +
-              'If "payment verification failed" / "simulation failed" / "signer mismatch": the phone approval likely timed out or signed with a different account than the paired session — retry and approve promptly, or re-pair via get_pairing_link with the funded account. ' +
-              'If session expired: get_pairing_link, re-pair, retry. Never use AGENT_PRIVATE_KEY — AgentPay signs via WalletConnect on Android.'
+            hint: hintForErrorCode(code, message)
           },
           true
         );
