@@ -49,24 +49,37 @@ echo "[openclaw-install] Installing mcporter to $MCPORTER_PREFIX"
 npm install --prefix "$MCPORTER_PREFIX" mcporter@latest
 
 # AgentPay CLI config ($AGENTPAY_CONFIG_DIR/config.json — persistent volume)
-node "$AGENTPAY_MCP_ROOT/build/index.js" init \
-  --backend-url "$AGENTPAY_BACKEND_URL" \
-  --agent-id "$AGENTPAY_AGENT_ID" \
-  ${AGENTPAY_API_KEY:+--api-key "$AGENTPAY_API_KEY"}
+if [[ -f "$AGENTPAY_CONFIG_DIR/config.json" && "${AGENTPAY_INSTALL_FORCE:-}" != "1" ]]; then
+  echo "[openclaw-install] AgentPay config exists — skipping agentpay init (set AGENTPAY_INSTALL_FORCE=1 to overwrite)"
+else
+  node "$AGENTPAY_MCP_ROOT/build/index.js" init \
+    --backend-url "$AGENTPAY_BACKEND_URL" \
+    --agent-id "$AGENTPAY_AGENT_ID" \
+    ${AGENTPAY_API_KEY:+--api-key "$AGENTPAY_API_KEY"}
+fi
 
-# mcporter MCP server entry
+# mcporter MCP server entry (shell fallback — does not touch OpenClaw native mcp config)
 TEMPLATE="$AGENTPAY_MCP_ROOT/config/mcporter.openclaw.json"
 if [[ ! -f "$TEMPLATE" ]]; then
   TEMPLATE="$MCP_ROOT/config/mcporter.openclaw.json"
 fi
 
 mkdir -p "$(dirname "$MCPORTER_CONFIG")"
+NEW_MCPORTER="$(mktemp)"
 sed \
   -e "s|__AGENTPAY_MCP_ROOT__|$AGENTPAY_MCP_ROOT|g" \
   -e "s|__AGENTPAY_BACKEND_URL__|$AGENTPAY_BACKEND_URL|g" \
   -e "s|__AGENTPAY_AGENT_ID__|$AGENTPAY_AGENT_ID|g" \
   -e "s|__AGENTPAY_CONFIG_DIR__|$AGENTPAY_CONFIG_DIR|g" \
-  "$TEMPLATE" > "$MCPORTER_CONFIG"
+  "$TEMPLATE" > "$NEW_MCPORTER"
+
+if [[ -f "$MCPORTER_CONFIG" && "${AGENTPAY_INSTALL_FORCE:-}" != "1" ]] && cmp -s "$NEW_MCPORTER" "$MCPORTER_CONFIG"; then
+  echo "[openclaw-install] mcporter config unchanged — skipping write"
+  rm -f "$NEW_MCPORTER"
+else
+  mv "$NEW_MCPORTER" "$MCPORTER_CONFIG"
+  echo "[openclaw-install] Wrote mcporter config: $MCPORTER_CONFIG"
+fi
 
 ENV_FILE="$AGENTPAY_MCP_ROOT/openclaw.env"
 cat > "$ENV_FILE" <<EOF
@@ -91,9 +104,13 @@ echo "  mcporter config:  $MCPORTER_CONFIG"
 echo "  mcporter binary:  $MCPORTER_PREFIX/node_modules/.bin/mcporter"
 echo "  Env bootstrap:    source $ENV_FILE"
 echo ""
-echo "Register native OpenClaw MCP (required — agents cannot config.patch mcp.servers):"
+echo "Register native OpenClaw MCP ONCE (skips if already registered — avoids config churn):"
 echo "  source $ENV_FILE"
 echo "  $REGISTER_SCRIPT"
+echo ""
+echo "Do NOT re-run install or register on every chat — only if MCP is missing or you changed paths."
+echo "  Force: AGENTPAY_INSTALL_FORCE=1 npm run install:openclaw"
+echo "  Force register: AGENTPAY_MCP_FORCE=1 $REGISTER_SCRIPT"
 echo ""
 echo "Verify:"
 echo "  openclaw mcp list"

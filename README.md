@@ -198,7 +198,10 @@ export AGENTPAY_BACKEND_URL=http://your-backend:3000
 export AGENTPAY_AGENT_ID=agent_123
 npm run install:openclaw
 source /home/node/.openclaw/agentpay-mcp/openclaw.env
+./scripts/openclaw-register-mcp.sh   # ONE TIME — skips if agentpay already registered
 ```
+
+**Important:** Do not re-run `openclaw-register-mcp.sh` or `openclaw mcp add agentpay` on every agent chat. That rewrites OpenClaw MCP config and can reload/clear the claude-cli harness registry. The register script is idempotent; use `AGENTPAY_MCP_FORCE=1` only when intentionally changing paths.
 
 **Env vars** (set in OpenClaw agent shell):
 

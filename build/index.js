@@ -66492,7 +66492,7 @@ async function startMcpServer(config2) {
         "Payment flow: HTTP 402 \u2192 WalletConnect USDC sign on user phone \u2192 paid retry. SPENDS REAL MONEY \u2014 tell user cost, report paidAmountBaseUnits + settlement tx.",
         "get_pairing_link to pair wallet (raw wc: URI, two messages). get_spending_status for budget/activity.",
         'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_pairing_link.',
-        "Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: openclaw mcp add (scripts/openclaw-register-mcp.sh)."
+        "Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: register MCP ONCE via openclaw-register-mcp.sh \u2014 NEVER re-run mcp add during normal operation (causes config churn)."
       ].join(" ")
     }
   );

@@ -50,9 +50,11 @@ When the user says **install AgentPay**, **continue with instructions**, or **se
    - `AGENTPAY_AGENT_ID=<your agent id>` (demo: `agent_123`)
 3. **Run setup in one pass** (shell), then report a short checklist — max **one** question at the end: “Say *pair my wallet* when ready.”
 4. **Surface any Snyk/Socket alerts** from `npx skills add` to the user in one line; proceed once they're comfortable.
-5. **OpenClaw / Docker:** run `npm run install:openclaw`, then **`openclaw mcp add`** (see below). **Never** `gateway config.patch` for `mcp.servers`.
+5. **OpenClaw / Docker:** run `npm run install:openclaw` and **`openclaw-register-mcp.sh` ONCE** at first setup. **Never re-run** install/register during normal chats — it rewrites OpenClaw MCP config and can break the agent harness. **Never** `gateway config.patch` for `mcp.servers`.
 
-## OpenClaw install (Docker / gateway agent)
+## OpenClaw install (Docker / gateway agent) — ONE TIME ONLY
+
+**Critical:** Do **not** re-run `npm run install:openclaw` or `openclaw-register-mcp.sh` on every session or when troubleshooting paid calls. That re-syncs the MCP entry, churns OpenClaw config, and can clear the claude-cli harness registry. Only re-run if the user explicitly asks to reinstall, or `openclaw mcp show agentpay` fails.
 
 ```bash
 export OPENCLAW_HOME="${OPENCLAW_HOME:-/home/node/.openclaw}"
@@ -60,10 +62,15 @@ export AGENTPAY_BACKEND_URL="${AGENTPAY_BACKEND_URL:-http://206.189.229.113:3000
 export AGENTPAY_AGENT_ID="${AGENTPAY_AGENT_ID:-agent_123}"
 
 cd "$OPENCLAW_HOME/agentpay-mcp"
-npm run install:openclaw
+npm run install:openclaw          # skips if config unchanged
 source "$OPENCLAW_HOME/agentpay-mcp/openclaw.env"
-./scripts/openclaw-register-mcp.sh
+./scripts/openclaw-register-mcp.sh   # skips if agentpay already registered
 ```
+
+If MCP already exists: `openclaw mcp probe agentpay` — do **not** register again.
+
+Force reinstall only when user requests or paths changed:
+`AGENTPAY_MCP_FORCE=1 ./scripts/openclaw-register-mcp.sh`
 
 ### Verify
 
@@ -117,6 +124,7 @@ mcporter call agentpay.get_spending_status
 
 ## Agent behavior (important)
 
+- **Never** re-run `openclaw-register-mcp.sh`, `npm run install:openclaw`, or `openclaw mcp add agentpay` after initial setup — use `get_pairing_link` / `fetch_paid_service` / `get_spending_status` instead.
 - **Never** ask the user to pick from a fixed service list — use the URL for the API they need.
 - **Never** set `AGENT_PRIVATE_KEY`.
 - On `PAYMENT_REJECTED`: user declined on phone — tell them, retry; do **not** re-pair.
@@ -130,4 +138,5 @@ mcporter call agentpay.get_spending_status
 | `WC_SESSION_DEAD` / no response ~8–10s | Re-pair via `get_pairing_link` |
 | `WalletConnect session not active` | `get_pairing_link`; raw `wc:` URI only |
 | `Invalid agent or service` | Wrong backend path — use MCP `fetch_paid_service`, not direct pay-and-call |
-| Config lost after Docker restart | Set `AGENTPAY_CONFIG_DIR` to a mounted path |
+| Config churn / harness reload | Agent re-ran `openclaw mcp add` — **stop**; verify with `openclaw mcp show agentpay`; only `AGENTPAY_MCP_FORCE=1 ./scripts/openclaw-register-mcp.sh` if user asks to reinstall |
+| Config lost after Docker restart | Set `AGENTPAY_CONFIG_DIR` to a mounted path; run install once on fresh volume |
