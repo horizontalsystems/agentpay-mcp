@@ -80,9 +80,9 @@ Then configure and pair once (see [Commands & setup](#commands--setup)).
 ```bash
 git clone https://github.com/horizontalsystems/agentpay-mcp.git
 cd agentpay-mcp
-npm install
-npm run build
-node build/index.js doctor   # must print walletconnect-x402-v2 tools
+node build/index.js doctor   # prebuilt bundle — no npm install required
+# Rebuild only if needed (vendored sdk/ included):
+# npm install && npm run build
 npm link   # optional: global `agentpay` on PATH
 ```
 
@@ -195,10 +195,13 @@ Container restarts wipe **global npm** and non-mounted paths. Use **volumes** an
 ```bash
 export AGENTPAY_BACKEND_URL=http://your-backend:3000
 export AGENTPAY_AGENT_ID=agent_123
-npm run install:openclaw
+npm run install:openclaw   # uses prebuilt build/index.js — no npm registry
 source /home/node/.openclaw/agentpay-mcp/openclaw.env
+node /home/node/.openclaw/agentpay-mcp/build/index.js doctor
 ./scripts/openclaw-register-mcp.sh   # ONE TIME — skips if agentpay already registered
 ```
+
+**Note:** `@agentpay/sdk` is **not on npm**. The repo ships a prebuilt bundle (SDK inside `build/index.js`) plus vendored `sdk/` for optional rebuilds. Do not run bare `npm install` expecting registry packages.
 
 **Important:** Do not re-run `openclaw-register-mcp.sh` or `openclaw mcp add agentpay` on every agent chat. That rewrites OpenClaw MCP config and can reload/clear the claude-cli harness registry. The register script is idempotent; use `AGENTPAY_MCP_FORCE=1` only when intentionally changing paths.
 
@@ -283,7 +286,7 @@ Requires **Node.js ≥ 18** and a running **AgentPay backend** with PostgreSQL m
 |-----------|------|
 | **AgentPay backend** | Express API, WalletConnect, FCM, Prisma/Postgres |
 | **Android app** | Policy, approvals, KeyStore signing |
-| **@agentpay/sdk** | HTTP client used inside this bundle |
+| **@agentpay/sdk** | Bundled into `build/index.js`; vendored as `sdk/` in GitHub repo for rebuilds (not on npm) |
 
 ---
 

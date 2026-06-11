@@ -1,0 +1,25 @@
+{
+  "my_custom_api": {
+    "label": "My Custom x402 API",
+    "url": "https://api.example.com/v1/resource",
+    "method": "POST",
+    "headers": { "content-type": "application/json" },
+    "bodyFromArgs": true,
+    "argsHint": "{ \"key\": \"value\" } — entire object is sent as JSON body"
+  },
+  "genvox_sentiment": {
+    "label": "GenVox Sentiment",
+    "url": "https://api.genvox.io/v1/sentiment/${token}",
+    "method": "GET",
+    "argsHint": "{ \"token\": \"ETH\" } — substitutes ${token} in the URL"
+  },
+  "alchemy_x402_example": {
+    "label": "Alchemy gateway (example — built-in id is alchemy_x402_eth_blockNumber)",
+    "url": "https://x402.alchemy.com/eth-mainnet/v2",
+    "method": "POST",
+    "headers": { "content-type": "application/json", "accept": "application/json" },
+    "bodyFromArgs": false,
+    "auth": { "type": "alchemy_siwe" },
+    "argsHint": "Use built-in alchemy_x402_eth_blockNumber or POST JSON-RPC body via custom registry entry"
+  }
+}
