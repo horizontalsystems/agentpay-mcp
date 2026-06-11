@@ -33,15 +33,33 @@ if [[ "$MCP_ROOT_ABS" != "$AGENTPAY_MCP_ROOT_ABS" ]]; then
   echo "[openclaw-install] Copying MCP package to $AGENTPAY_MCP_ROOT_ABS"
   rsync -a --delete \
     --exclude node_modules \
-    --exclude build \
     "$MCP_ROOT_ABS/" "$AGENTPAY_MCP_ROOT_ABS/" \
     || cp -r "$MCP_ROOT_ABS/." "$AGENTPAY_MCP_ROOT_ABS/"
 fi
 
 cd "$AGENTPAY_MCP_ROOT_ABS"
-if [[ -f package.json ]]; then
-  npm install --omit=dev 2>/dev/null || npm install
+
+# Runtime uses prebuilt build/index.js (SDK bundled inside). No npm registry needed.
+BUNDLE="$AGENTPAY_MCP_ROOT_ABS/build/index.js"
+if [[ -f "$BUNDLE" ]] && node "$BUNDLE" doctor >/dev/null 2>&1; then
+  echo "[openclaw-install] Prebuilt bundle OK — skipping npm install/build (no @agentpay/sdk from npm required)"
+elif [[ -f package.json && -d sdk ]]; then
+  echo "[openclaw-install] Rebuilding from source (vendored sdk/ in repo)..."
+  npm install
   npm run build
+elif [[ -f package.json ]]; then
+  echo "[openclaw-install] ERROR: build/index.js missing or invalid, and no sdk/ for rebuild." >&2
+  echo "[openclaw-install] Fix: git pull horizontalsystems/agentpay-mcp (includes prebuilt build/ + sdk/)" >&2
+  exit 1
+else
+  echo "[openclaw-install] ERROR: no package.json or build/index.js at $AGENTPAY_MCP_ROOT_ABS" >&2
+  exit 1
+fi
+
+if ! node "$BUNDLE" doctor >/dev/null 2>&1; then
+  echo "[openclaw-install] ERROR: bundle failed doctor check after install" >&2
+  node "$BUNDLE" doctor || true
+  exit 1
 fi
 
 # mcporter → persistent prefix (survives container restart; do not rely on global npm)
