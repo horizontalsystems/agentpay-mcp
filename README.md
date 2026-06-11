@@ -224,43 +224,33 @@ Copy `openclaw.env.example` into your image or profile if you prefer manual env 
 
 The server name exposed over MCP is **`agentpay-firewall`**.
 
-### Backend catalog vs client registry
+### `fetch_paid_service` (universal x402 client)
 
-- **Client registry** (`list_x402_services`, `sdk/x402/builtin.ts`, `config/x402-services.json`): where you add Exa, twit.sh, Bazaar APIs — **no backend deploy**.
-- **Backend catalog** (`x402_custom` only): one signing slot. All paid calls use `serviceId: x402_custom` with `payload.registryId` (e.g. `twit_user_by_username`, `twit_list_by_id`) and `payload.resource.url` for audit logs.
-
-### `list_x402_services`
-
-Lists registered x402 services (built-in + `config/x402-services.json`). Returns `serviceId`, `url`, `method`, `argsHint`.
-
-### `fetch_paid_service` (preferred for all x402 APIs)
-
-Runs the **full x402 flow**: provider HTTP 402 → WalletConnect EIP-712 sign → paid retry → real API JSON.
+Calls **any** HTTP API that supports x402. No service catalog — provide the provider URL directly.
 
 | Input | Type | Description |
 |-------|------|-------------|
-| `serviceId` | string (optional) | Registered service from `list_x402_services` |
-| `args` | object (optional) | Request args per service `argsHint` |
-| `url` | string (optional) | Ad-hoc x402 endpoint (use instead of `serviceId`) |
-| `method` | GET \| POST \| … | Required with `url` |
-| `headers` / `body` | object | Optional ad-hoc overrides |
+| `url` | string (**required**) | Full x402 API URL (from provider docs, Bazaar, or user) |
+| `method` | GET \| POST \| … | Optional (default POST when body present) |
+| `headers` | object | Optional request headers |
+| `body` | object | JSON body for POST/PUT/PATCH |
+| `label` | string | Optional audit label in backend logs (defaults to url) |
 
-**Use for:** any x402-paid HTTP API. Extend via `config/x402-services.json` or `AGENTPAY_X402_SERVICES_PATH`.  
-**Do not use** `pay_and_call_service` for x402 catalog services.
+**Flow:** HTTP request → 402 + PAYMENT-REQUIRED → WalletConnect EIP-712 USDC sign on phone → retry with PAYMENT-SIGNATURE → API JSON.
 
-### `pay_and_call_service` (advanced)
+**Examples:**
 
-Low-level signing with a custom payload. For catalog x402 services, use `fetch_paid_service` instead.
+```json
+{ "url": "https://api.exa.ai/search", "method": "POST", "body": { "query": "...", "numResults": 5 } }
+```
 
-| Input | Type | Description |
-|-------|------|-------------|
-| `serviceId` | string | Backend catalog id |
-| `amountUsd` | number | Intended payment amount in USD |
-| `description` | string | Short human-readable reason |
+```json
+{ "url": "https://api.nansen.ai/api/v1/smart-money/holdings", "method": "POST", "body": { "chains": ["ethereum"] } }
+```
 
-For manual x402, the payload must include `action: "x402_pay_generic"` plus `recipient`, `amount`, and `asset` from the provider 402 response.
+Backend signing always uses catalog id `x402_custom` internally — agents never pass serviceIds.
 
-### `get_spending_status`
+### `get_pairing_link`
 
 Read **wallet balance** (mock ledger on backend) and **recent activity** from `GET /v1/status`.
 

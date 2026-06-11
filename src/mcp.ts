@@ -1,6 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { AgentPay, AgentPayError, explorerTxUrl, fetchPaidService, listX402Services } from '@agentpay/sdk';
+import { AgentPay, AgentPayError, explorerTxUrl, fetchPaidService } from '@agentpay/sdk';
 import type { AgentPayErrorCode } from '@agentpay/sdk';
 import { z } from 'zod';
 import type { AgentPayConfig } from './config.js';
@@ -135,56 +135,15 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     },
     {
       instructions: [
-        'AgentPay IS the x402 payment client for this agent. All paid HTTP APIs (Exa, Nansen, twit.sh, etc.) go through fetch_paid_service.',
-        'NEVER ask for AGENT_PRIVATE_KEY, hot wallet private key, or ETH signing keys — payments are signed on the user Android wallet via WalletConnect.',
-        'NEVER use generic x402 tools (x402_session_start, x402_session_fetch, x402_pay, x402_pay_and_call) — they are not AgentPay. Use list_x402_services and fetch_paid_service only.',
-        'Exa search: fetch_paid_service({ serviceId: "exa_search", args: { query: "...", numResults: 3 } }). Aliases: exasearch, exa.',
-        'Nansen: fetch_paid_service({ serviceId: "nansen_smart_money_holdings", args: { chains: ["ethereum"] } }).',
-        'Payment flow: HTTP 402 → backend asks phone to sign USDC → paid retry. No API keys or private keys on the agent.',
-        'SPENDS REAL MONEY: each fetch_paid_service call transfers real USDC on Base and prompts the user to approve on their phone. Tell the user the cost and report paidAmountBaseUnits + the settlement tx after each paid call.',
-        'Use get_spending_status for budget/activity; get_pairing_link to pair the mobile wallet (raw wc: URI, two messages). Pair with the funded account — the account that signs on the phone must match the paired session.',
-        'If "Invalid agent or service": you called pay-and-call wrong — use fetch_paid_service, not direct backend calls with nansen/exa as serviceId.',
-        'fetch_paid_service errors include a "code" field — use it, never guess from timing: PAYMENT_REJECTED = user declined on phone (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = call get_pairing_link; NO_PAYMENT_SIGNATURE = stale MCP bundle.',
-        'If no active session: get_pairing_link once, forward both messages, retry fetch_paid_service.',
-        'Backend URL and agentId are configured via AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID (use the deployment values your operator set; do not hardcode a dev server).',
-        'OpenClaw: register with openclaw mcp add (scripts/openclaw-register-mcp.sh). Never gateway config.patch on mcp.servers.'
+        'AgentPay IS the x402 payment client. Call ANY HTTP API that supports x402 via fetch_paid_service — no service catalog, no serviceId.',
+        'fetch_paid_service({ url, method?, headers?, body? }) — url is required. Agent discovers x402 endpoints from docs, Bazaar, or user input.',
+        'Examples: Exa POST https://api.exa.ai/search body { query, numResults }. Nansen POST https://api.nansen.ai/api/v1/smart-money/holdings body { chains: ["ethereum"] }.',
+        'NEVER ask for AGENT_PRIVATE_KEY or use x402_session_* tools. NEVER call list_x402_services — it does not exist.',
+        'Payment flow: HTTP 402 → WalletConnect USDC sign on user phone → paid retry. SPENDS REAL MONEY — tell user cost, report paidAmountBaseUnits + settlement tx.',
+        'get_pairing_link to pair wallet (raw wc: URI, two messages). get_spending_status for budget/activity.',
+        'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_pairing_link.',
+        'Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: openclaw mcp add (scripts/openclaw-register-mcp.sh).'
       ].join(' ')
-    }
-  );
-
-  server.registerTool(
-    'list_x402_services',
-    {
-      title: 'AgentPay: list x402 services',
-      description: [
-        'List all registered x402 HTTP services (built-in SDK registry + config/x402-services.json).',
-        'Returns serviceId, url, method, argsHint, and optional auth (e.g. alchemy_siwe for gateway login).',
-        'Always call this before fetch_paid_service when you do not already know the serviceId.'
-      ].join(' '),
-      inputSchema: z.object({}),
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        openWorldHint: false
-      }
-    },
-    async () => {
-      try {
-        const services = listX402Services();
-        return textResult({
-          services,
-          count: services.length,
-          howToCall: 'fetch_paid_service({ serviceId, args })',
-          adHoc: 'fetch_paid_service({ url, method, body? }) for APIs not listed here',
-          extend: 'Add entries to config/x402-services.json or set AGENTPAY_X402_SERVICES_PATH',
-          important:
-            'AgentPay handles full x402 (402 → WalletConnect USDC sign → retry). Do NOT use AGENT_PRIVATE_KEY or x402_session_* tools.',
-          exaExample: 'fetch_paid_service({ serviceId: "exa_search", args: { query: "smart money tokens Base", numResults: 5 } })'
-        });
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : String(err);
-        return textResult({ success: false, error: message }, true);
-      }
     }
   );
 
@@ -193,35 +152,22 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     {
       title: 'AgentPay: call any x402-paid HTTP API',
       description: [
-        'THE x402 client for this agent — use this for ALL paid APIs (Exa, Nansen, etc.).',
-        'SPENDS REAL USDC on Base and prompts the user to approve the payment on their phone. Surface the expected cost to the user, and after the call report paidAmountBaseUnits and the settlement tx hash.',
-        'Do NOT use AGENT_PRIVATE_KEY, hot wallet keys, or x402_session_start/x402_pay tools.',
-        'Registry: serviceId + args (e.g. exa_search, nansen_smart_money_holdings). Aliases: exasearch, exa, nansen.',
-        'Ad-hoc: url + method + body for APIs not in list_x402_services.',
-        'Full flow: HTTP 402 → WalletConnect signs USDC on user phone → paid retry. No keys on agent machine.'
+        'Universal x402 client — call ANY HTTP endpoint that returns 402 Payment Required.',
+        'Provide url (required), method (default POST), optional headers and JSON body. No service catalog or serviceId.',
+        'SPENDS REAL USDC on Base; user approves on Android wallet via WalletConnect.',
+        'Flow: request → 402 + PAYMENT-REQUIRED → phone signs EIP-712 USDC authorization → retry with PAYMENT-SIGNATURE → API response.',
+        'Do NOT use AGENT_PRIVATE_KEY or x402_session_* tools.'
       ].join(' '),
-      inputSchema: z
-        .object({
-          serviceId: z
-            .string()
-            .optional()
-            .describe('Registered service id from list_x402_services'),
-          args: z
-            .record(z.unknown())
-            .optional()
-            .describe('Arguments for the registered service (see argsHint)'),
-          url: z.string().url().optional().describe('Ad-hoc: full URL when serviceId is not registered'),
-          method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD']).optional(),
-          headers: z.record(z.string()).optional(),
-          body: z.unknown().optional().describe('Ad-hoc JSON body'),
-          registryId: z
-            .string()
-            .optional()
-            .describe('Optional audit label for ad-hoc calls (defaults to url)')
-        })
-        .refine((v) => Boolean(v.serviceId?.trim()) || Boolean(v.url), {
-          message: 'Provide serviceId (registry) or url (ad-hoc x402 endpoint)'
-        }),
+      inputSchema: z.object({
+        url: z.string().url().describe('Full x402 API URL (from provider docs, Bazaar, or user)'),
+        method: z
+          .enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'])
+          .optional()
+          .describe('HTTP method (default POST when body present, else GET)'),
+        headers: z.record(z.string()).optional().describe('Optional request headers'),
+        body: z.unknown().optional().describe('JSON request body for POST/PUT/PATCH'),
+        label: z.string().optional().describe('Optional short name for logs (defaults to url)')
+      }),
       annotations: {
         readOnlyHint: false,
         destructiveHint: true,
@@ -247,15 +193,15 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
           );
         }
 
+        const method = input.method ?? (input.body !== undefined && input.body !== null ? 'POST' : 'GET');
+
         const result = await fetchPaidService(
           {
-            serviceId: input.serviceId?.trim() || undefined,
-            args: input.args,
             url: input.url,
-            method: input.method,
+            method,
             headers: input.headers,
             body: input.body,
-            registryId: input.registryId
+            registryId: input.label?.trim() || input.url
           },
           agentPay
         );
@@ -263,7 +209,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         const settlement = result.settlement;
         return textResult({
           success: true,
-          serviceId: input.serviceId ?? input.registryId ?? input.url,
+          url: input.url,
           paid: result.paid,
           x402Version: result.x402Version,
           status: result.status,
@@ -282,7 +228,6 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         return textResult(
           {
             success: false,
-            serviceId: input.serviceId,
             url: input.url,
             code: code ?? 'UNKNOWN',
             error: message,
