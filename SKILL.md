@@ -9,6 +9,22 @@ description: >-
 
 AgentPay lets the agent request paid actions that are approved on the user's Android wallet. Keys never leave the phone.
 
+## npm name collision — read this first
+
+**Do NOT run `npm install -g agentpay-mcp`.** The npm registry package `agentpay-mcp@4.x` is a **different project** (`up2itnow0822/agentpay-mcp`) with tools like `x402_session_start`, `x402_pay`, and binary `dist/index.js`.
+
+**This skill** is for **GitHub `horizontalsystems/agentpay-mcp`** only — tools `fetch_paid_service`, `get_pairing_link`, `get_spending_status`, binary **`build/index.js`**.
+
+Verify after install:
+
+```bash
+node "$AGENTPAY_MCP_ROOT/build/index.js" tools
+node "$AGENTPAY_MCP_ROOT/build/index.js" doctor
+npm run verify:openclaw
+```
+
+Expected tools JSON includes `"api": "walletconnect-x402-v2"` and the three tool names above. If you see `x402_session_*`, you installed the wrong package.
+
 ## x402 — read this before any paid API call
 
 **AgentPay MCP is a universal x402 client.** There is **no service catalog** and **no `list_x402_services` tool**. Call any x402 HTTP endpoint with `url` + optional `method`, `headers`, `body`.
@@ -61,9 +77,16 @@ export OPENCLAW_HOME="${OPENCLAW_HOME:-/home/node/.openclaw}"
 export AGENTPAY_BACKEND_URL="${AGENTPAY_BACKEND_URL:-http://206.189.229.113:3000}"
 export AGENTPAY_AGENT_ID="${AGENTPAY_AGENT_ID:-agent_123}"
 
+# Clone horizontalsystems MCP (NOT npm install -g agentpay-mcp)
+if [[ ! -f "$OPENCLAW_HOME/agentpay-mcp/build/index.js" ]]; then
+  git clone https://github.com/horizontalsystems/agentpay-mcp.git "$OPENCLAW_HOME/agentpay-mcp"
+fi
+
 cd "$OPENCLAW_HOME/agentpay-mcp"
+git pull
 npm run install:openclaw          # skips if config unchanged
 source "$OPENCLAW_HOME/agentpay-mcp/openclaw.env"
+./scripts/openclaw-verify-mcp.sh  # must pass before using MCP
 ./scripts/openclaw-register-mcp.sh   # skips if agentpay already registered
 ```
 
@@ -86,9 +109,12 @@ mcporter --config "$MCPORTER_CONFIG" call agentpay.get_spending_status
 export AGENTPAY_BACKEND_URL="${AGENTPAY_BACKEND_URL:-http://206.189.229.113:3000}"
 export AGENTPAY_AGENT_ID="${AGENTPAY_AGENT_ID:-agent_123}"
 
-npm install -g agentpay-mcp mcporter
-agentpay init
-mcporter config add agentpay --command agentpay --arg start --scope home
+git clone https://github.com/horizontalsystems/agentpay-mcp.git
+cd agentpay-mcp && npm install && npm run build
+npm install -g mcporter   # mcporter only — NOT agentpay-mcp from npm
+node build/index.js init --backend-url "$AGENTPAY_BACKEND_URL" --agent-id "$AGENTPAY_AGENT_ID"
+mcporter config add agentpay --command node --arg "$(pwd)/build/index.js" --arg start --scope home
+node build/index.js doctor
 ```
 
 **After setup:** tell user to say **“pair my wallet”** → call **`get_pairing_link`** and send the raw `wc:` URI.
@@ -139,4 +165,6 @@ mcporter call agentpay.get_spending_status
 | `WalletConnect session not active` | `get_pairing_link`; raw `wc:` URI only |
 | `Invalid agent or service` | Wrong backend path — use MCP `fetch_paid_service`, not direct pay-and-call |
 | Config churn / harness reload | Agent re-ran `openclaw mcp add` — **stop**; verify with `openclaw mcp show agentpay`; only `AGENTPAY_MCP_FORCE=1 ./scripts/openclaw-register-mcp.sh` if user asks to reinstall |
+| Wrong tools (`x402_session_*`, no `get_pairing_link`) | Installed npm `agentpay-mcp@4.x` impostor — clone GitHub `horizontalsystems/agentpay-mcp`, run `doctor`, fix mcporter path to `build/index.js` |
+| mcporter uses `dist/index.js` | Wrong npm path — `npm run install:openclaw` or `./scripts/openclaw-verify-mcp.sh` |
 | Config lost after Docker restart | Set `AGENTPAY_CONFIG_DIR` to a mounted path; run install once on fresh volume |

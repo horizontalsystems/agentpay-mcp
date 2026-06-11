@@ -1,6 +1,6 @@
 {
   "name": "agentpay-mcp",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "AgentPay MCP firewall CLI — configure once, run as stdio MCP server for LLM agents",
   "bin": {
     "agentpay": "./build/index.js"
@@ -19,7 +19,8 @@
     "start": "node build/index.js start",
     "setup": "node build/index.js setup",
     "init": "node build/index.js init",
-    "install:openclaw": "bash scripts/openclaw-install.sh"
+    "install:openclaw": "bash scripts/openclaw-install.sh",
+    "verify:openclaw": "bash scripts/openclaw-verify-mcp.sh"
   },
   "keywords": [
     "mcp",

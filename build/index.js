@@ -66481,7 +66481,7 @@ async function startMcpServer(config2) {
   const server = new McpServer(
     {
       name: "agentpay-firewall",
-      version: "1.0.0"
+      version: "2.0.0"
     },
     {
       instructions: [
@@ -66492,7 +66492,7 @@ async function startMcpServer(config2) {
         "Payment flow: HTTP 402 \u2192 WalletConnect USDC sign on user phone \u2192 paid retry. SPENDS REAL MONEY \u2014 tell user cost, report paidAmountBaseUnits + settlement tx.",
         "get_pairing_link to pair wallet (raw wc: URI, two messages). get_spending_status for budget/activity.",
         'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_pairing_link.',
-        "Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: register MCP ONCE via openclaw-register-mcp.sh \u2014 NEVER re-run mcp add during normal operation (causes config churn)."
+        "Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: binary MUST be GitHub horizontalsystems/agentpay-mcp build/index.js \u2014 NEVER npm install -g agentpay-mcp (registry v4.x has x402_session_* only). Register MCP ONCE via openclaw-register-mcp.sh \u2014 NEVER re-run mcp add during normal operation."
       ].join(" ")
     }
   );
@@ -69358,9 +69358,85 @@ function printInitResult(config2) {
   console.log(`  agentId: ${config2.agentId}`);
 }
 
+// src/doctor.ts
+var import_node_fs3 = require("node:fs");
+var import_node_path6 = require("node:path");
+var AGENTPAY_MCP_TOOLS = [
+  "fetch_paid_service",
+  "get_pairing_link",
+  "get_spending_status"
+];
+var AGENTPAY_MCP_PACKAGE = "horizontalsystems/agentpay-mcp";
+var AGENTPAY_MCP_API = "walletconnect-x402-v2";
+function bundlePath() {
+  if (process.argv[1]) {
+    return process.argv[1];
+  }
+  return (0, import_node_path6.join)(process.cwd(), "build", "index.js");
+}
+function inspectBundle(path8 = bundlePath()) {
+  const issues = [];
+  if (!(0, import_node_fs3.existsSync)(path8)) {
+    return { ok: false, path: path8, hasNewTools: false, hasOldTools: false, issues: ["bundle missing \u2014 run npm run build"] };
+  }
+  const src = (0, import_node_fs3.readFileSync)(path8, "utf8");
+  const hasNewTools = src.includes("get_pairing_link") && src.includes("fetch_paid_service");
+  const hasOldTools = /registerTool\(\s*['"]x402_session_start['"]/.test(src) || /registerTool\(\s*['"]x402_pay['"]/.test(src);
+  const hasApiMarker = src.includes(AGENTPAY_MCP_API);
+  if (!hasApiMarker && hasNewTools) {
+    issues.push("bundle may be stale \u2014 rebuild from horizontalsystems/agentpay-mcp v2+");
+  }
+  if (!hasNewTools) {
+    issues.push("bundle missing fetch_paid_service / get_pairing_link");
+  }
+  if (hasOldTools) {
+    issues.push(
+      "bundle matches npm agentpay-mcp@4.x (x402_session_*) \u2014 wrong package; use GitHub horizontalsystems/agentpay-mcp"
+    );
+  }
+  return {
+    ok: hasNewTools && !hasOldTools && hasApiMarker,
+    path: path8,
+    hasNewTools,
+    hasOldTools,
+    issues
+  };
+}
+function printToolsJson() {
+  console.log(
+    JSON.stringify(
+      {
+        package: AGENTPAY_MCP_PACKAGE,
+        api: AGENTPAY_MCP_API,
+        tools: AGENTPAY_MCP_TOOLS,
+        npmWarning: "Do NOT npm install -g agentpay-mcp \u2014 registry v4.x is a different project (x402_session_* tools, dist/index.js)."
+      },
+      null,
+      2
+    )
+  );
+}
+function runDoctor() {
+  const bundle = inspectBundle();
+  const lines = [
+    `package: ${AGENTPAY_MCP_PACKAGE}`,
+    `api: ${AGENTPAY_MCP_API}`,
+    `bundle: ${bundle.path}`,
+    `tools: ${AGENTPAY_MCP_TOOLS.join(", ")}`
+  ];
+  if (bundle.issues.length) {
+    lines.push("issues:");
+    for (const i of bundle.issues) lines.push(`  - ${i}`);
+  } else {
+    lines.push("status: ok");
+  }
+  console.log(lines.join("\n"));
+  return bundle.ok ? 0 : 1;
+}
+
 // src/index.ts
 var program2 = new Command();
-program2.name("agentpay").description("AgentPay MCP firewall \u2014 paid agent tools with WalletConnect approval").version("1.0.0");
+program2.name("agentpay").description("AgentPay MCP firewall \u2014 paid agent tools with WalletConnect approval").version("2.0.0");
 program2.command("setup").description("Configure backend URL, agent id, and optional API key (~/.agentpay/config.json)").action(async () => {
   await runSetup();
 });
@@ -69389,6 +69465,12 @@ program2.command("connect").description("Pair your Android wallet via WalletConn
     console.error(err instanceof Error ? err.message : err);
     process.exit(1);
   }
+});
+program2.command("tools").description("Print MCP tool names (verify horizontalsystems build vs npm agentpay-mcp@4.x impostor)").action(() => {
+  printToolsJson();
+});
+program2.command("doctor").description("Check bundle has fetch_paid_service / get_pairing_link (not npm v4.x x402_session_* API)").action(() => {
+  process.exit(runDoctor());
 });
 program2.command("start").description("Start the MCP server on stdio (for OpenClaw, Claude Desktop, Cursor, etc.)").action(async () => {
   const config2 = loadConfig();

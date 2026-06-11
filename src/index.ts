@@ -4,13 +4,14 @@ import { startMcpServer } from './mcp.js';
 import { runSetup } from './setup.js';
 import { runConnect } from './connect.js';
 import { printInitResult, runInit } from './init.js';
+import { printToolsJson, runDoctor } from './doctor.js';
 
 const program = new Command();
 
 program
   .name('agentpay')
   .description('AgentPay MCP firewall — paid agent tools with WalletConnect approval')
-  .version('1.0.0');
+  .version('2.0.0');
 
 program
   .command('setup')
@@ -55,6 +56,20 @@ program
       console.error(err instanceof Error ? err.message : err);
       process.exit(1);
     }
+  });
+
+program
+  .command('tools')
+  .description('Print MCP tool names (verify horizontalsystems build vs npm agentpay-mcp@4.x impostor)')
+  .action(() => {
+    printToolsJson();
+  });
+
+program
+  .command('doctor')
+  .description('Check bundle has fetch_paid_service / get_pairing_link (not npm v4.x x402_session_* API)')
+  .action(() => {
+    process.exit(runDoctor());
   });
 
 program

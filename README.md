@@ -75,21 +75,20 @@ npx skills add horizontalsystems/agentpay-mcp --skill agentpay --yes --global
 
 Then configure and pair once (see [Commands & setup](#commands--setup)).
 
-### Option B — From source (monorepo)
+### Option B — From source (recommended)
 
 ```bash
 git clone https://github.com/horizontalsystems/agentpay-mcp.git
 cd agentpay-mcp
 npm install
 npm run build
+node build/index.js doctor   # must print walletconnect-x402-v2 tools
 npm link   # optional: global `agentpay` on PATH
 ```
 
-### Option C — npm (when published)
+### Do NOT use npm `agentpay-mcp`
 
-```bash
-npm install -g agentpay-mcp
-```
+The npm package **`agentpay-mcp@4.x`** is a **different project** ([up2itnow0822/agentpay-mcp](https://www.npmjs.com/package/agentpay-mcp)) with `x402_session_*` tools and `dist/index.js`. It does **not** include `fetch_paid_service` or `get_pairing_link`. Always install from **GitHub `horizontalsystems/agentpay-mcp`**.
 
 ---
 
