@@ -5,9 +5,46 @@ description: >-
   No service catalog. NEVER use AGENT_PRIVATE_KEY or x402_session_* tools. Pair wallet with get_pairing_link.
 ---
 
+---
+
 # AgentPay
 
 AgentPay lets the agent request paid actions that are approved on the user's Android wallet. Keys never leave the phone.
+
+## Installed via `npx skills add` (start here)
+
+If the user ran:
+
+```bash
+npx skills add horizontalsystems/agentpay-mcp --skill agentpay --yes --global
+```
+
+That installs **agent instructions + a full repo copy** to **`~/.agents/skills/agentpay/`** (includes prebuilt `build/index.js`). It does **not** register OpenClaw MCP or pair the wallet by itself.
+
+**Do this next (one pass, no extra questions):**
+
+```bash
+export AGENTPAY_MCP_ROOT="${AGENTPAY_MCP_ROOT:-$HOME/.agents/skills/agentpay}"
+export OPENCLAW_HOME="${OPENCLAW_HOME:-$HOME/.openclaw}"
+export AGENTPAY_BACKEND_URL="${AGENTPAY_BACKEND_URL:-http://host.docker.internal:3000}"
+export AGENTPAY_AGENT_ID="${AGENTPAY_AGENT_ID:-agent_123}"
+
+node "$AGENTPAY_MCP_ROOT/build/index.js" doctor   # must print status: ok
+
+# OpenClaw expects a stable path — symlink skills copy (do not npm install -g agentpay-mcp)
+mkdir -p "$OPENCLAW_HOME"
+ln -sfn "$AGENTPAY_MCP_ROOT" "$OPENCLAW_HOME/agentpay-mcp"
+
+cd "$AGENTPAY_MCP_ROOT"
+npm run install:openclaw
+source "$AGENTPAY_MCP_ROOT/openclaw.env"
+./scripts/openclaw-verify-mcp.sh
+./scripts/openclaw-register-mcp.sh   # ONCE — skips if already registered
+```
+
+Then tell the user: **Say "pair my wallet" when ready.**
+
+**Never** run bare `npm install` in the skill directory unless `doctor` fails and you are rebuilding from source.
 
 ## npm name collision — read this first
 

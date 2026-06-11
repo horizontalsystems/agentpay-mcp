@@ -69,11 +69,23 @@ Treat your backend URL and API key like any other service credential.
 
 ### Option A — Skills (recommended)
 
+Installs agent instructions + repo copy to `~/.agents/skills/agentpay/` (includes prebuilt MCP bundle):
+
 ```bash
 npx skills add horizontalsystems/agentpay-mcp --skill agentpay --yes --global
 ```
 
-Then configure and pair once (see [Commands & setup](#commands--setup)).
+Then complete **OpenClaw MCP setup once** (see `SKILL.md` → “Installed via npx skills add”):
+
+```bash
+export AGENTPAY_MCP_ROOT="$HOME/.agents/skills/agentpay"
+node "$AGENTPAY_MCP_ROOT/build/index.js" doctor
+ln -sfn "$AGENTPAY_MCP_ROOT" "$HOME/.openclaw/agentpay-mcp"
+cd "$AGENTPAY_MCP_ROOT" && npm run install:openclaw
+source openclaw.env && ./scripts/openclaw-register-mcp.sh
+```
+
+Do **not** run `npm install -g agentpay-mcp` (wrong npm package).
 
 ### Option B — From source (recommended)
 
