@@ -1,15 +1,23 @@
 import qrcode from 'qrcode-terminal';
 import type { AgentPayConfig } from './config.js';
+import { ANDROID_APK_URL } from './defaults.js';
+
+export const ANDROID_APK_MESSAGE = [
+  'Install the AgentPay Android app (required before pairing):',
+  ANDROID_APK_URL,
+  '',
+  'On Android: open the link, download agentPay.apk, and allow install from this source if prompted.'
+].join('\n');
 
 export const PAIRING_INSTRUCTIONS = [
-  'Pair your Android wallet (Unstoppable Wallet):',
-  '1. Open Unstoppable Wallet on your phone.',
+  'Pair your Android wallet with AgentPay:',
+  '1. Open the AgentPay app on your phone (install from the APK link above if needed).',
   '2. Go to WalletConnect → Connect (or paste from clipboard).',
   '3. Copy the connection URL from the next message and paste it into the app.',
   '4. Tap Connect and approve the AgentPay session.',
   '',
   'IMPORTANT: send the next message exactly as-is (starts with wc:).',
-  'NEVER wrap it in https://link.reown.com/wc?uri=... — Unstoppable Wallet will fail.',
+  'NEVER wrap it in https://link.reown.com/wc?uri=... — the wallet app will fail.',
   '',
   'Send the wc: URI to the user as a separate message so they can copy only the URL.'
 ].join('\n');

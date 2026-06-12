@@ -267,7 +267,29 @@ Calls **any** HTTP API that supports x402. No service catalog — provide the pr
 
 Backend signing always uses catalog id `x402_custom` internally — agents never pass serviceIds.
 
+### `get_android_app_link`
+
+Returns the AgentPay Android APK download URL and install instructions.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| _(none)_ | — | — |
+
+**URL:** https://rafaelekol.github.io/agentpay/agentPay.apk
+
+**Use when:** after MCP install, or before first `get_pairing_link` if the user has no app.
+
 ### `get_pairing_link`
+
+WalletConnect pairing: APK link + paste instructions + raw `wc:` URI (three text blocks).
+
+| Input | Type | Description |
+|-------|------|-------------|
+| _(none)_ | — | Fetches new pairing URI from backend |
+
+**Use when:** user asks to connect/pair wallet. Never wrap the `wc:` URI in `link.reown.com`.
+
+### `get_spending_status`
 
 Read **wallet balance** (mock ledger on backend) and **recent activity** from `GET /v1/status`.
 

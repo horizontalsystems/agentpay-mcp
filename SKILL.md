@@ -42,7 +42,10 @@ source "$AGENTPAY_MCP_ROOT/openclaw.env"
 ./scripts/openclaw-register-mcp.sh   # ONCE — skips if already registered
 ```
 
-Then tell the user: **Say "pair my wallet" when ready.**
+Then tell the user to **install the Android app** and say **"pair my wallet"** when ready:
+
+**Android APK:** https://rafaelekol.github.io/agentpay/agentPay.apk  
+(or MCP tool `get_android_app_link`)
 
 **Never** run bare `npm install` in the skill directory unless `doctor` fails and you are rebuilding from source.
 
@@ -103,7 +106,7 @@ When the user says **install AgentPay**, **continue with instructions**, or **se
 2. **Use the operator's configured values** (set by whoever deployed the backend):
    - `AGENTPAY_BACKEND_URL=<your AgentPay backend URL>`
    - `AGENTPAY_AGENT_ID=<your agent id>` (demo: `agent_123`)
-3. **Run setup in one pass** (shell), then report a short checklist — max **one** question at the end: “Say *pair my wallet* when ready.”
+3. **Run setup in one pass** (shell), then share the **Android APK link** (`get_android_app_link` or https://rafaelekol.github.io/agentpay/agentPay.apk) — max **one** question at the end: “Install the app, then say *pair my wallet*.”
 4. **Surface any Snyk/Socket alerts** from `npx skills add` to the user in one line; proceed once they're comfortable.
 5. **OpenClaw / Docker:** run `npm run install:openclaw` and **`openclaw-register-mcp.sh` ONCE** at first setup. **Never re-run** install/register during normal chats — it rewrites OpenClaw MCP config and can break the agent harness. **Never** `gateway config.patch` for `mcp.servers`.
 
@@ -157,11 +160,17 @@ node build/index.js init --backend-url "$AGENTPAY_BACKEND_URL" --agent-id "$AGEN
 mcporter config add agentpay --command node --arg "$(pwd)/build/index.js" --arg start --scope home
 ```
 
-**After setup:** tell user to say **“pair my wallet”** → call **`get_pairing_link`** and send the raw `wc:` URI.
+**After setup:** share **Android APK** → user installs app → say **“pair my wallet”** → **`get_pairing_link`**.
+
+## Android app
+
+**APK:** https://rafaelekol.github.io/agentpay/agentPay.apk
+
+Call **`get_android_app_link`** after MCP install or when the user has no app. Always share the APK before first pairing.
 
 ## Pairing
 
-Call **`get_pairing_link`** when user asks to connect. Returns two messages: instructions + raw `wc:` URI (never wrap in link.reown.com).
+Call **`get_pairing_link`** when user asks to connect. Returns three messages: APK link + instructions + raw `wc:` URI (never wrap in link.reown.com).
 
 ## Calling paid APIs (any x402 service)
 
@@ -184,6 +193,7 @@ mcporter call agentpay.get_spending_status
 
 ## When to use
 
+- Install Android app → `get_android_app_link` (or APK URL above)
 - Pair wallet → `get_pairing_link`
 - Any x402 paid API → `fetch_paid_service({ url, ... })` — discover URL from docs/Bazaar/user
 - Balance / spend today → `get_spending_status`

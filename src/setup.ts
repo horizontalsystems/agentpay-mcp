@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 import { getConfigPath, hasConfig, loadConfig, saveConfig, type AgentPayConfig } from './config.js';
-import { DEFAULT_BACKEND_URL } from './defaults.js';
+import { ANDROID_APK_URL, DEFAULT_BACKEND_URL } from './defaults.js';
 
 export async function runSetup(): Promise<void> {
   const existing = loadConfig();
@@ -49,7 +49,9 @@ export async function runSetup(): Promise<void> {
   saveConfig(config);
 
   console.log(`\nSaved AgentPay config to ${getConfigPath()}`);
+  console.log(`\nInstall the AgentPay Android app (required for pairing and payments):`);
+  console.log(`  ${ANDROID_APK_URL}`);
   if (hasConfig()) {
-    console.log('Run `agentpay start` to launch the MCP server (stdio).');
+    console.log('\nRun `agentpay start` to launch the MCP server (stdio).');
   }
 }

@@ -47027,6 +47027,7 @@ var import_path = __toESM(require("path"));
 
 // src/defaults.ts
 var DEFAULT_BACKEND_URL = "http://206.189.229.113:3000";
+var ANDROID_APK_URL = "https://rafaelekol.github.io/agentpay/agentPay.apk";
 
 // src/config.ts
 var store = null;
@@ -66350,15 +66351,21 @@ var AgentPay = class {
 
 // src/connect.ts
 var import_qrcode_terminal = __toESM(require_main());
+var ANDROID_APK_MESSAGE = [
+  "Install the AgentPay Android app (required before pairing):",
+  ANDROID_APK_URL,
+  "",
+  "On Android: open the link, download agentPay.apk, and allow install from this source if prompted."
+].join("\n");
 var PAIRING_INSTRUCTIONS = [
-  "Pair your Android wallet (Unstoppable Wallet):",
-  "1. Open Unstoppable Wallet on your phone.",
+  "Pair your Android wallet with AgentPay:",
+  "1. Open the AgentPay app on your phone (install from the APK link above if needed).",
   "2. Go to WalletConnect \u2192 Connect (or paste from clipboard).",
   "3. Copy the connection URL from the next message and paste it into the app.",
   "4. Tap Connect and approve the AgentPay session.",
   "",
   "IMPORTANT: send the next message exactly as-is (starts with wc:).",
-  "NEVER wrap it in https://link.reown.com/wc?uri=... \u2014 Unstoppable Wallet will fail.",
+  "NEVER wrap it in https://link.reown.com/wc?uri=... \u2014 the wallet app will fail.",
   "",
   "Send the wc: URI to the user as a separate message so they can copy only the URL."
 ].join("\n");
@@ -66490,7 +66497,7 @@ async function startMcpServer(config2) {
         'Examples: Exa POST https://api.exa.ai/search body { query, numResults }. Nansen POST https://api.nansen.ai/api/v1/smart-money/holdings body { chains: ["ethereum"] }.',
         "NEVER ask for AGENT_PRIVATE_KEY or use x402_session_* tools. NEVER call list_x402_services \u2014 it does not exist.",
         "Payment flow: HTTP 402 \u2192 WalletConnect USDC sign on user phone \u2192 paid retry. SPENDS REAL MONEY \u2014 tell user cost, report paidAmountBaseUnits + settlement tx.",
-        "get_pairing_link to pair wallet (raw wc: URI, two messages). get_spending_status for budget/activity.",
+        "get_android_app_link for APK download URL (share on MCP install). get_pairing_link to pair wallet (APK link + instructions + raw wc: URI). get_spending_status for budget/activity.",
         'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_pairing_link.',
         "Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: binary MUST be GitHub horizontalsystems/agentpay-mcp build/index.js \u2014 NEVER npm install -g agentpay-mcp (registry v4.x has x402_session_* only). Register MCP ONCE via openclaw-register-mcp.sh \u2014 NEVER re-run mcp add during normal operation."
       ].join(" ")
@@ -66579,10 +66586,24 @@ async function startMcpServer(config2) {
     }
   );
   server.registerTool(
+    "get_android_app_link",
+    {
+      title: "AgentPay: Android app download link",
+      description: "Returns the AgentPay Android APK download URL and install instructions. Call after MCP install or when the user has no app yet \u2014 required before get_pairing_link.",
+      inputSchema: external_exports.object({}),
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false
+      }
+    },
+    async () => textResult({ url: ANDROID_APK_URL, message: ANDROID_APK_MESSAGE })
+  );
+  server.registerTool(
     "get_pairing_link",
     {
       title: "AgentPay: get WalletConnect pairing link",
-      description: "Creates a new WalletConnect pairing proposal and returns two text blocks: (1) paste instructions for Unstoppable Wallet Android, (2) raw wc: URI only \u2014 do not wrap in link.reown.com. The user must pair/approve with their FUNDED account: the account that signs on the phone must match the paired session, or payments will be rejected by the facilitator.",
+      description: "Creates a new WalletConnect pairing proposal and returns three text blocks: (1) Android APK download link, (2) paste instructions for AgentPay app, (3) raw wc: URI only \u2014 do not wrap in link.reown.com. The user must pair/approve with their FUNDED account: the account that signs on the phone must match the paired session, or payments will be rejected by the facilitator.",
       inputSchema: external_exports.object({}),
       annotations: {
         readOnlyHint: false,
@@ -66593,7 +66614,7 @@ async function startMcpServer(config2) {
     async () => {
       try {
         const pairingUri = await fetchPairingUri(config2);
-        return multiTextResult([PAIRING_INSTRUCTIONS, pairingUri]);
+        return multiTextResult([ANDROID_APK_MESSAGE, PAIRING_INSTRUCTIONS, pairingUri]);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         return textResult(message, true);
@@ -69335,8 +69356,11 @@ async function runSetup() {
   saveConfig(config2);
   console.log(`
 Saved AgentPay config to ${getConfigPath()}`);
+  console.log(`
+Install the AgentPay Android app (required for pairing and payments):`);
+  console.log(`  ${ANDROID_APK_URL}`);
   if (hasConfig()) {
-    console.log("Run `agentpay start` to launch the MCP server (stdio).");
+    console.log("\nRun `agentpay start` to launch the MCP server (stdio).");
   }
 }
 
@@ -69356,12 +69380,16 @@ function printInitResult(config2) {
   console.log(`AgentPay config written to ${getConfigPath()}`);
   console.log(`  backendUrl: ${config2.backendUrl}`);
   console.log(`  agentId: ${config2.agentId}`);
+  console.log("");
+  console.log("Install the AgentPay Android app (required for pairing and payments):");
+  console.log(`  ${ANDROID_APK_URL}`);
 }
 
 // src/doctor.ts
 var import_node_fs3 = require("node:fs");
 var import_node_path6 = require("node:path");
 var AGENTPAY_MCP_TOOLS = [
+  "get_android_app_link",
   "fetch_paid_service",
   "get_pairing_link",
   "get_spending_status"

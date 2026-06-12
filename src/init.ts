@@ -1,4 +1,4 @@
-import { DEFAULT_BACKEND_URL } from './defaults.js';
+import { ANDROID_APK_URL, DEFAULT_BACKEND_URL } from './defaults.js';
 import { getConfigPath, saveConfig, type AgentPayConfig } from './config.js';
 
 export type InitOptions = {
@@ -34,4 +34,7 @@ export function printInitResult(config: AgentPayConfig): void {
   console.log(`AgentPay config written to ${getConfigPath()}`);
   console.log(`  backendUrl: ${config.backendUrl}`);
   console.log(`  agentId: ${config.agentId}`);
+  console.log('');
+  console.log('Install the AgentPay Android app (required for pairing and payments):');
+  console.log(`  ${ANDROID_APK_URL}`);
 }
