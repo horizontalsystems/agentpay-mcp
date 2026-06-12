@@ -141,7 +141,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'Examples: Exa POST https://api.exa.ai/search body { query, numResults }. Nansen POST https://api.nansen.ai/api/v1/smart-money/holdings body { chains: ["ethereum"] }.',
         'NEVER ask for AGENT_PRIVATE_KEY or use x402_session_* tools. NEVER call list_x402_services — it does not exist.',
         'Payment flow: HTTP 402 → WalletConnect USDC sign on user phone → paid retry. SPENDS REAL MONEY — tell user cost, report paidAmountBaseUnits + settlement tx.',
-        'get_android_app_link for APK download URL (share on MCP install). get_pairing_link to pair wallet (APK link + instructions + raw wc: URI). get_spending_status for budget/activity.',
+        'get_android_app_link for APK download URL. get_pairing_link to pair wallet. CRITICAL: paste https://rafaelekol.github.io/agentpay/agentPay.apk and the raw wc: URI in your user-visible reply — user cannot see tool output. get_spending_status for budget/activity.',
         'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_pairing_link.',
         'Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: binary MUST be GitHub horizontalsystems/agentpay-mcp build/index.js — NEVER npm install -g agentpay-mcp (registry v4.x has x402_session_* only). Register MCP ONCE via openclaw-register-mcp.sh — NEVER re-run mcp add during normal operation.'
       ].join(' ')
@@ -245,7 +245,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     {
       title: 'AgentPay: Android app download link',
       description:
-        'Returns the AgentPay Android APK download URL and install instructions. Call after MCP install or when the user has no app yet — required before get_pairing_link.',
+        'Returns the AgentPay Android APK download URL and install instructions. Call after MCP install or when the user has no app yet. You MUST paste https://rafaelekol.github.io/agentpay/agentPay.apk in your user-visible reply — the user cannot see this tool output.',
       inputSchema: z.object({}),
       annotations: {
         readOnlyHint: true,
@@ -262,6 +262,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
       title: 'AgentPay: get WalletConnect pairing link',
       description:
         'Creates a new WalletConnect pairing proposal and returns three text blocks: (1) Android APK download link, (2) paste instructions for AgentPay app, (3) raw wc: URI only — do not wrap in link.reown.com. ' +
+        'You MUST include the APK link and the raw wc: URI in your reply to the user — paste both verbatim; the user cannot see tool output. ' +
         'The user must pair/approve with their FUNDED account: the account that signs on the phone must match the paired session, or payments will be rejected by the facilitator.',
       inputSchema: z.object({}),
       annotations: {

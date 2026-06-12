@@ -2,9 +2,8 @@
 name: agentpay
 description: >-
   AgentPay universal x402 client: fetch_paid_service with url/method/body for any x402 HTTP API via WalletConnect on Android.
-  No service catalog. NEVER use AGENT_PRIVATE_KEY or x402_session_* tools. Pair wallet with get_pairing_link.
----
-
+  No service catalog. NEVER use AGENT_PRIVATE_KEY or x402_session_* tools. After MCP install or pairing, ALWAYS paste the APK
+  link and raw wc: URI in your user-visible reply — never summarize tool output without those URLs.
 ---
 
 # AgentPay
@@ -53,7 +52,7 @@ Then tell the user to **install the Android app** and say **"pair my wallet"** w
 
 **Do NOT run `npm install -g agentpay-mcp`.** The npm registry package `agentpay-mcp@4.x` is a **different project** (`up2itnow0822/agentpay-mcp`) with tools like `x402_session_start`, `x402_pay`, and binary `dist/index.js`.
 
-**This skill** is for **GitHub `horizontalsystems/agentpay-mcp`** only — tools `fetch_paid_service`, `get_pairing_link`, `get_spending_status`, binary **`build/index.js`**.
+**This skill** is for **GitHub `horizontalsystems/agentpay-mcp`** only — tools `get_android_app_link`, `fetch_paid_service`, `get_pairing_link`, `get_spending_status`, binary **`build/index.js`**.
 
 Verify after install:
 
@@ -162,15 +161,54 @@ mcporter config add agentpay --command node --arg "$(pwd)/build/index.js" --arg 
 
 **After setup:** share **Android APK** → user installs app → say **“pair my wallet”** → **`get_pairing_link`**.
 
+## User-facing messages (mandatory — all runtimes)
+
+MCP tools return data **to you**. The user does **not** see tool output unless **you paste it** in your reply. Follow these rules every time:
+
+### After MCP install / setup
+
+When AgentPay setup completes, your **user-visible reply MUST include** the full APK URL on its own line:
+
+```
+https://rafaelekol.github.io/agentpay/agentPay.apk
+```
+
+Call `get_android_app_link` if needed, then **paste the URL** — do not say “I shared the link” without including it. Do not use a markdown link or shortened URL; paste the full `https://` URL so the user can tap or copy it.
+
+### Pairing (`get_pairing_link`)
+
+When you call `get_pairing_link`, your **user-visible reply MUST include both**:
+
+1. **The APK link** (full URL above) — if the user may not have the app yet  
+2. **The raw `wc:` URI** exactly as returned — on its own line, nothing else on that line
+
+**Include the APK link and the raw `wc:` URI in your reply to the user.** Do not paraphrase, summarize, or omit either. Never wrap the `wc:` URI in `https://link.reown.com/...`.
+
+Example user-visible reply shape:
+
+```
+Install AgentPay on Android (if you haven't yet):
+https://rafaelekol.github.io/agentpay/agentPay.apk
+
+Open the app → WalletConnect → Connect, then paste this URI:
+wc:...
+```
+
+### What NOT to do
+
+- Do not say “check the tool output above” — the user cannot see it  
+- Do not replace the `wc:` URI with a Reown/deep link  
+- Do not skip the APK link on first install or first pairing
+
 ## Android app
 
 **APK:** https://rafaelekol.github.io/agentpay/agentPay.apk
 
-Call **`get_android_app_link`** after MCP install or when the user has no app. Always share the APK before first pairing.
+Call **`get_android_app_link`** after MCP install or when the user has no app. **Always paste this URL in your reply** before first pairing.
 
 ## Pairing
 
-Call **`get_pairing_link`** when user asks to connect. Returns three messages: APK link + instructions + raw `wc:` URI (never wrap in link.reown.com).
+Call **`get_pairing_link`** when user asks to connect. Returns three messages: APK link + instructions + raw `wc:` URI. **Paste the APK link and raw `wc:` URI in your reply to the user** (never wrap `wc:` in link.reown.com).
 
 ## Calling paid APIs (any x402 service)
 
@@ -200,6 +238,7 @@ mcporter call agentpay.get_spending_status
 
 ## Agent behavior (important)
 
+- **Always paste in your user-visible reply:** APK URL `https://rafaelekol.github.io/agentpay/agentPay.apk` after install; **APK link + raw `wc:` URI** after `get_pairing_link`. Never summarize without including both URLs.
 - **Never** re-run `openclaw-register-mcp.sh`, `npm run install:openclaw`, or `openclaw mcp add agentpay` after initial setup — use `get_pairing_link` / `fetch_paid_service` / `get_spending_status` instead.
 - **Never** ask the user to pick from a fixed service list — use the URL for the API they need.
 - **Never** set `AGENT_PRIVATE_KEY`.
