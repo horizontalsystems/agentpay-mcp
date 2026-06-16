@@ -1,13 +1,14 @@
-# AgentPay x402 Catalog (2026-06-12)
+# AgentPay x402 Catalog (2026-06-16)
 Source: https://www.x402scan.com/resources
 Services: 30
-
+Skipped domains: hugen.tokyo
 ## 1. BlockRun — Pay-per-call AI gateway
 - **Origin:** http://blockrun.ai
 - **x402scan:** https://www.x402scan.com/server/cbe8caef-6324-4bd1-aee7-63d09fb4d1b9
-- **Tx volume:** 1,701,821
-- **Description:** Pay-per-call AI gateway. Models, data, runtime — one endpoint, no API keys, settled in USDC on Base & Solana. One install for OpenClaw (ClawRouter), Claude Code (MCP), or Franklin Agent. Per call, per...
-- **APIs (9):**
+- **Tx volume:** 1,819,420
+- **Probe:** HTTP 200
+- **Description:** Pay-per-call AI gateway. Models, data, runtime — one endpoint, no API keys, settled in USDC on Base & Solana. One install for OpenClaw (ClawRouter), Claude Code (MCP), or Franklin Agent. Per call, per token, no subscription.
+- **APIs (15):**
   - `POST` http://blockrun.ai/api/v1/chat/completions
   - `POST` http://blockrun.ai/api/v1/images/generations
   - `POST` http://blockrun.ai/api/v1/modal/sandbox/create
@@ -17,13 +18,20 @@ Services: 30
   - `POST` http://blockrun.ai/api/v1/search
   - `POST` http://blockrun.ai/api/v1/x/users/followers
   - `POST` http://blockrun.ai/api/v1/x/users/lookup
+  - `POST` https://blockrun.ai/api/v1/audio/generations
+  - `POST` https://blockrun.ai/api/v1/audio/sound-effects
+  - `POST` https://blockrun.ai/api/v1/audio/speech
+  - `POST` https://blockrun.ai/api/v1/chat/completions
+  - `GET` https://blockrun.ai/api/v1/defillama/chains
+  - `GET` https://blockrun.ai/api/v1/defillama/prices/%7Bcoins%7D
 
 ## 2. StableEnrich
 - **Origin:** https://stableenrich.dev
 - **x402scan:** https://www.x402scan.com/server/b8a06bde-b6e8-4a10-b4e0-cc6a25fb9efb
-- **Tx volume:** 98,605
+- **Tx volume:** 65,538
+- **Probe:** HTTP 200
 - **Description:** Pay-per-request access to Apollo, Clado, Exa, Firecrawl, Google Maps, Serper, and Whitepages APIs. No auth, no subscriptions.
-- **APIs (38):**
+- **APIs (15):**
   - `POST` https://stableenrich.dev/api/apollo/org-enrich
   - `POST` https://stableenrich.dev/api/apollo/org-search
   - `POST` https://stableenrich.dev/api/apollo/people-enrich
@@ -39,19 +47,14 @@ Services: 30
   - `POST` https://stableenrich.dev/api/firecrawl/search
   - `GET` https://stableenrich.dev/api/google-maps/aerial-view/lookup-video
   - `POST` https://stableenrich.dev/api/google-maps/aerial-view/render-video
-  - `POST` https://stableenrich.dev/api/google-maps/nearby-search/full
-  - `POST` https://stableenrich.dev/api/google-maps/nearby-search/partial
-  - `GET` https://stableenrich.dev/api/google-maps/place-details/full
-  - `GET` https://stableenrich.dev/api/google-maps/place-details/partial
-  - `GET` https://stableenrich.dev/api/google-maps/solar/building-insights
-  - ... +18 more (see x402scanUrl)
 
 ## 3. twit.sh — Plug AI agents into X
 - **Origin:** https://x402.twit.sh
 - **x402scan:** https://www.x402scan.com/server/b6242036-97a3-439b-901b-abdded377045
-- **Tx volume:** 45,285
+- **Tx volume:** 47,193
+- **Probe:** HTTP 402
 - **Description:** Real-time Twitter/X data for AI agents. No sign-up, no API keys. Pay per request in USDC on Base via x402.
-- **APIs (33):**
+- **APIs (15):**
   - `GET` https://x402.twit.sh/articles/by/id
   - `GET` https://x402.twit.sh/communities/by/id
   - `GET` https://x402.twit.sh/communities/members
@@ -67,312 +70,14 @@ Services: 30
   - `DELETE` https://x402.twit.sh/tweets/bookmark
   - `GET` https://x402.twit.sh/tweets/by/id
   - `POST` https://x402.twit.sh/tweets/like
-  - `DELETE` https://x402.twit.sh/tweets/like
-  - `GET` https://x402.twit.sh/tweets/mentions
-  - `GET` https://x402.twit.sh/tweets/quote_tweets
-  - `GET` https://x402.twit.sh/tweets/replies
-  - `DELETE` https://x402.twit.sh/tweets/retweet
-  - ... +13 more (see x402scanUrl)
 
-## 4. http://sol.blockrun.ai
-- **Origin:** http://sol.blockrun.ai
-- **x402scan:** https://www.x402scan.com/server/4e7a72e6-aba4-4e02-b271-da1b6f7019eb
-- **Tx volume:** 18,783
-- **Description:** 
-- **APIs (6):**
-  - `POST` http://sol.blockrun.ai/api/v1/chat/completions
-  - `POST` http://sol.blockrun.ai/api/v1/images/generations
-  - `POST` http://sol.blockrun.ai/api/v1/search
-  - `POST` http://sol.blockrun.ai/api/v1/x/users/followers
-  - `POST` http://sol.blockrun.ai/api/v1/x/users/following
-  - `POST` http://sol.blockrun.ai/api/v1/x/users/lookup
-
-## 5. claw402 — x402 API Payment Gateway
-- **Origin:** https://claw402.ai
-- **x402scan:** https://www.x402scan.com/server/c03533a3-523f-4687-b1cd-c61e9de7aed9
-- **Tx volume:** 17,294
-- **Description:** Backed by vergex.trade. Pay for any API with USDC. No API keys. No registration. Just a wallet.
-- **APIs (254):**
-  - `POST` https://claw402.ai/api/v1/ai/anthropic/messages/haiku
-  - `POST` https://claw402.ai/api/v1/ai/anthropic/messages/opus
-  - `POST` https://claw402.ai/api/v1/ai/anthropic/messages/sonnet
-  - `POST` https://claw402.ai/api/v1/ai/deepseek/chat
-  - `POST` https://claw402.ai/api/v1/ai/deepseek/chat/demo
-  - `POST` https://claw402.ai/api/v1/ai/deepseek/chat/reasoner
-  - `GET` https://claw402.ai/api/v1/ai/deepseek/models
-  - `POST` https://claw402.ai/api/v1/ai/deepseek/v4-flash
-  - `POST` https://claw402.ai/api/v1/ai/deepseek/v4-pro
-  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/2.5-flash
-  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/2.5-flash-lite
-  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/2.5-pro
-  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/3-flash
-  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/3.1-flash-lite
-  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/3.1-pro
-  - `GET` https://claw402.ai/api/v1/ai/gemini/models
-  - `POST` https://claw402.ai/api/v1/ai/grok/chat/3-mini
-  - `POST` https://claw402.ai/api/v1/ai/grok/chat/4
-  - `POST` https://claw402.ai/api/v1/ai/grok/chat/4.1
-  - `POST` https://claw402.ai/api/v1/ai/grok/chat/4.1-fast
-  - ... +234 more (see x402scanUrl)
-
-## 6. Scout — Multi-source Intelligence API
-- **Origin:** https://scout.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/6da9cf23-5260-4656-a70a-1ef9180344bd
-- **Tx volume:** 16,512
-- **Description:** Search 19+ platforms in a single API call: Reddit, Hacker News, GitHub, Stack Overflow, arXiv, npm, PyPI, X/Twitter, YouTube, Product Hunt, Dev.to, Qiita, Zenn, Semantic Scholar, GitLab, Hashnode, Lob...
-- **APIs (17):**
-  - `POST` https://scout.hugen.tokyo/scout/arxiv
-  - `POST` https://scout.hugen.tokyo/scout/devto
-  - `POST` https://scout.hugen.tokyo/scout/github
-  - `POST` https://scout.hugen.tokyo/scout/github/repo
-  - `POST` https://scout.hugen.tokyo/scout/gitlab
-  - `POST` https://scout.hugen.tokyo/scout/hashnode
-  - `POST` https://scout.hugen.tokyo/scout/hn
-  - `POST` https://scout.hugen.tokyo/scout/lobsters
-  - `POST` https://scout.hugen.tokyo/scout/npm
-  - `POST` https://scout.hugen.tokyo/scout/ph
-  - `POST` https://scout.hugen.tokyo/scout/pypi
-  - `POST` https://scout.hugen.tokyo/scout/report
-  - `POST` https://scout.hugen.tokyo/scout/report/full
-  - `POST` https://scout.hugen.tokyo/scout/scholar
-  - `POST` https://scout.hugen.tokyo/scout/stackoverflow
-  - `POST` https://scout.hugen.tokyo/scout/x
-  - `POST` https://scout.hugen.tokyo/scout/x402
-
-## 7. https://defi.hugen.tokyo
-- **Origin:** https://defi.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/835299d9-d4e7-4b2a-8933-4441efa2a5d8
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (26):**
-  - `POST` https://defi.hugen.tokyo/defi/address
-  - `POST` https://defi.hugen.tokyo/defi/approval
-  - `POST` https://defi.hugen.tokyo/defi/bridge/chains
-  - `POST` https://defi.hugen.tokyo/defi/bridge/quote
-  - `POST` https://defi.hugen.tokyo/defi/bridge/routes
-  - `POST` https://defi.hugen.tokyo/defi/bridge/status
-  - `POST` https://defi.hugen.tokyo/defi/bridge/tokens
-  - `POST` https://defi.hugen.tokyo/defi/bridge/tools
-  - `POST` https://defi.hugen.tokyo/defi/chains
-  - `POST` https://defi.hugen.tokyo/defi/dapp
-  - `POST` https://defi.hugen.tokyo/defi/dex/volume
-  - `POST` https://defi.hugen.tokyo/defi/fees
-  - `POST` https://defi.hugen.tokyo/defi/gas
-  - `POST` https://defi.hugen.tokyo/defi/malicious
-  - `POST` https://defi.hugen.tokyo/defi/nft
-  - `POST` https://defi.hugen.tokyo/defi/phishing
-  - `POST` https://defi.hugen.tokyo/defi/price
-  - `POST` https://defi.hugen.tokyo/defi/protocol
-  - `POST` https://defi.hugen.tokyo/defi/protocols
-  - `POST` https://defi.hugen.tokyo/defi/rugpull
-  - ... +6 more (see x402scanUrl)
-
-## 8. FX Tick Aggregator — Live Demo (Delayed)
-- **Origin:** https://tick.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/ec1a57b4-f4e6-4c5b-8a0b-83993d564ce5
-- **Tx volume:** 16,512
-- **Description:** Multi-source aggregated FX Best Bid/Ask from multiple institutional LPs. 62-88% tighter spreads than any single source. Real-time tick data with quality metadata. AI agent API for forex trading, portf...
-- **APIs (1):**
-  - `POST` https://tick.hugen.tokyo/tick/latest
-
-## 9. Visual API
-- **Origin:** https://visual.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/9bcd9e0a-c565-4acb-8163-201e3d3de05f
-- **Tx volume:** 16,512
-- **Description:** Screenshot and PDF capture of any URL — no browser infrastructure needed, no server costs. Pay per capture.
-- **APIs (4):**
-  - `POST` https://visual.hugen.tokyo/visual/ocr
-  - `POST` https://visual.hugen.tokyo/visual/parse
-  - `POST` https://visual.hugen.tokyo/visual/pdf
-  - `POST` https://visual.hugen.tokyo/visual/screenshot
-
-## 10. https://content-dx.hugen.tokyo
-- **Origin:** https://content-dx.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/e83af0bd-3937-4a06-be42-f3b399b9222d
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (3):**
-  - `POST` https://content-dx.hugen.tokyo/content/analyze
-  - `POST` https://content-dx.hugen.tokyo/content/links
-  - `POST` https://content-dx.hugen.tokyo/content/summary
-
-## 11. https://domain-dx.hugen.tokyo
-- **Origin:** https://domain-dx.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/f53052f5-dd03-4d94-a6aa-805354726895
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (6):**
-  - `POST` https://domain-dx.hugen.tokyo/domain/full
-  - `POST` https://domain-dx.hugen.tokyo/domain/headers
-  - `POST` https://domain-dx.hugen.tokyo/domain/redirect
-  - `POST` https://domain-dx.hugen.tokyo/domain/subdomains
-  - `POST` https://domain-dx.hugen.tokyo/domain/tech
-  - `POST` https://domain-dx.hugen.tokyo/domain/whois
-
-## 12. https://domain.hugen.tokyo
-- **Origin:** https://domain.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/9565e7de-5ecc-4082-8bea-c47f2f22ec1f
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (8):**
-  - `POST` https://domain.hugen.tokyo/domain/dns
-  - `POST` https://domain.hugen.tokyo/domain/full
-  - `POST` https://domain.hugen.tokyo/domain/headers
-  - `POST` https://domain.hugen.tokyo/domain/redirect
-  - `POST` https://domain.hugen.tokyo/domain/ssl
-  - `POST` https://domain.hugen.tokyo/domain/subdomains
-  - `POST` https://domain.hugen.tokyo/domain/tech
-  - `POST` https://domain.hugen.tokyo/domain/whois
-
-## 13. https://scout-dx.hugen.tokyo
-- **Origin:** https://scout-dx.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/6a8f9366-6432-4fa9-a719-d2e127d9f9d4
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (13):**
-  - `POST` https://scout-dx.hugen.tokyo/scout/arxiv
-  - `POST` https://scout-dx.hugen.tokyo/scout/devto
-  - `POST` https://scout-dx.hugen.tokyo/scout/gitlab
-  - `POST` https://scout-dx.hugen.tokyo/scout/hashnode
-  - `POST` https://scout-dx.hugen.tokyo/scout/hn
-  - `POST` https://scout-dx.hugen.tokyo/scout/lobsters
-  - `POST` https://scout-dx.hugen.tokyo/scout/npm
-  - `POST` https://scout-dx.hugen.tokyo/scout/report
-  - `POST` https://scout-dx.hugen.tokyo/scout/report/full
-  - `POST` https://scout-dx.hugen.tokyo/scout/scholar
-  - `POST` https://scout-dx.hugen.tokyo/scout/stackoverflow
-  - `POST` https://scout-dx.hugen.tokyo/scout/x
-  - `POST` https://scout-dx.hugen.tokyo/scout/x402
-
-## 14. https://content.hugen.tokyo
-- **Origin:** https://content.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/07adec1e-d0c0-448a-a1c2-375a35c0122d
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (6):**
-  - `POST` https://content.hugen.tokyo/content/analyze
-  - `POST` https://content.hugen.tokyo/content/extract
-  - `POST` https://content.hugen.tokyo/content/links
-  - `POST` https://content.hugen.tokyo/content/metadata
-  - `POST` https://content.hugen.tokyo/content/structured
-  - `POST` https://content.hugen.tokyo/content/summary
-
-## 15. https://defi-dx.hugen.tokyo
-- **Origin:** https://defi-dx.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/72504062-a1ad-468b-b1d5-52a7cc008439
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (16):**
-  - `POST` https://defi-dx.hugen.tokyo/defi/approval
-  - `POST` https://defi-dx.hugen.tokyo/defi/bridge/quote
-  - `POST` https://defi-dx.hugen.tokyo/defi/bridge/status
-  - `POST` https://defi-dx.hugen.tokyo/defi/bridge/tokens
-  - `POST` https://defi-dx.hugen.tokyo/defi/dapp
-  - `POST` https://defi-dx.hugen.tokyo/defi/fees
-  - `POST` https://defi-dx.hugen.tokyo/defi/gas
-  - `POST` https://defi-dx.hugen.tokyo/defi/malicious
-  - `POST` https://defi-dx.hugen.tokyo/defi/nft
-  - `POST` https://defi-dx.hugen.tokyo/defi/phishing
-  - `POST` https://defi-dx.hugen.tokyo/defi/price
-  - `POST` https://defi-dx.hugen.tokyo/defi/protocol
-  - `POST` https://defi-dx.hugen.tokyo/defi/rugpull
-  - `POST` https://defi-dx.hugen.tokyo/defi/token
-  - `POST` https://defi-dx.hugen.tokyo/defi/token/solana
-  - `POST` https://defi-dx.hugen.tokyo/defi/tvl
-
-## 16. https://weather-dx.hugen.tokyo
-- **Origin:** https://weather-dx.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/4fbde650-0b14-4730-964b-61af2bd6743e
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (1):**
-  - `POST` https://weather-dx.hugen.tokyo/weather/forecast
-
-## 17. https://whale.hugen.tokyo
-- **Origin:** https://whale.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/a65743ed-822e-4a0f-8d38-a1ba038c4758
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (1):**
-  - `POST` https://whale.hugen.tokyo/whale/movements
-
-## 18. https://intel-dx.hugen.tokyo
-- **Origin:** https://intel-dx.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/4f7e0731-e41f-46bb-85d7-508fc0770f97
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (3):**
-  - `POST` https://intel-dx.hugen.tokyo/intel/contract-report
-  - `POST` https://intel-dx.hugen.tokyo/intel/wallet-report
-  - `POST` https://intel-dx.hugen.tokyo/intel/yield-report
-
-## 19. https://discovery.hugen.tokyo
-- **Origin:** https://discovery.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/21cb690d-3d69-4a10-ae0a-4c943af393d6
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (1):**
-  - `POST` https://discovery.hugen.tokyo/keys/topup
-
-## 20. https://intel.hugen.tokyo
-- **Origin:** https://intel.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/3eafeb81-cc82-4ac9-9294-83b1130520bf
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (4):**
-  - `POST` https://intel.hugen.tokyo/intel/contract-report
-  - `POST` https://intel.hugen.tokyo/intel/token-report
-  - `POST` https://intel.hugen.tokyo/intel/wallet-report
-  - `POST` https://intel.hugen.tokyo/intel/yield-report
-
-## 21. https://cot.hugen.tokyo
-- **Origin:** https://cot.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/db6df474-9c6b-4121-9b4c-7b4d00d69f36
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (1):**
-  - `POST` https://cot.hugen.tokyo/cot/history
-
-## 22. https://mailcheck-dx.hugen.tokyo
-- **Origin:** https://mailcheck-dx.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/5cbafb25-34e0-4121-9d11-7d866f94811c
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (1):**
-  - `POST` https://mailcheck-dx.hugen.tokyo/mailcheck/disposable
-
-## 23. https://mailcheck.hugen.tokyo
-- **Origin:** https://mailcheck.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/a2142488-265f-49cf-b371-3c82606d93dd
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (2):**
-  - `POST` https://mailcheck.hugen.tokyo/mailcheck/disposable
-  - `POST` https://mailcheck.hugen.tokyo/mailcheck/mx
-
-## 24. https://visual-dx.hugen.tokyo
-- **Origin:** https://visual-dx.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/8db11d00-b4a8-4121-9236-c1ea4db05f60
-- **Tx volume:** 16,512
-- **Description:** 
-- **APIs (1):**
-  - `POST` https://visual-dx.hugen.tokyo/visual/parse
-
-## 25. Weather API
-- **Origin:** https://weather.hugen.tokyo
-- **x402scan:** https://www.x402scan.com/server/1cfc2032-1230-4549-9e4a-3bc18bcaa59d
-- **Tx volume:** 16,512
-- **Description:** Instant weather data by city name — no API keys, no geocoding setup, no rate limits. Current conditions and daily forecasts for any city worldwide in structured JSON, ready for agent consumption.
-- **APIs (2):**
-  - `GET` https://weather.hugen.tokyo/weather/current
-  - `GET` https://weather.hugen.tokyo/weather/forecast
-
-## 26. Vishwa
+## 4. Vishwa
 - **Origin:** https://api.vishwalab.com
 - **x402scan:** https://www.x402scan.com/server/7fdd6134-681d-4556-82b8-6fbb2c707a36
-- **Tx volume:** 15,986
+- **Tx volume:** 9,421
+- **Probe:** HTTP 200
 - **Description:** Vishwa is building agent-native banking infrastructure for autonomous capital, bringing pre-execution control to agent-driven payments and capital flows.
-- **APIs (19):**
+- **APIs (15):**
   - `GET` https://api.vishwalab.com/v1/prediction/events
   - `GET` https://api.vishwalab.com/v1/prediction/events/%7BeventId%7D
   - `GET` https://api.vishwalab.com/v1/prediction/events/%7BeventId%7D/markets
@@ -388,26 +93,14 @@ Services: 30
   - `GET` https://api.vishwalab.com/v1/prediction/orders/status/%7BorderPubkey%7D
   - `GET` https://api.vishwalab.com/v1/prediction/positions
   - `GET` https://api.vishwalab.com/v1/prediction/positions/%7BpositionPubkey%7D
-  - `DELETE` https://api.vishwalab.com/v1/prediction/positions/%7BpositionPubkey%7D
-  - `POST` https://api.vishwalab.com/v1/prediction/positions/%7BpositionPubkey%7D/claim
-  - `GET` https://api.vishwalab.com/v1/prediction/trades
-  - `GET` https://api.vishwalab.com/v1/services
 
-## 27. Surf Web
-- **Origin:** https://web.surf.cascade.fyi
-- **x402scan:** https://www.x402scan.com/server/aa4fd830-ad2a-4a3f-babe-2984b99a55a6
-- **Tx volume:** 9,715
-- **Description:** Pay-per-use web search and crawl API with x402 micropayments.
-- **APIs (2):**
-  - `POST` https://web.surf.cascade.fyi/v1/crawl
-  - `POST` https://web.surf.cascade.fyi/v1/search
-
-## 28. Surf Twitter
+## 5. Surf Twitter
 - **Origin:** https://twitter.surf.cascade.fyi
 - **x402scan:** https://www.x402scan.com/server/65dad08e-2802-4fac-adc2-dfb1acb24713
-- **Tx volume:** 9,715
+- **Tx volume:** 9,175
+- **Probe:** HTTP 200
 - **Description:** Pay-per-use Twitter/X data API with x402 micropayments.
-- **APIs (26):**
+- **APIs (15):**
   - `POST` https://twitter.surf.cascade.fyi/communities/%7Bid%7D
   - `POST` https://twitter.surf.cascade.fyi/communities/%7Bid%7D/members
   - `POST` https://twitter.surf.cascade.fyi/communities/%7Bid%7D/tweets
@@ -423,31 +116,475 @@ Services: 30
   - `POST` https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/quotes
   - `POST` https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/replies
   - `POST` https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/retweeters
-  - `POST` https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/thread
-  - `POST` https://twitter.surf.cascade.fyi/tweets/search
-  - `POST` https://twitter.surf.cascade.fyi/users
-  - `POST` https://twitter.surf.cascade.fyi/users/%7Bref%7D
-  - `POST` https://twitter.surf.cascade.fyi/users/%7Bref%7D/followers
-  - ... +6 more (see x402scanUrl)
 
-## 29. Surf Inference
-- **Origin:** https://inference.surf.cascade.fyi
-- **x402scan:** https://www.x402scan.com/server/2dcac6c0-5e83-4e39-948e-7b98ac603b1d
-- **Tx volume:** 9,715
-- **Description:** OpenAI-compatible LLM inference API with x402 or MPP micropayments.
+## 6. OneSource - Ethereum RPC for AI Agents
+- **Origin:** https://api.onesource.io
+- **x402scan:** https://www.x402scan.com/server/bbb78e94-611e-4f0c-9a48-6df8fd9b26be
+- **Tx volume:** 7,844
+- **Probe:** HTTP 200
+- **Description:** Ethereum mainnet and Sepolia testnet RPC for AI agents, served from OneSource-operated nodes. Live block, balance, contract, NFT, transaction, and event data. Pay per call or use batch/session mode — USDC on Base via x402, or pathUSD/USDC.e on Tempo via MPP. No API keys required.
+- **APIs (15):**
+  - `GET` https://api.onesource.io/api/chain/allowance
+  - `GET` https://api.onesource.io/api/chain/block-number
+  - `GET` https://api.onesource.io/api/chain/block/%7Bnumber%7D
+  - `POST` https://api.onesource.io/api/chain/call
+  - `GET` https://api.onesource.io/api/chain/chain-id
+  - `GET` https://api.onesource.io/api/chain/code/%7Baddress%7D
+  - `GET` https://api.onesource.io/api/chain/contract/%7Baddress%7D
+  - `GET` https://api.onesource.io/api/chain/ens/%7Binput%7D
+  - `GET` https://api.onesource.io/api/chain/erc1155-balance
+  - `GET` https://api.onesource.io/api/chain/erc20-balance
+  - `GET` https://api.onesource.io/api/chain/erc20-transfers
+  - `GET` https://api.onesource.io/api/chain/erc721-tokens
+  - `POST` https://api.onesource.io/api/chain/estimate-gas
+  - `GET` https://api.onesource.io/api/chain/events
+  - `GET` https://api.onesource.io/api/chain/live-balance
+
+## 7. ATXP — The Account for AI Agents
+- **Origin:** https://hub.atxp.ai
+- **x402scan:** https://www.x402scan.com/server/9f82a047-ab57-45ff-a6df-014cf5f527e8
+- **Tx volume:** 7,590
+- **Probe:** HTTP 200
+- **Description:** ATXP gives AI agents identity, payments, communication, and tools. Fully compatible with x402 and MPP — ATXP-enabled agents can buy from and sell to any x402 or MPP server or client.
 - **APIs (1):**
-  - `POST` https://inference.surf.cascade.fyi/v1/chat/completions
+  - `POST` https://hub.atxp.ai/v1/services
 
-## 30. Surf Reddit
-- **Origin:** https://reddit.surf.cascade.fyi
-- **x402scan:** https://www.x402scan.com/server/b6534b5a-81e1-476a-a381-8ce90061f1e7
-- **Tx volume:** 9,715
-- **Description:** Pay-per-use Reddit data API with x402 micropayments.
-- **APIs (7):**
-  - `POST` https://reddit.surf.cascade.fyi/posts/%7Bid%7D
-  - `POST` https://reddit.surf.cascade.fyi/r/%7Bsubreddit%7D
-  - `POST` https://reddit.surf.cascade.fyi/r/%7Bsubreddit%7D/posts
-  - `POST` https://reddit.surf.cascade.fyi/search
-  - `POST` https://reddit.surf.cascade.fyi/users/%7Busername%7D
-  - `POST` https://reddit.surf.cascade.fyi/users/%7Busername%7D/comments
-  - `POST` https://reddit.surf.cascade.fyi/users/%7Busername%7D/posts
+## 8. Nansen AI - Trade Everything Onchain with AI
+- **Origin:** https://api.nansen.ai
+- **x402scan:** https://www.x402scan.com/server/21252dba-de2a-4432-a9dd-387f79ce5922
+- **Tx volume:** 6,731
+- **Probe:** HTTP 200
+- **Description:** Trade everything onchain with AI, powered by 500M+ labeled addresses. Track Smart Money, analyze any token, and execute instantly - all in one place.
+- **APIs (15):**
+  - `POST` https://api.nansen.ai/api/v1/profiler/address/counterparties
+  - `POST` https://api.nansen.ai/api/v1/profiler/address/current-balance
+  - `POST` https://api.nansen.ai/api/v1/profiler/address/historical-balances
+  - `POST` https://api.nansen.ai/api/v1/profiler/address/pnl
+  - `POST` https://api.nansen.ai/api/v1/profiler/address/pnl-summary
+  - `POST` https://api.nansen.ai/api/v1/profiler/address/related-wallets
+  - `POST` https://api.nansen.ai/api/v1/profiler/address/transactions
+  - `POST` https://api.nansen.ai/api/v1/profiler/dex-trades
+  - `POST` https://api.nansen.ai/api/v1/profiler/perp-positions
+  - `POST` https://api.nansen.ai/api/v1/profiler/perp-trades
+  - `POST` https://api.nansen.ai/api/v1/smart-money/dcas
+  - `POST` https://api.nansen.ai/api/v1/smart-money/dex-trades
+  - `POST` https://api.nansen.ai/api/v1/smart-money/historical-holdings
+  - `POST` https://api.nansen.ai/api/v1/smart-money/holdings
+  - `POST` https://api.nansen.ai/api/v1/smart-money/netflow
+
+## 9. claw402 — x402 API Payment Gateway
+- **Origin:** https://claw402.ai
+- **x402scan:** https://www.x402scan.com/server/c03533a3-523f-4687-b1cd-c61e9de7aed9
+- **Tx volume:** 6,304
+- **Probe:** HTTP 200
+- **Description:** Backed by vergex.trade. Pay for any API with USDC. No API keys. No registration. Just a wallet.
+- **APIs (15):**
+  - `POST` https://claw402.ai/api/v1/ai/anthropic/messages/haiku
+  - `POST` https://claw402.ai/api/v1/ai/anthropic/messages/opus
+  - `POST` https://claw402.ai/api/v1/ai/anthropic/messages/sonnet
+  - `POST` https://claw402.ai/api/v1/ai/deepseek/chat
+  - `POST` https://claw402.ai/api/v1/ai/deepseek/chat/demo
+  - `POST` https://claw402.ai/api/v1/ai/deepseek/chat/reasoner
+  - `GET` https://claw402.ai/api/v1/ai/deepseek/models
+  - `POST` https://claw402.ai/api/v1/ai/deepseek/v4-flash
+  - `POST` https://claw402.ai/api/v1/ai/deepseek/v4-pro
+  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/2.5-flash
+  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/2.5-flash-lite
+  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/2.5-pro
+  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/3-flash
+  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/3.1-flash-lite
+  - `POST` https://claw402.ai/api/v1/ai/gemini/chat/3.1-pro
+
+## 10. StableEmail
+- **Origin:** https://stableemail.dev
+- **x402scan:** https://www.x402scan.com/server/7c37fc42-c725-4232-9e4e-106db4872375
+- **Tx volume:** 6,130
+- **Probe:** HTTP 200
+- **Description:** Pay-per-send email delivery. No API keys, no accounts.
+- **APIs (15):**
+  - `POST` https://stableemail.dev/api/inbox/buy
+  - `POST` https://stableemail.dev/api/inbox/cancel
+  - `POST` https://stableemail.dev/api/inbox/messages
+  - `POST` https://stableemail.dev/api/inbox/messages/delete
+  - `POST` https://stableemail.dev/api/inbox/messages/read
+  - `POST` https://stableemail.dev/api/inbox/send
+  - `GET` https://stableemail.dev/api/inbox/status
+  - `POST` https://stableemail.dev/api/inbox/topup
+  - `POST` https://stableemail.dev/api/inbox/topup/quarter
+  - `POST` https://stableemail.dev/api/inbox/topup/year
+  - `POST` https://stableemail.dev/api/inbox/update
+  - `POST` https://stableemail.dev/api/send
+  - `POST` https://stableemail.dev/api/subdomain/buy
+  - `POST` https://stableemail.dev/api/subdomain/inbox/create
+  - `POST` https://stableemail.dev/api/subdomain/inbox/delete
+
+## 11. glim.sh - live data for any agent
+- **Origin:** https://surf.cascade.fyi
+- **x402scan:** https://www.x402scan.com/server/22d38147-8bb0-4efc-a087-a1dc54f4ca9d
+- **Tx volume:** 5,902
+- **Probe:** HTTP 200
+- **Description:** One remote endpoint gives your agent live data from Twitter, Reddit, the open web, GitHub and more. No API keys, no scraping stack - just connect the URL and pay per call.
+- **APIs (15):**
+  - `POST` https://surf.cascade.fyi/api/v1/amazon/get
+  - `POST` https://surf.cascade.fyi/api/v1/amazon/search
+  - `POST` https://surf.cascade.fyi/api/v1/github/get
+  - `POST` https://surf.cascade.fyi/api/v1/github/search
+  - `POST` https://surf.cascade.fyi/api/v1/reddit/get
+  - `POST` https://surf.cascade.fyi/api/v1/reddit/search
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/get
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/lists/%7Bid%7D/members
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/lists/%7Bid%7D/tweets
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/search
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/trends
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/tweets
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/tweets/%7Bid%7D
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/tweets/%7Bid%7D/article
+  - `POST` https://surf.cascade.fyi/api/v1/twitter/tweets/%7Bid%7D/quotes
+
+## 12. BTC Node API — Bitcoin + Data + SEC + Scrape + AI + Reddit
+- **Origin:** https://btcnode.uk
+- **x402scan:** https://www.x402scan.com/server/257d21e5-2b65-4568-81ce-230263e96932
+- **Tx volume:** 5,394
+- **Probe:** HTTP 200
+- **Description:** Bitcoin blockchain data, address portfolio, transaction tracing, fee forecasting, whale monitoring, SEC EDGAR filings, URL scraping, AI summarization, and Reddit API via x402 micropayments on Base.
+- **APIs (15):**
+  - `GET` https://btcnode.uk/api/addr/%7Baddress%7D
+  - `GET` https://btcnode.uk/api/fees
+  - `GET` https://btcnode.uk/api/fees/predict
+  - `GET` https://btcnode.uk/api/info
+  - `GET` https://btcnode.uk/api/mempool
+  - `GET` https://btcnode.uk/api/reddit/comments/%7BpostId%7D
+  - `GET` https://btcnode.uk/api/reddit/hot/%7Bsubreddit%7D
+  - `GET` https://btcnode.uk/api/reddit/search
+  - `GET` https://btcnode.uk/api/reddit/trending
+  - `POST` https://btcnode.uk/api/scrape
+  - `GET` https://btcnode.uk/api/sec/insider/%7Bticker%7D
+  - `POST` https://btcnode.uk/api/summarize
+  - `GET` https://btcnode.uk/api/trace/%7Btxid%7D
+  - `GET` https://btcnode.uk/api/tx/%7Bhash%7D
+  - `GET` https://btcnode.uk/api/whales
+
+## 13. molty.cash — USDC payments for agents and humans
+- **Origin:** https://api.molty.cash
+- **x402scan:** https://www.x402scan.com/server/701b5dfd-59a7-45ad-9463-f5d73723fcc4
+- **Tx volume:** 5,356
+- **Probe:** HTTP 200
+- **Description:** Send tips, hire for tasks, and create gigs — settled on-chain via x402 (Base, Solana, World Chain, SKALE) and MPP (Tempo, Stellar, Monad).
+- **APIs (1):**
+  - `POST` https://api.molty.cash/a2a
+
+## 14. Otto AI x402 — Programmable USDC payments for AI agents
+- **Origin:** https://x402.ottoai.services
+- **x402scan:** https://www.x402scan.com/server/2a58f75f-bd11-4020-a347-0e1c7f4912ef
+- **Tx volume:** 5,260
+- **Probe:** HTTP 200
+- **Description:** 50 pay-per-call AI services on x402 V2 — market intel, DeFi execution, AI creative tools. USDC on Base, Polygon, or Solana. From $0.001 per call.
+- **APIs (15):**
+  - `GET` https://x402.ottoai.services/base-ecosystem-news
+  - `GET` https://x402.ottoai.services/base-season
+  - `POST` https://x402.ottoai.services/bridge
+  - `POST` https://x402.ottoai.services/close-position
+  - `GET` https://x402.ottoai.services/crypto-news
+  - `GET` https://x402.ottoai.services/defi-analytics
+  - `POST` https://x402.ottoai.services/deposit
+  - `GET` https://x402.ottoai.services/equity-intel
+  - `GET` https://x402.ottoai.services/filtered-news
+  - `GET` https://x402.ottoai.services/funding-rates
+  - `POST` https://x402.ottoai.services/generate-meme
+  - `POST` https://x402.ottoai.services/hl-deposit-withdraw
+  - `GET` https://x402.ottoai.services/hl-transaction-history
+  - `GET` https://x402.ottoai.services/holder-analytics
+  - `GET` https://x402.ottoai.services/hyperliquid-account
+
+## 15. APINow.fun - Pay-Per-Call Tokenized APIs
+- **Origin:** https://apinow.fun
+- **x402scan:** https://www.x402scan.com/server/d6835471-2fb0-450a-aba1-5fb465afaa6f
+- **Tx volume:** 5,052
+- **Probe:** HTTP 200
+- **Description:** Kill the API Key for Vibe Coders and Make AI Truly Autonomous with Pay-Per-Call Tokenized APIs.
+- **APIs (1):**
+  - `POST` https://apinow.fun/api/apinow-scan
+
+## 16. https://gg402.vercel.app
+- **Origin:** https://gg402.vercel.app
+- **x402scan:** https://www.x402scan.com/server/3257e90c-5a73-4a07-8b14-4d094904bc21
+- **Tx volume:** 5,052
+- **Probe:** HTTP 200
+- **APIs (15):**
+  - `POST` https://gg402.vercel.app/accent_detector
+  - `POST` https://gg402.vercel.app/accent_training_coach
+  - `POST` https://gg402.vercel.app/accessibility_audit
+  - `POST` https://gg402.vercel.app/accessibility_auditor
+  - `POST` https://gg402.vercel.app/accessibility_image_descriptor
+  - `POST` https://gg402.vercel.app/ad_copy_generator
+  - `POST` https://gg402.vercel.app/adaptive_curriculum_builder
+  - `POST` https://gg402.vercel.app/adaptive_learning_path
+  - `POST` https://gg402.vercel.app/adaptive_quiz
+  - `POST` https://gg402.vercel.app/adventure_itinerary_planner
+  - `POST` https://gg402.vercel.app/ai-tools/openai-sentiment
+  - `POST` https://gg402.vercel.app/ai_bias_detector
+  - `POST` https://gg402.vercel.app/ai_ethics_auditor
+  - `POST` https://gg402.vercel.app/ai_fairness_checker
+  - `POST` https://gg402.vercel.app/ai_tutor
+
+## 17. HYRE Agent — AI-Enhanced DeFi Data API
+- **Origin:** https://mpp.hyreagent.fun
+- **x402scan:** https://www.x402scan.com/server/eee5895d-af89-4a03-9fa0-cbb476eb962d
+- **Tx volume:** 4,742
+- **Probe:** HTTP 200
+- **Description:** Pay-per-call DeFi intelligence for autonomous agents. 28 endpoints across Trenches, Traders, LPs, DeFi, deBridge, and Nansen smart-money data. Multi-chain x402 on Solana, Base, SKALE + MPP on Tempo. No API keys — payment is the only gate.
+- **APIs (15):**
+  - `POST` https://mpp.hyreagent.fun/ask
+  - `GET` https://mpp.hyreagent.fun/lp/meteora/pools
+  - `GET` https://mpp.hyreagent.fun/lp/meteora/pools/%7Baddress%7D
+  - `GET` https://mpp.hyreagent.fun/lp/meteora/pools/recommend
+  - `GET` https://mpp.hyreagent.fun/lp/meteora/pools/strategy
+  - `GET` https://mpp.hyreagent.fun/lp/positions/%7Bid%7D/rebalance
+  - `GET` https://mpp.hyreagent.fun/lp/wallet/%7Baddress%7D/positions
+  - `GET` https://mpp.hyreagent.fun/traders/token/%7Bmint%7D/ohlcv
+  - `GET` https://mpp.hyreagent.fun/traders/token/%7Bmint%7D/whales
+  - `GET` https://mpp.hyreagent.fun/traders/wallet/%7Baddress%7D/intel
+  - `GET` https://mpp.hyreagent.fun/traders/wallet/%7Baddress%7D/pnl
+  - `GET` https://mpp.hyreagent.fun/traders/wallet/%7Baddress%7D/positions
+  - `GET` https://mpp.hyreagent.fun/trenches/curve/%7Bmint%7D
+  - `GET` https://mpp.hyreagent.fun/trenches/token/%7Bmint%7D
+  - `GET` https://mpp.hyreagent.fun/trenches/token/%7Bmint%7D/snipers
+
+## 18. Xona Agent | Infrastructure for Agentic Commerce
+- **Origin:** https://api.xona-agent.com
+- **x402scan:** https://www.x402scan.com/server/e0c4cbd0-c696-412c-b4ee-589158c6f3e9
+- **Tx volume:** 4,188
+- **Probe:** HTTP 404
+- **Description:** Build AI agents that earn on Orbit. Power them with Xona Resources.
+- **APIs (15):**
+  - `POST` https://api.xona-agent.com/ai/x-news
+  - `POST` https://api.xona-agent.com/ai/x-persona
+  - `POST` https://api.xona-agent.com/audio/elevenlabs-music
+  - `POST` https://api.xona-agent.com/audio/speech-to-text
+  - `POST` https://api.xona-agent.com/audio/x-text-to-speech
+  - `POST` https://api.xona-agent.com/image-model/qwen-image
+  - `POST` https://api.xona-agent.com/image-model/seedream-4.5
+  - `POST` https://api.xona-agent.com/image/creative-director
+  - `POST` https://api.xona-agent.com/image/designer
+  - `POST` https://api.xona-agent.com/image/flux-2-flex
+  - `POST` https://api.xona-agent.com/image/flux-2-max
+  - `POST` https://api.xona-agent.com/image/flux-2-pro
+  - `POST` https://api.xona-agent.com/image/gpt-image-2
+  - `POST` https://api.xona-agent.com/image/grok-imagine
+  - `POST` https://api.xona-agent.com/image/nano-banana
+
+## 19. StableTravel
+- **Origin:** https://stabletravel.dev
+- **x402scan:** https://www.x402scan.com/server/166fd2f6-6d6f-4bda-9c7c-3cb8e9cf417e
+- **Tx volume:** 3,775
+- **Probe:** HTTP 200
+- **Description:** Pay-per-request access to flights, award availability, hotels, activities, and transfers. No auth, no subscriptions.
+- **APIs (15):**
+  - `GET` https://stabletravel.dev/api/activities/by-square
+  - `GET` https://stabletravel.dev/api/activities/details
+  - `GET` https://stabletravel.dev/api/activities/search
+  - `GET` https://stabletravel.dev/api/flightaware/airports
+  - `GET` https://stabletravel.dev/api/flightaware/airports/delays
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/canonical
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/delays
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/flights
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/flights/arrivals
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/flights/counts
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/flights/departures
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/flights/scheduled-arrivals
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/flights/scheduled-departures
+  - `GET` https://stabletravel.dev/api/flightaware/airports/id/flights/to/dest_id
+
+## 20. StableSocial
+- **Origin:** https://socialx402.com
+- **x402scan:** https://www.x402scan.com/server/49d221cc-9960-49fb-b4eb-7aa4550defa1
+- **Tx volume:** 2,907
+- **Probe:** HTTP 200
+- **Description:** Pay-per-request access to social media data from TikTok, Instagram, Facebook, Reddit, and LinkedIn. No auth, no subscriptions.
+- **APIs (15):**
+  - `POST` https://socialx402.com/api/facebook/comment-replies
+  - `POST` https://socialx402.com/api/facebook/followers
+  - `POST` https://socialx402.com/api/facebook/following
+  - `POST` https://socialx402.com/api/facebook/post-comments
+  - `POST` https://socialx402.com/api/facebook/posts
+  - `POST` https://socialx402.com/api/facebook/profile
+  - `POST` https://socialx402.com/api/facebook/search
+  - `POST` https://socialx402.com/api/facebook/search-groups
+  - `POST` https://socialx402.com/api/facebook/search-pages
+  - `POST` https://socialx402.com/api/facebook/search-people
+  - `POST` https://socialx402.com/api/instagram/comment-replies
+  - `POST` https://socialx402.com/api/instagram/followers
+  - `POST` https://socialx402.com/api/instagram/following
+  - `POST` https://socialx402.com/api/instagram/highlights
+  - `POST` https://socialx402.com/api/instagram/post-comments
+
+## 21. StableSocial
+- **Origin:** https://stablesocial.dev
+- **x402scan:** https://www.x402scan.com/server/d8c1a882-b877-4d75-a8f6-cf94f7103e54
+- **Tx volume:** 2,907
+- **Probe:** HTTP 200
+- **Description:** Pay-per-request access to social media data from TikTok, Instagram, Facebook, Reddit, and LinkedIn. No auth, no subscriptions.
+- **APIs (15):**
+  - `POST` https://stablesocial.dev/api/facebook/comment-replies
+  - `POST` https://stablesocial.dev/api/facebook/followers
+  - `POST` https://stablesocial.dev/api/facebook/following
+  - `POST` https://stablesocial.dev/api/facebook/post-comments
+  - `POST` https://stablesocial.dev/api/facebook/posts
+  - `POST` https://stablesocial.dev/api/facebook/profile
+  - `POST` https://stablesocial.dev/api/facebook/search
+  - `POST` https://stablesocial.dev/api/facebook/search-groups
+  - `POST` https://stablesocial.dev/api/facebook/search-pages
+  - `POST` https://stablesocial.dev/api/facebook/search-people
+  - `POST` https://stablesocial.dev/api/instagram/comment-replies
+  - `POST` https://stablesocial.dev/api/instagram/followers
+  - `POST` https://stablesocial.dev/api/instagram/following
+  - `POST` https://stablesocial.dev/api/instagram/highlights
+  - `POST` https://stablesocial.dev/api/instagram/post-comments
+
+## 22. Exa | Web Search API, AI Search Engine, &amp; Website Crawler
+- **Origin:** https://api.exa.ai
+- **x402scan:** https://www.x402scan.com/server/a6c0793e-51e9-4038-9fdd-bfe58e46fba5
+- **Tx volume:** 2,540
+- **Probe:** HTTP 404
+- **Description:** Real-time AI search engine with a powerful web search API, web crawling API, SERP API, and deep research tools. Search and extract structured content from websites and live data.
+- **APIs (1):**
+  - `POST` https://api.exa.ai/search
+
+## 23. Sponge Gateway
+- **Origin:** https://wolframalpha.x402.paysponge.com
+- **x402scan:** https://www.x402scan.com/server/46afb49b-3e4e-4d5f-bc7c-1523965eb369
+- **Tx volume:** 2,338
+- **Probe:** HTTP 200
+- **Description:** API payment gateway dashboard
+- **APIs (3):**
+  - `POST` https://wolframalpha.x402.paysponge.com/v1/result
+  - `POST` https://wolframalpha.x402.paysponge.com/v1/simple
+  - `POST` https://wolframalpha.x402.paysponge.com/v2/query
+
+## 24. Sponge Gateway
+- **Origin:** https://api.paysponge.com
+- **x402scan:** https://www.x402scan.com/server/542a125f-a541-4a02-8cce-ed2c7235f0cd
+- **Tx volume:** 2,338
+- **Probe:** HTTP 200
+- **Description:** API payment gateway dashboard
+- **APIs (10):**
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d5ymfernpzeh58gb8/person/enrichment
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d5ymfernpzeh58gb8/person/search
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/extract
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/parse
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d6kszbre4qwg5n4n4/status/%7BtextId%7D
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d6kszbre4qwg5n4n4/status/test
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d6kszbre4qwg5n4n4/text
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d79zmxrk1hk7f3mp0
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d7mq738nrv9m8cv10/v0/profiles/:address
+  - `POST` https://api.paysponge.com/x402/purchase/svc_d7y5tb8gh147se37m/url/:domain
+
+## 25. 2Captcha
+- **Origin:** https://2captcha.x402.paysponge.com
+- **x402scan:** https://www.x402scan.com/server/464c5b21-f256-4265-84cf-5fc1e7b4e3f4
+- **Tx volume:** 2,338
+- **Probe:** HTTP 200
+- **Description:** 2Captcha CAPTCHA solving API — solves reCAPTCHA v2/v3, hCaptcha, Cloudflare Turnstile, FunCaptcha, GeeTest, image captchas, and more
+- **APIs (1):**
+  - `POST` https://2captcha.x402.paysponge.com/createTask
+
+## 26. AgentMail | Email Inbox API for AI Agents
+- **Origin:** https://x402.api.agentmail.to
+- **x402scan:** https://www.x402scan.com/server/8480a82b-d24f-4472-a04c-c36141f8bbb1
+- **Tx volume:** 2,303
+- **Probe:** HTTP 404
+- **Description:** AgentMail gives AI agents real email inboxes. Create, send, receive, and search messages via REST API — built for autonomous agents and agentic workflows.
+- **APIs (15):**
+  - `POST` https://x402.api.agentmail.to/v0/domains
+  - `POST` https://x402.api.agentmail.to/v0/domains/%7Bdomain_id%7D
+  - `POST` https://x402.api.agentmail.to/v0/domains/%7Bdomain_id%7D/verify
+  - `POST` https://x402.api.agentmail.to/v0/domains/%7Bdomain_id%7D/zone-file
+  - `POST` https://x402.api.agentmail.to/v0/drafts
+  - `POST` https://x402.api.agentmail.to/v0/drafts/%7Bdraft_id%7D
+  - `POST` https://x402.api.agentmail.to/v0/drafts/%7Bdraft_id%7D/attachments/%7Battachment_id%7D
+  - `POST` https://x402.api.agentmail.to/v0/inboxes
+  - `POST` https://x402.api.agentmail.to/v0/inboxes/%7Binbox_id%7D
+  - `POST` https://x402.api.agentmail.to/v0/inboxes/%7Binbox_id%7D/drafts
+  - `POST` https://x402.api.agentmail.to/v0/inboxes/%7Binbox_id%7D/drafts/%7Bdraft_id%7D
+  - `POST` https://x402.api.agentmail.to/v0/inboxes/%7Binbox_id%7D/drafts/%7Bdraft_id%7D/attachments/%7Battachment_id%7D
+  - `POST` https://x402.api.agentmail.to/v0/inboxes/%7Binbox_id%7D/drafts/%7Bdraft_id%7D/send
+  - `POST` https://x402.api.agentmail.to/v0/inboxes/%7Binbox_id%7D/messages
+  - `POST` https://x402.api.agentmail.to/v0/inboxes/%7Binbox_id%7D/messages/%7Bmessage_id%7D
+
+## 27. StableStudio
+- **Origin:** https://stablestudio.io
+- **x402scan:** https://www.x402scan.com/server/9d0738fb-658b-479a-929b-cec1eedd9ead
+- **Tx volume:** 2,084
+- **Probe:** HTTP 200
+- **Description:** Pay-per-generation AI image and video creation. No subscriptions ever.
+- **APIs (15):**
+  - `POST` https://stablestudio.io/api/generate/flux-2-max/edit
+  - `POST` https://stablestudio.io/api/generate/flux-2-max/generate
+  - `POST` https://stablestudio.io/api/generate/flux-2-pro/edit
+  - `POST` https://stablestudio.io/api/generate/flux-2-pro/generate
+  - `POST` https://stablestudio.io/api/generate/gpt-image-1.5/edit
+  - `POST` https://stablestudio.io/api/generate/gpt-image-1.5/generate
+  - `POST` https://stablestudio.io/api/generate/gpt-image-2/edit
+  - `POST` https://stablestudio.io/api/generate/gpt-image-2/generate
+  - `POST` https://stablestudio.io/api/generate/grok-video/generate
+  - `POST` https://stablestudio.io/api/generate/grok/edit
+  - `POST` https://stablestudio.io/api/generate/grok/generate
+  - `POST` https://stablestudio.io/api/generate/nano-banana-pro/edit
+  - `POST` https://stablestudio.io/api/generate/nano-banana-pro/generate
+  - `POST` https://stablestudio.io/api/generate/nano-banana/edit
+  - `POST` https://stablestudio.io/api/generate/nano-banana/generate
+
+## 28. StableStudio
+- **Origin:** https://stablestudio.dev
+- **x402scan:** https://www.x402scan.com/server/7660b99d-029c-4806-b8fb-bbec52b09f6f
+- **Tx volume:** 2,084
+- **Probe:** HTTP 200
+- **Description:** Pay-per-generation AI image and video creation. No subscriptions ever.
+- **APIs (15):**
+  - `POST` https://stablestudio.dev/api/generate/arrow-1.1-max/vectorize
+  - `POST` https://stablestudio.dev/api/generate/arrow-1.1/vectorize
+  - `POST` https://stablestudio.dev/api/generate/flux-2-max/edit
+  - `POST` https://stablestudio.dev/api/generate/flux-2-max/generate
+  - `POST` https://stablestudio.dev/api/generate/flux-2-pro/edit
+  - `POST` https://stablestudio.dev/api/generate/flux-2-pro/generate
+  - `POST` https://stablestudio.dev/api/generate/gpt-image-1.5/edit
+  - `POST` https://stablestudio.dev/api/generate/gpt-image-1.5/generate
+  - `POST` https://stablestudio.dev/api/generate/gpt-image-2/edit
+  - `POST` https://stablestudio.dev/api/generate/gpt-image-2/generate
+  - `POST` https://stablestudio.dev/api/generate/grok-video/generate
+  - `POST` https://stablestudio.dev/api/generate/grok/edit
+  - `POST` https://stablestudio.dev/api/generate/grok/generate
+  - `POST` https://stablestudio.dev/api/generate/nano-banana-pro/edit
+  - `POST` https://stablestudio.dev/api/generate/nano-banana-pro/generate
+
+## 29. StableUpload
+- **Origin:** https://stableupload.dev
+- **x402scan:** https://www.x402scan.com/server/db32d172-1e2c-4de4-aeda-1463ffb67044
+- **Tx volume:** 2,000
+- **Probe:** HTTP 200
+- **Description:** Pay-per-upload file hosting. Upload files, get a link.
+- **APIs (10):**
+  - `GET` https://stableupload.dev/api/download/:uploadId
+  - `POST` https://stableupload.dev/api/site
+  - `PUT` https://stableupload.dev/api/site
+  - `POST` https://stableupload.dev/api/site/activate
+  - `POST` https://stableupload.dev/api/site/domain
+  - `DELETE` https://stableupload.dev/api/site/domain
+  - `GET` https://stableupload.dev/api/site/domain/status
+  - `POST` https://stableupload.dev/api/site/renew
+  - `POST` https://stableupload.dev/api/upload
+  - `GET` https://stableupload.dev/api/uploads
+
+## 30. PrintMoneyLab - Automate &amp; Earn
+- **Origin:** https://api.printmoneylab.com
+- **x402scan:** https://www.x402scan.com/server/d117d751-46e2-4c66-9416-08a5c4445e0a
+- **Tx volume:** 1,855
+- **Probe:** HTTP 405
+- **Description:** Real experiments in AI automation — crypto bots, prediction markets, and AI agents. No coding background. No fluff. Just what worked and what didn&#39;t
+- **APIs (5):**
+  - `POST` https://api.printmoneylab.com/api/v1/fx-rate
+  - `POST` https://api.printmoneylab.com/api/v1/kimchi-premium
+  - `POST` https://api.printmoneylab.com/api/v1/kr-prices
+  - `POST` https://api.printmoneylab.com/api/v1/kr-sentiment
+  - `POST` https://api.printmoneylab.com/api/v1/stablecoin-premium
