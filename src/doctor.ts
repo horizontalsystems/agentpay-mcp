@@ -4,6 +4,7 @@ import { join } from 'node:path';
 /** MCP tools exposed by horizontalsystems/agentpay-mcp (not npm agentpay-mcp@4.x). */
 export const AGENTPAY_MCP_TOOLS = [
   'get_android_app_link',
+  'list_x402_services',
   'fetch_paid_service',
   'get_pairing_link',
   'get_spending_status'

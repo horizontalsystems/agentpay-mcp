@@ -1,0 +1,2094 @@
+{
+  "version": "2026-06-16",
+  "source": "https://www.x402scan.com/resources",
+  "services": [
+    {
+      "id": "blockrun_ai",
+      "name": "BlockRun — Pay-per-call AI gateway",
+      "origin": "http://blockrun.ai",
+      "description": "Pay-per-call AI gateway. Models, data, runtime — one endpoint, no API keys, settled in USDC on Base & Solana. One install for OpenClaw (ClawRouter), Claude Code (MCP), or Franklin Agent. Per call, per token, no subscription.",
+      "x402scanId": "cbe8caef-6324-4bd1-aee7-63d09fb4d1b9",
+      "x402scanUrl": "https://www.x402scan.com/server/cbe8caef-6324-4bd1-aee7-63d09fb4d1b9",
+      "txCount": 1819420,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "036b033c-c62c-4f61-9cfc-0f26be6ddb01",
+          "url": "http://blockrun.ai/api/v1/chat/completions",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e227b502-c771-49bf-a020-5a78343b58c8",
+          "url": "http://blockrun.ai/api/v1/images/generations",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "50eb87d6-5f33-4a9a-bba3-f9ded3e36a25",
+          "url": "http://blockrun.ai/api/v1/modal/sandbox/create",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a8fa1076-2524-4616-b0a0-4519070e0c60",
+          "url": "http://blockrun.ai/api/v1/modal/sandbox/exec",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "4b7a518a-9f03-4676-8e43-17b049e72677",
+          "url": "http://blockrun.ai/api/v1/modal/sandbox/status",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "eff2ec8e-a6e2-4085-b532-5a1fe40caefc",
+          "url": "http://blockrun.ai/api/v1/modal/sandbox/terminate",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "140c2d94-232c-4444-8c1e-423673c3697a",
+          "url": "http://blockrun.ai/api/v1/search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "f4b5d559-dd3f-4527-b93d-933bd71278e3",
+          "url": "http://blockrun.ai/api/v1/x/users/followers",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "7dd766d8-bedf-47cf-a130-26d95d21ec0e",
+          "url": "http://blockrun.ai/api/v1/x/users/lookup",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "stableenrich_dev",
+      "name": "StableEnrich",
+      "origin": "https://stableenrich.dev",
+      "description": "Pay-per-request access to Apollo, Clado, Exa, Firecrawl, Google Maps, Serper, and Whitepages APIs. No auth, no subscriptions.",
+      "x402scanId": "b8a06bde-b6e8-4a10-b4e0-cc6a25fb9efb",
+      "x402scanUrl": "https://www.x402scan.com/server/b8a06bde-b6e8-4a10-b4e0-cc6a25fb9efb",
+      "txCount": 65538,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "543c4fc1-a8d9-4d0a-921b-8a88c3ed834d",
+          "url": "https://stableenrich.dev/api/apollo/org-enrich",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "448c042a-fd21-4b7b-81f1-79c2136d2f68",
+          "url": "https://stableenrich.dev/api/apollo/org-search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "cdf16c0d-ad78-4b55-ab35-6f76b985cdc1",
+          "url": "https://stableenrich.dev/api/apollo/people-enrich",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "601f2a4c-848c-4a1f-b458-ee4d4d64d667",
+          "url": "https://stableenrich.dev/api/apollo/people-search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "4da70824-897e-41b5-9ca7-5fc5b812ccd4",
+          "url": "https://stableenrich.dev/api/clado/contacts-enrich",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "84beb99b-683a-4f70-a85b-c728c5b349b6",
+          "url": "https://stableenrich.dev/api/cloudflare/crawl",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "dc2d12e1-9114-4fc5-b340-f21d34a4dd5f",
+          "url": "https://stableenrich.dev/api/cloudflare/jobs",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "70fc5905-e402-4d8a-bc53-d273d8fd68a4",
+          "url": "https://stableenrich.dev/api/exa/answer",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "7f0d805c-3e01-4b4b-876f-35e268d191c3",
+          "url": "https://stableenrich.dev/api/exa/contents",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "879cce67-37be-4abc-a53e-6edea8e81c0c",
+          "url": "https://stableenrich.dev/api/exa/find-similar",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "6d521bb6-b4d2-4e55-a5cb-5ad757c8b419",
+          "url": "https://stableenrich.dev/api/exa/search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "f46656f6-30e4-4b8d-b636-465a5d47d32c",
+          "url": "https://stableenrich.dev/api/firecrawl/scrape",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "d1ad5168-5049-45d2-9124-4b1f720e4852",
+          "url": "https://stableenrich.dev/api/firecrawl/search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "ff20d402-18a4-4276-82d4-44349c8ec7c9",
+          "url": "https://stableenrich.dev/api/google-maps/aerial-view/lookup-video",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "8d6b8902-8b4c-4787-99ac-d4ceebf6660d",
+          "url": "https://stableenrich.dev/api/google-maps/aerial-view/render-video",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "182f8f23-405c-4966-ba3f-5344114d1db0",
+          "url": "https://stableenrich.dev/api/google-maps/nearby-search/full",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b97b87c7-dac3-4dd4-acfa-2fdf1f9e1264",
+          "url": "https://stableenrich.dev/api/google-maps/nearby-search/partial",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3b516b48-0249-4d95-9ffa-3d4311b4fbbb",
+          "url": "https://stableenrich.dev/api/google-maps/place-details/full",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3f407c61-ddb1-4d8a-8aed-a2ca40037157",
+          "url": "https://stableenrich.dev/api/google-maps/place-details/partial",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "479525ec-441b-4ba3-833f-58e01fb2c8b8",
+          "url": "https://stableenrich.dev/api/google-maps/solar/building-insights",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "8a1a8be6-34d6-4453-a8e1-2950bcddfa05",
+          "url": "https://stableenrich.dev/api/google-maps/solar/data-layers",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "384e9127-5b04-4e82-970a-c1741ff95db6",
+          "url": "https://stableenrich.dev/api/google-maps/solar/rgb-image",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "d417c873-b87a-48e1-92e3-15883d662514",
+          "url": "https://stableenrich.dev/api/google-maps/text-search/full",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "52e79d44-29f9-4bbf-867d-d41c0eef3c76",
+          "url": "https://stableenrich.dev/api/google-maps/text-search/partial",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "949d2a49-9db8-491d-bbae-829cae730247",
+          "url": "https://stableenrich.dev/api/hunter/email-verifier",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "00b5028a-0fbd-443a-8249-d1d4e66fec3f",
+          "url": "https://stableenrich.dev/api/hunter/email-verifier/jobs/%7BjobId%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "9e9b5499-0f65-4b09-bab2-2ac174df465c",
+          "url": "https://stableenrich.dev/api/minerva/enrich",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "16054116-6c43-4914-87e2-f9cd7356cbd8",
+          "url": "https://stableenrich.dev/api/minerva/resolve",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "c6220560-aef1-4967-acdd-88b6a2c62984",
+          "url": "https://stableenrich.dev/api/minerva/validate-emails",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "35915f50-32ee-4aed-91d6-d3381cfea81d",
+          "url": "https://stableenrich.dev/api/reddit/post-comments",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e8fa3c7c-6d5d-493a-891c-075790e56822",
+          "url": "https://stableenrich.dev/api/reddit/search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5268555f-ffc4-488b-9ef5-1de445de6e43",
+          "url": "https://stableenrich.dev/api/serper/images",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e83b523c-869b-4658-b7eb-6ca64844e1d4",
+          "url": "https://stableenrich.dev/api/serper/lens",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "6b8ea550-443b-43a4-b61e-8b22c62e22cd",
+          "url": "https://stableenrich.dev/api/serper/news",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "32dbeac6-53b2-4d6d-8ac7-b5606c011fac",
+          "url": "https://stableenrich.dev/api/serper/people-image-search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "29944e7d-269f-4380-8ae9-61bcb83ee08a",
+          "url": "https://stableenrich.dev/api/serper/shopping",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "da040adc-8d43-4729-8708-03835c50757e",
+          "url": "https://stableenrich.dev/api/whitepages/person-search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "78485dad-b3e1-46af-8760-14920b839f9c",
+          "url": "https://stableenrich.dev/api/whitepages/property-search",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "x402_twit_sh",
+      "name": "twit.sh — Plug AI agents into X",
+      "origin": "https://x402.twit.sh",
+      "description": "Real-time Twitter/X data for AI agents. No sign-up, no API keys. Pay per request in USDC on Base via x402.",
+      "x402scanId": "b6242036-97a3-439b-901b-abdded377045",
+      "x402scanUrl": "https://www.x402scan.com/server/b6242036-97a3-439b-901b-abdded377045",
+      "txCount": 47193,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "5c86f600-0ff3-4ff3-a6e8-12bca09e27cf",
+          "url": "https://x402.twit.sh/articles/by/id",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a0de881e-3e56-42f7-8c10-b663e4a572f9",
+          "url": "https://x402.twit.sh/communities/by/id",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1d7a235b-262b-44a2-8d57-c524a27b3f86",
+          "url": "https://x402.twit.sh/communities/members",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "29dadb0d-992a-4ce8-b2c6-7a2f0b8af95a",
+          "url": "https://x402.twit.sh/communities/posts",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1afd803b-346c-4610-851b-6eeada5a2587",
+          "url": "https://x402.twit.sh/lists/by/id",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "16dd60b7-4eeb-441d-9e30-0f3c90fd629e",
+          "url": "https://x402.twit.sh/lists/followers",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "eae0cd32-ab6e-47bf-9dc6-d2f314ad5d45",
+          "url": "https://x402.twit.sh/lists/members",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a0c1bf15-a196-4526-aad1-35517bb48813",
+          "url": "https://x402.twit.sh/lists/tweets",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b4ed57ac-5e00-4755-8eed-c7f94e4121a2",
+          "url": "https://x402.twit.sh/tweets",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e04ee9db-71b2-448f-b10b-4eed7c31212c",
+          "url": "https://x402.twit.sh/tweets",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "555ed9a0-3374-4764-b6b0-3711aba977cd",
+          "url": "https://x402.twit.sh/tweets",
+          "method": "DELETE",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b9d2e4b9-e733-423b-b0ac-be0e265a24cb",
+          "url": "https://x402.twit.sh/tweets/bookmark",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "c6f2cdc5-9f02-4d52-a56e-f85b6a2dde69",
+          "url": "https://x402.twit.sh/tweets/bookmark",
+          "method": "DELETE",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "54d292fe-a0ea-4634-97c8-308010983d1b",
+          "url": "https://x402.twit.sh/tweets/by/id",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "8fc87a36-edab-462a-b4c9-549f8d17782b",
+          "url": "https://x402.twit.sh/tweets/like",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "aab3c0c9-cfdb-40e0-88b2-5eb9dde0a01f",
+          "url": "https://x402.twit.sh/tweets/like",
+          "method": "DELETE",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "7a69892a-c47c-4359-9463-ddfe6ea32c81",
+          "url": "https://x402.twit.sh/tweets/mentions",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "81751ef5-d0a0-4ddb-82e5-cb5e757dd32a",
+          "url": "https://x402.twit.sh/tweets/quote_tweets",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "31dc6de5-70c6-4914-bf0e-489c717ba8e5",
+          "url": "https://x402.twit.sh/tweets/replies",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "24c77238-d7c3-456c-9c05-f5e464ff1448",
+          "url": "https://x402.twit.sh/tweets/retweet",
+          "method": "DELETE",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "4b160cfd-97ec-4dbb-bf2c-327980ae949a",
+          "url": "https://x402.twit.sh/tweets/retweet",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a4353762-07c1-45b1-9822-0edfe3007e47",
+          "url": "https://x402.twit.sh/tweets/retweeted_by",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "6415cdc9-b8b7-462f-9714-d2d5f6d6d9c2",
+          "url": "https://x402.twit.sh/tweets/search",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5dea723d-3f1e-4825-899f-7703edd3283a",
+          "url": "https://x402.twit.sh/tweets/user",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "65956e3e-9e64-4a87-80c0-04f48ded0c49",
+          "url": "https://x402.twit.sh/users",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "adfecd42-e30d-43c9-943e-fea95bc1ebec",
+          "url": "https://x402.twit.sh/users/by/id",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "fa406f66-7488-43eb-9d21-7b78723bed25",
+          "url": "https://x402.twit.sh/users/by/username",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "85ae5f1a-aaf0-4721-850c-cb6ac7bd0e63",
+          "url": "https://x402.twit.sh/users/followers",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5cdb6498-c085-431b-b0a1-b55289a38602",
+          "url": "https://x402.twit.sh/users/following",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "59e54a21-582f-4312-94a6-aff3ed268c72",
+          "url": "https://x402.twit.sh/users/following",
+          "method": "DELETE",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e71502c3-fefe-42fb-a816-40f63308687e",
+          "url": "https://x402.twit.sh/users/following",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "0d9fa326-8622-4868-b682-899ad49d901d",
+          "url": "https://x402.twit.sh/users/search",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "ffbdde59-a58f-45c0-8f3d-ac4713536481",
+          "url": "https://x402.twit.sh/workflows/userInsights",
+          "method": "GET",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "sol_blockrun_ai",
+      "name": "http://sol.blockrun.ai",
+      "origin": "http://sol.blockrun.ai",
+      "description": "",
+      "x402scanId": "4e7a72e6-aba4-4e02-b271-da1b6f7019eb",
+      "x402scanUrl": "https://www.x402scan.com/server/4e7a72e6-aba4-4e02-b271-da1b6f7019eb",
+      "txCount": 18425,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "31a50c89-6064-4b0f-a123-962b4cb7f4a2",
+          "url": "http://sol.blockrun.ai/api/v1/chat/completions",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e2517bf6-8753-4477-942e-49882c9161a2",
+          "url": "http://sol.blockrun.ai/api/v1/images/generations",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a62706a4-2b35-47b2-8294-7e7300799b68",
+          "url": "http://sol.blockrun.ai/api/v1/search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "7a71f450-93e4-43b6-aaf1-ecaf943396a4",
+          "url": "http://sol.blockrun.ai/api/v1/x/users/followers",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "edc97560-8e88-40e9-998a-b28cedbb4fd6",
+          "url": "http://sol.blockrun.ai/api/v1/x/users/following",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "86a40942-a203-4b32-aa7c-830b5befb7c6",
+          "url": "http://sol.blockrun.ai/api/v1/x/users/lookup",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "scout_hugen_tokyo",
+      "name": "Scout — Multi-source Intelligence API",
+      "origin": "https://scout.hugen.tokyo",
+      "description": "Search 19+ platforms in a single API call: Reddit, Hacker News, GitHub, Stack Overflow, arXiv, npm, PyPI, X/Twitter, YouTube, Product Hunt, Dev.to, Qiita, Zenn, Semantic Scholar, GitLab, Hashnode, Lobsters, Lemmy, and x402 Bazaar. Includes Deep Research with AI synthesis. Accepts USDC payments on Ba",
+      "x402scanId": "6da9cf23-5260-4656-a70a-1ef9180344bd",
+      "x402scanUrl": "https://www.x402scan.com/server/6da9cf23-5260-4656-a70a-1ef9180344bd",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "0434585a-6010-49c1-9833-64f262e2239e",
+          "url": "https://scout.hugen.tokyo/scout/arxiv",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b903652c-b6cf-4734-aec4-27d999b8f890",
+          "url": "https://scout.hugen.tokyo/scout/devto",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "9f102b77-6ec6-4492-a00c-ade026ccc7af",
+          "url": "https://scout.hugen.tokyo/scout/github",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1c1a5cc1-e58b-4e5a-9328-1242882d90e2",
+          "url": "https://scout.hugen.tokyo/scout/github/repo",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "0acc0fdc-c504-4129-a49f-6aaf706d62d1",
+          "url": "https://scout.hugen.tokyo/scout/gitlab",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3f52a14b-c6ad-44d2-9b2a-decde5013a2d",
+          "url": "https://scout.hugen.tokyo/scout/hashnode",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "9d024ed8-eb84-4046-9b52-b5548420e844",
+          "url": "https://scout.hugen.tokyo/scout/hn",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "dfd7f371-19fc-48dc-aa34-b9de86149c78",
+          "url": "https://scout.hugen.tokyo/scout/lobsters",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "203e819e-5e46-4a64-93bf-240ed1bddbbc",
+          "url": "https://scout.hugen.tokyo/scout/npm",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "632bc156-b525-47c3-b9cd-2bd7114f29f4",
+          "url": "https://scout.hugen.tokyo/scout/ph",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "66307af6-d926-47a6-a8c5-04f8cf3f5e4c",
+          "url": "https://scout.hugen.tokyo/scout/pypi",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "2852a732-2193-41f4-a97a-a03eb9bff28d",
+          "url": "https://scout.hugen.tokyo/scout/report",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "fafb2351-8923-46ad-a83d-733f033689cc",
+          "url": "https://scout.hugen.tokyo/scout/report/full",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a60e66e0-8a30-44e3-9b0c-f5c4d98cb9dc",
+          "url": "https://scout.hugen.tokyo/scout/scholar",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "c0178d9d-ae8d-4c3c-abb1-3b3bec7b97ee",
+          "url": "https://scout.hugen.tokyo/scout/stackoverflow",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "32ffd8c0-d9f4-4cb3-a6cf-0ee84cf4664d",
+          "url": "https://scout.hugen.tokyo/scout/x",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "efc9fc06-ea43-4842-9cd9-2e732b33a8c6",
+          "url": "https://scout.hugen.tokyo/scout/x402",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "defi_hugen_tokyo",
+      "name": "https://defi.hugen.tokyo",
+      "origin": "https://defi.hugen.tokyo",
+      "description": "",
+      "x402scanId": "835299d9-d4e7-4b2a-8933-4441efa2a5d8",
+      "x402scanUrl": "https://www.x402scan.com/server/835299d9-d4e7-4b2a-8933-4441efa2a5d8",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "954a3e2a-70a4-4354-aee3-6d206630e2af",
+          "url": "https://defi.hugen.tokyo/defi/address",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "48db8205-514d-428c-854b-f4906efcd24a",
+          "url": "https://defi.hugen.tokyo/defi/approval",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "ea9966ea-2818-49f0-9e4e-ed28f14d7fbd",
+          "url": "https://defi.hugen.tokyo/defi/bridge/chains",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "919d6fb9-591b-4baf-8ddc-68f2f5090b55",
+          "url": "https://defi.hugen.tokyo/defi/bridge/quote",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "687fdd84-3632-427d-a303-acac27cb5cb4",
+          "url": "https://defi.hugen.tokyo/defi/bridge/routes",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "47052805-a93e-4f5c-aac8-502413449c63",
+          "url": "https://defi.hugen.tokyo/defi/bridge/status",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "fc8f8c5d-e302-47fc-b030-94824a15ceea",
+          "url": "https://defi.hugen.tokyo/defi/bridge/tokens",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "8988bcf9-b8d0-4309-b5d9-f7b6aab5f564",
+          "url": "https://defi.hugen.tokyo/defi/bridge/tools",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "497c5295-dc53-4e3a-b9ec-b38507ed4455",
+          "url": "https://defi.hugen.tokyo/defi/chains",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "21708900-23d4-4c3b-9cbf-73d505d6cf36",
+          "url": "https://defi.hugen.tokyo/defi/dapp",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "d3c994b2-106f-4e5d-9898-f479d31d31e7",
+          "url": "https://defi.hugen.tokyo/defi/dex/volume",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "62f94fa8-43ad-42b6-900f-ab5453a69840",
+          "url": "https://defi.hugen.tokyo/defi/fees",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b86eb9b9-6340-4956-8e21-33f706629f06",
+          "url": "https://defi.hugen.tokyo/defi/gas",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a8c6d2ce-aded-4ae7-a2aa-35540ab91346",
+          "url": "https://defi.hugen.tokyo/defi/malicious",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "cb90fb82-3c3e-4cf7-a420-b22454b2ca2e",
+          "url": "https://defi.hugen.tokyo/defi/nft",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "0aadd1fe-2c65-412d-8171-a1a30c1e57b9",
+          "url": "https://defi.hugen.tokyo/defi/phishing",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "235c8c9a-d4cc-425d-ab38-f93065767126",
+          "url": "https://defi.hugen.tokyo/defi/price",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a0879bf1-9930-4466-afd1-b74667fd07ad",
+          "url": "https://defi.hugen.tokyo/defi/protocol",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a40f9d24-ca01-4fab-b8da-d4dbeac72e98",
+          "url": "https://defi.hugen.tokyo/defi/protocols",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "9fc8be55-83f4-4ae3-83b3-03288dfe2151",
+          "url": "https://defi.hugen.tokyo/defi/rugpull",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a9da64b2-0c83-4dbf-9e16-2f8799b66e6f",
+          "url": "https://defi.hugen.tokyo/defi/simulate",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1bf8249e-ae96-4262-aad9-cc428518a2ee",
+          "url": "https://defi.hugen.tokyo/defi/stablecoin/chains",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "72ed077f-4d04-40ad-ab31-662ede13a609",
+          "url": "https://defi.hugen.tokyo/defi/stablecoins",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b6468883-99b0-4a74-9784-ff480fc0ae94",
+          "url": "https://defi.hugen.tokyo/defi/token",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "2609a741-bcd6-44c9-a359-93411796e0b6",
+          "url": "https://defi.hugen.tokyo/defi/token/solana",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "2559f1f1-d3c0-4fa1-9a62-c453eab49058",
+          "url": "https://defi.hugen.tokyo/defi/tvl",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "tick_hugen_tokyo",
+      "name": "FX Tick Aggregator — Live Demo (Delayed)",
+      "origin": "https://tick.hugen.tokyo",
+      "description": "Multi-source aggregated FX Best Bid/Ask from multiple institutional LPs. 62-88% tighter spreads than any single source. Real-time tick data with quality metadata. AI agent API for forex trading, portfolio dashboards, price comparison.",
+      "x402scanId": "ec1a57b4-f4e6-4c5b-8a0b-83993d564ce5",
+      "x402scanUrl": "https://www.x402scan.com/server/ec1a57b4-f4e6-4c5b-8a0b-83993d564ce5",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "a728bace-0f1a-4dc1-9c06-85a9df4906bc",
+          "url": "https://tick.hugen.tokyo/tick/latest",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "visual_hugen_tokyo",
+      "name": "Visual API",
+      "origin": "https://visual.hugen.tokyo",
+      "description": "Screenshot and PDF capture of any URL — no browser infrastructure needed, no server costs. Pay per capture.",
+      "x402scanId": "9bcd9e0a-c565-4acb-8163-201e3d3de05f",
+      "x402scanUrl": "https://www.x402scan.com/server/9bcd9e0a-c565-4acb-8163-201e3d3de05f",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "7a53d7cf-ed63-4167-8cc4-0b58e8ce84b5",
+          "url": "https://visual.hugen.tokyo/visual/ocr",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b45d87ce-9a1b-44e1-a2b8-d9d61d0b3849",
+          "url": "https://visual.hugen.tokyo/visual/parse",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "26e100d7-5772-475f-9047-eca3f96ee370",
+          "url": "https://visual.hugen.tokyo/visual/pdf",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "c52c64d0-af39-43d7-aef0-060227f17bd3",
+          "url": "https://visual.hugen.tokyo/visual/screenshot",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "content_dx_hugen_tokyo",
+      "name": "https://content-dx.hugen.tokyo",
+      "origin": "https://content-dx.hugen.tokyo",
+      "description": "",
+      "x402scanId": "e83af0bd-3937-4a06-be42-f3b399b9222d",
+      "x402scanUrl": "https://www.x402scan.com/server/e83af0bd-3937-4a06-be42-f3b399b9222d",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "e1246bec-2141-4bf4-b986-743ae935d5c1",
+          "url": "https://content-dx.hugen.tokyo/content/analyze",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1c487615-d2a0-4423-9900-4772f373d566",
+          "url": "https://content-dx.hugen.tokyo/content/links",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5ee6d51f-da60-459e-996e-b5f680b023ae",
+          "url": "https://content-dx.hugen.tokyo/content/summary",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "domain_dx_hugen_tokyo",
+      "name": "https://domain-dx.hugen.tokyo",
+      "origin": "https://domain-dx.hugen.tokyo",
+      "description": "",
+      "x402scanId": "f53052f5-dd03-4d94-a6aa-805354726895",
+      "x402scanUrl": "https://www.x402scan.com/server/f53052f5-dd03-4d94-a6aa-805354726895",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "5992b833-61f5-4dfa-9fdd-814d6a5b463d",
+          "url": "https://domain-dx.hugen.tokyo/domain/full",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b8db4aac-4f75-4f09-97b5-a0f1f9591c0a",
+          "url": "https://domain-dx.hugen.tokyo/domain/headers",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "80a1fa8e-5add-45f6-bf3f-252ab47de1e5",
+          "url": "https://domain-dx.hugen.tokyo/domain/redirect",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3761b5e4-c905-489c-9dfe-64ffdfe53424",
+          "url": "https://domain-dx.hugen.tokyo/domain/subdomains",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "f8f8eff1-476c-4ad2-bf24-64552c0fa74c",
+          "url": "https://domain-dx.hugen.tokyo/domain/tech",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "c3170eb4-2c46-44a6-b775-e792bdfd5bbf",
+          "url": "https://domain-dx.hugen.tokyo/domain/whois",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "domain_hugen_tokyo",
+      "name": "https://domain.hugen.tokyo",
+      "origin": "https://domain.hugen.tokyo",
+      "description": "",
+      "x402scanId": "9565e7de-5ecc-4082-8bea-c47f2f22ec1f",
+      "x402scanUrl": "https://www.x402scan.com/server/9565e7de-5ecc-4082-8bea-c47f2f22ec1f",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "01efc24b-1337-4d93-83a6-46bf1b322df7",
+          "url": "https://domain.hugen.tokyo/domain/dns",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "2d12c13c-f161-45a6-b12f-13ad8796a4e4",
+          "url": "https://domain.hugen.tokyo/domain/full",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e31edf80-5978-46c6-a320-0d735d3d9574",
+          "url": "https://domain.hugen.tokyo/domain/headers",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "0bc65e92-dbb1-4f63-aa4e-5ab479ba523f",
+          "url": "https://domain.hugen.tokyo/domain/redirect",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "7874f080-8ec8-431e-8775-9dfd0f06ad57",
+          "url": "https://domain.hugen.tokyo/domain/ssl",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e1d795df-48f3-4acf-aec0-72129aaf1289",
+          "url": "https://domain.hugen.tokyo/domain/subdomains",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "c04bae40-aebc-4c04-bdde-0a3d5c5bbc8c",
+          "url": "https://domain.hugen.tokyo/domain/tech",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "65f14702-efec-4e5c-8d15-a23d70b4b72b",
+          "url": "https://domain.hugen.tokyo/domain/whois",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "scout_dx_hugen_tokyo",
+      "name": "https://scout-dx.hugen.tokyo",
+      "origin": "https://scout-dx.hugen.tokyo",
+      "description": "",
+      "x402scanId": "6a8f9366-6432-4fa9-a719-d2e127d9f9d4",
+      "x402scanUrl": "https://www.x402scan.com/server/6a8f9366-6432-4fa9-a719-d2e127d9f9d4",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "ad19d36e-d023-4a6f-bf7b-fabcf32656f4",
+          "url": "https://scout-dx.hugen.tokyo/scout/arxiv",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5a87230c-44ea-4bba-a3b0-5261728ad854",
+          "url": "https://scout-dx.hugen.tokyo/scout/devto",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b10d7931-294f-4cad-88ca-6520c5d51386",
+          "url": "https://scout-dx.hugen.tokyo/scout/gitlab",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "7deeecb7-322c-4abb-b08a-93fd29fe49b2",
+          "url": "https://scout-dx.hugen.tokyo/scout/hashnode",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "6132d36e-69c4-449f-aecb-d45257eebd83",
+          "url": "https://scout-dx.hugen.tokyo/scout/hn",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "badbddc0-66c0-4889-9eb7-6cfa096cb37f",
+          "url": "https://scout-dx.hugen.tokyo/scout/lobsters",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "09a5090e-86fd-49f6-a94d-28c8054a085c",
+          "url": "https://scout-dx.hugen.tokyo/scout/npm",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "02a1b8d7-1938-4757-99b4-4e99b634ae33",
+          "url": "https://scout-dx.hugen.tokyo/scout/report",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a3e8c279-2fa4-489b-b6b8-67b4bbfe4674",
+          "url": "https://scout-dx.hugen.tokyo/scout/report/full",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "4de4b5bc-2b27-4eaa-ba21-aa95cc533aef",
+          "url": "https://scout-dx.hugen.tokyo/scout/scholar",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "76012e3c-0373-426a-a528-7dd968eef443",
+          "url": "https://scout-dx.hugen.tokyo/scout/stackoverflow",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "34dd0ef0-8e44-4a3d-a7a9-affec6072f31",
+          "url": "https://scout-dx.hugen.tokyo/scout/x",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "2903d71f-d15c-4f5e-958f-69a227ee6fd6",
+          "url": "https://scout-dx.hugen.tokyo/scout/x402",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "content_hugen_tokyo",
+      "name": "https://content.hugen.tokyo",
+      "origin": "https://content.hugen.tokyo",
+      "description": "",
+      "x402scanId": "07adec1e-d0c0-448a-a1c2-375a35c0122d",
+      "x402scanUrl": "https://www.x402scan.com/server/07adec1e-d0c0-448a-a1c2-375a35c0122d",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "518b7a6b-0751-47cd-8f29-5878a56a5e05",
+          "url": "https://content.hugen.tokyo/content/analyze",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "292c2a83-587f-4d88-a214-6bed56600cc7",
+          "url": "https://content.hugen.tokyo/content/extract",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "f9e2aaad-e40c-4083-b670-6ee2bfe7c77e",
+          "url": "https://content.hugen.tokyo/content/links",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "8510e564-3c10-4fd3-a8ec-8ef9384d21bc",
+          "url": "https://content.hugen.tokyo/content/metadata",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5bd51611-52e4-4fe3-9f50-d76ff30e36ed",
+          "url": "https://content.hugen.tokyo/content/structured",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "ab5336af-872a-49a5-a419-3394c3d39d44",
+          "url": "https://content.hugen.tokyo/content/summary",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "defi_dx_hugen_tokyo",
+      "name": "https://defi-dx.hugen.tokyo",
+      "origin": "https://defi-dx.hugen.tokyo",
+      "description": "",
+      "x402scanId": "72504062-a1ad-468b-b1d5-52a7cc008439",
+      "x402scanUrl": "https://www.x402scan.com/server/72504062-a1ad-468b-b1d5-52a7cc008439",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "8bf62793-530c-46f8-a08d-1209c1f58d81",
+          "url": "https://defi-dx.hugen.tokyo/defi/approval",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "670f1092-a839-4a51-8813-6548cd427e12",
+          "url": "https://defi-dx.hugen.tokyo/defi/bridge/quote",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "986a8e03-29a6-4a5a-b2cf-fa9d2e5be267",
+          "url": "https://defi-dx.hugen.tokyo/defi/bridge/status",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e311a405-8c82-450b-b317-fab2f891ad50",
+          "url": "https://defi-dx.hugen.tokyo/defi/bridge/tokens",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "d0be76f0-b119-4ee6-8094-12b60a1d3fa6",
+          "url": "https://defi-dx.hugen.tokyo/defi/dapp",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "414509f0-f405-4bba-a65d-db17f5f29067",
+          "url": "https://defi-dx.hugen.tokyo/defi/fees",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3a2a0989-2282-4190-9f08-c30265f9949f",
+          "url": "https://defi-dx.hugen.tokyo/defi/gas",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "bb06841a-8dac-4f91-81f2-6e2f7896dbf8",
+          "url": "https://defi-dx.hugen.tokyo/defi/malicious",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "d21f45bf-f522-4f97-961b-a7207839856c",
+          "url": "https://defi-dx.hugen.tokyo/defi/nft",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "c3d61274-6d5b-4c8c-9108-421d0d6c3998",
+          "url": "https://defi-dx.hugen.tokyo/defi/phishing",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "593f60bf-4614-4420-b8b3-949f1c13157a",
+          "url": "https://defi-dx.hugen.tokyo/defi/price",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "40c98789-6411-4c53-8968-a0585cf71cb6",
+          "url": "https://defi-dx.hugen.tokyo/defi/protocol",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "ea82c9e7-3f36-4b10-ab25-2ed3b3df9a0b",
+          "url": "https://defi-dx.hugen.tokyo/defi/rugpull",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "4b2fec43-1186-4750-b42f-5dfe68128b3c",
+          "url": "https://defi-dx.hugen.tokyo/defi/token",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3534009c-2121-4c2e-9ee9-4529d727b0c9",
+          "url": "https://defi-dx.hugen.tokyo/defi/token/solana",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "ac180d55-eea4-411a-a4e8-df297251c36e",
+          "url": "https://defi-dx.hugen.tokyo/defi/tvl",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "weather_dx_hugen_tokyo",
+      "name": "https://weather-dx.hugen.tokyo",
+      "origin": "https://weather-dx.hugen.tokyo",
+      "description": "",
+      "x402scanId": "4fbde650-0b14-4730-964b-61af2bd6743e",
+      "x402scanUrl": "https://www.x402scan.com/server/4fbde650-0b14-4730-964b-61af2bd6743e",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "d867ba0e-924a-4eb6-ab5b-b04cbf839ad1",
+          "url": "https://weather-dx.hugen.tokyo/weather/forecast",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "whale_hugen_tokyo",
+      "name": "https://whale.hugen.tokyo",
+      "origin": "https://whale.hugen.tokyo",
+      "description": "",
+      "x402scanId": "a65743ed-822e-4a0f-8d38-a1ba038c4758",
+      "x402scanUrl": "https://www.x402scan.com/server/a65743ed-822e-4a0f-8d38-a1ba038c4758",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "2f9d1e7b-6ada-49db-b7f2-92b704ce3c74",
+          "url": "https://whale.hugen.tokyo/whale/movements",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "intel_dx_hugen_tokyo",
+      "name": "https://intel-dx.hugen.tokyo",
+      "origin": "https://intel-dx.hugen.tokyo",
+      "description": "",
+      "x402scanId": "4f7e0731-e41f-46bb-85d7-508fc0770f97",
+      "x402scanUrl": "https://www.x402scan.com/server/4f7e0731-e41f-46bb-85d7-508fc0770f97",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "fd5529fb-41d6-4162-bb1a-303b4e847fad",
+          "url": "https://intel-dx.hugen.tokyo/intel/contract-report",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "4ba6eaa3-1456-4130-8d31-4234f94144ed",
+          "url": "https://intel-dx.hugen.tokyo/intel/wallet-report",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "2dd3a367-e04a-45ff-8a47-b6ebae19714e",
+          "url": "https://intel-dx.hugen.tokyo/intel/yield-report",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "discovery_hugen_tokyo",
+      "name": "https://discovery.hugen.tokyo",
+      "origin": "https://discovery.hugen.tokyo",
+      "description": "",
+      "x402scanId": "21cb690d-3d69-4a10-ae0a-4c943af393d6",
+      "x402scanUrl": "https://www.x402scan.com/server/21cb690d-3d69-4a10-ae0a-4c943af393d6",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "ff7b6b9b-9058-470f-b422-c681f5e4cdb1",
+          "url": "https://discovery.hugen.tokyo/keys/topup",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "intel_hugen_tokyo",
+      "name": "https://intel.hugen.tokyo",
+      "origin": "https://intel.hugen.tokyo",
+      "description": "",
+      "x402scanId": "3eafeb81-cc82-4ac9-9294-83b1130520bf",
+      "x402scanUrl": "https://www.x402scan.com/server/3eafeb81-cc82-4ac9-9294-83b1130520bf",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "b7967da6-8112-4228-8d0f-1142521f9db9",
+          "url": "https://intel.hugen.tokyo/intel/contract-report",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "11dd788d-3906-42ce-ad3f-fcd62ddceb1d",
+          "url": "https://intel.hugen.tokyo/intel/token-report",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "883b69d1-5199-4ff2-988b-6a9710b94e60",
+          "url": "https://intel.hugen.tokyo/intel/wallet-report",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "966a2b37-1299-41b6-ab83-f4cc00491db2",
+          "url": "https://intel.hugen.tokyo/intel/yield-report",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "cot_hugen_tokyo",
+      "name": "https://cot.hugen.tokyo",
+      "origin": "https://cot.hugen.tokyo",
+      "description": "",
+      "x402scanId": "db6df474-9c6b-4121-9b4c-7b4d00d69f36",
+      "x402scanUrl": "https://www.x402scan.com/server/db6df474-9c6b-4121-9b4c-7b4d00d69f36",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "d57646fa-a3cc-49c7-88ac-5ec45cce8466",
+          "url": "https://cot.hugen.tokyo/cot/history",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "mailcheck_dx_hugen_tokyo",
+      "name": "https://mailcheck-dx.hugen.tokyo",
+      "origin": "https://mailcheck-dx.hugen.tokyo",
+      "description": "",
+      "x402scanId": "5cbafb25-34e0-4121-9d11-7d866f94811c",
+      "x402scanUrl": "https://www.x402scan.com/server/5cbafb25-34e0-4121-9d11-7d866f94811c",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "26dd2fc1-94d8-4a00-bcee-b1c0d244b63f",
+          "url": "https://mailcheck-dx.hugen.tokyo/mailcheck/disposable",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "mailcheck_hugen_tokyo",
+      "name": "https://mailcheck.hugen.tokyo",
+      "origin": "https://mailcheck.hugen.tokyo",
+      "description": "",
+      "x402scanId": "a2142488-265f-49cf-b371-3c82606d93dd",
+      "x402scanUrl": "https://www.x402scan.com/server/a2142488-265f-49cf-b371-3c82606d93dd",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "d00b96ce-80e6-4efc-bbcd-c5feebdb3b23",
+          "url": "https://mailcheck.hugen.tokyo/mailcheck/disposable",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "f4f6e351-fe28-474a-96a2-2159a17a7fe2",
+          "url": "https://mailcheck.hugen.tokyo/mailcheck/mx",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "visual_dx_hugen_tokyo",
+      "name": "https://visual-dx.hugen.tokyo",
+      "origin": "https://visual-dx.hugen.tokyo",
+      "description": "",
+      "x402scanId": "8db11d00-b4a8-4121-9236-c1ea4db05f60",
+      "x402scanUrl": "https://www.x402scan.com/server/8db11d00-b4a8-4121-9236-c1ea4db05f60",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "61224176-6fc6-44ea-aa11-9c5856a236f5",
+          "url": "https://visual-dx.hugen.tokyo/visual/parse",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "weather_hugen_tokyo",
+      "name": "Weather API",
+      "origin": "https://weather.hugen.tokyo",
+      "description": "Instant weather data by city name — no API keys, no geocoding setup, no rate limits. Current conditions and daily forecasts for any city worldwide in structured JSON, ready for agent consumption.",
+      "x402scanId": "1cfc2032-1230-4549-9e4a-3bc18bcaa59d",
+      "x402scanUrl": "https://www.x402scan.com/server/1cfc2032-1230-4549-9e4a-3bc18bcaa59d",
+      "txCount": 14650,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "e072a66f-b78c-4ea3-a38e-4e1442008b50",
+          "url": "https://weather.hugen.tokyo/weather/current",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "ab055ffd-f748-4118-88b0-b0a596c8dda6",
+          "url": "https://weather.hugen.tokyo/weather/forecast",
+          "method": "GET",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "web_surf_cascade_fyi",
+      "name": "Surf Web",
+      "origin": "https://web.surf.cascade.fyi",
+      "description": "Pay-per-use web search and crawl API with x402 micropayments.",
+      "x402scanId": "aa4fd830-ad2a-4a3f-babe-2984b99a55a6",
+      "x402scanUrl": "https://www.x402scan.com/server/aa4fd830-ad2a-4a3f-babe-2984b99a55a6",
+      "txCount": 9175,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "02a66347-12ac-4deb-bd8b-26977dc3d417",
+          "url": "https://web.surf.cascade.fyi/v1/crawl",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e5fbde5a-1cfa-43ad-8733-a40fb6c0b7fc",
+          "url": "https://web.surf.cascade.fyi/v1/search",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "twitter_surf_cascade_fyi",
+      "name": "Surf Twitter",
+      "origin": "https://twitter.surf.cascade.fyi",
+      "description": "Pay-per-use Twitter/X data API with x402 micropayments.",
+      "x402scanId": "65dad08e-2802-4fac-adc2-dfb1acb24713",
+      "x402scanUrl": "https://www.x402scan.com/server/65dad08e-2802-4fac-adc2-dfb1acb24713",
+      "txCount": 9175,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "13c154b9-421c-4230-853f-f635756ebae7",
+          "url": "https://twitter.surf.cascade.fyi/communities/%7Bid%7D",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "20169761-c90a-4ec1-9de7-4962bc88881a",
+          "url": "https://twitter.surf.cascade.fyi/communities/%7Bid%7D/members",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "269837db-b3df-4116-bd55-075a59dcc269",
+          "url": "https://twitter.surf.cascade.fyi/communities/%7Bid%7D/tweets",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "580d58eb-8551-485b-af45-ec272e369066",
+          "url": "https://twitter.surf.cascade.fyi/communities/search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "0fe67c63-35f4-43a6-bc15-6d150fcf578f",
+          "url": "https://twitter.surf.cascade.fyi/lists/%7Bid%7D/followers",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "67cf53a1-72b9-45a6-b07c-203c6e2ff5e4",
+          "url": "https://twitter.surf.cascade.fyi/lists/%7Bid%7D/members",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "6d5a4c33-1e78-4d79-8332-a28204ade565",
+          "url": "https://twitter.surf.cascade.fyi/lists/%7Bid%7D/tweets",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "2daf76f0-6706-42ea-999e-6b21d9f84f96",
+          "url": "https://twitter.surf.cascade.fyi/spaces/%7Bid%7D",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "153a18cf-3d08-48c5-ac4a-16aa29646f06",
+          "url": "https://twitter.surf.cascade.fyi/trends",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "69706110-566c-4e3b-aaeb-43215630a7c5",
+          "url": "https://twitter.surf.cascade.fyi/tweets",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "69bdfd01-1c81-4520-9164-757a68322414",
+          "url": "https://twitter.surf.cascade.fyi/tweets/%7Bid%7D",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "902998cf-b8a3-49a3-8dc0-103f92ffd2ea",
+          "url": "https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/article",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "dc7ed491-6cad-44df-8161-66f158ae8dec",
+          "url": "https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/quotes",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "76df8d45-cce1-4c99-9edc-12be51b4e951",
+          "url": "https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/replies",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1a1b0cd9-0463-4f75-a2d1-90681f4f3a12",
+          "url": "https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/retweeters",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "72990f53-f9d8-490f-b539-b74dc5984d5a",
+          "url": "https://twitter.surf.cascade.fyi/tweets/%7Bid%7D/thread",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "aee36c5a-2244-4dbc-a944-91c5c8e6d5bc",
+          "url": "https://twitter.surf.cascade.fyi/tweets/search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "72350d84-e05b-43c3-928d-9f64749fd07f",
+          "url": "https://twitter.surf.cascade.fyi/users",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5a8c5850-de86-4549-b5ce-fc30cd20f644",
+          "url": "https://twitter.surf.cascade.fyi/users/%7Bref%7D",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "fd90a9b3-f9be-4b3f-b5bd-94d8819a16b7",
+          "url": "https://twitter.surf.cascade.fyi/users/%7Bref%7D/followers",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "38fb1f9b-e445-492e-9f5b-bdee92684783",
+          "url": "https://twitter.surf.cascade.fyi/users/%7Bref%7D/following",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "d8c13df2-a1e7-44fa-a5b2-2f71eea47de0",
+          "url": "https://twitter.surf.cascade.fyi/users/%7Bref%7D/mentions",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b5d38c8e-53c9-419e-9989-3a6baa41fab5",
+          "url": "https://twitter.surf.cascade.fyi/users/%7Bref%7D/tweets",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "138ac32d-d1b8-4ab2-a0c7-afddca2dc9b0",
+          "url": "https://twitter.surf.cascade.fyi/users/%7Bref%7D/verified_followers",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "faba0d9a-9014-4a50-8423-b35ff3296535",
+          "url": "https://twitter.surf.cascade.fyi/users/relationship",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "bb5c271c-0b16-4bbc-938a-8ccee73c2844",
+          "url": "https://twitter.surf.cascade.fyi/users/search",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "inference_surf_cascade_fyi",
+      "name": "Surf Inference",
+      "origin": "https://inference.surf.cascade.fyi",
+      "description": "OpenAI-compatible LLM inference API with x402 or MPP micropayments.",
+      "x402scanId": "2dcac6c0-5e83-4e39-948e-7b98ac603b1d",
+      "x402scanUrl": "https://www.x402scan.com/server/2dcac6c0-5e83-4e39-948e-7b98ac603b1d",
+      "txCount": 9175,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "47b562f0-cb13-490e-90b3-bc3209c5ffe3",
+          "url": "https://inference.surf.cascade.fyi/v1/chat/completions",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "reddit_surf_cascade_fyi",
+      "name": "Surf Reddit",
+      "origin": "https://reddit.surf.cascade.fyi",
+      "description": "Pay-per-use Reddit data API with x402 micropayments.",
+      "x402scanId": "b6534b5a-81e1-476a-a381-8ce90061f1e7",
+      "x402scanUrl": "https://www.x402scan.com/server/b6534b5a-81e1-476a-a381-8ce90061f1e7",
+      "txCount": 9175,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "9cda8709-2e96-4481-bd0f-ba2a4505ab27",
+          "url": "https://reddit.surf.cascade.fyi/posts/%7Bid%7D",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "842629ba-39e7-4d57-b7b9-868f8e48f6d5",
+          "url": "https://reddit.surf.cascade.fyi/r/%7Bsubreddit%7D",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3c247d55-5c2f-4edc-bfe3-d35ec36f4774",
+          "url": "https://reddit.surf.cascade.fyi/r/%7Bsubreddit%7D/posts",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "71a2721d-2f1a-4744-a957-1c8396f81bd5",
+          "url": "https://reddit.surf.cascade.fyi/search",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5c49efe0-21bf-406c-974b-4d9309c98b6e",
+          "url": "https://reddit.surf.cascade.fyi/users/%7Busername%7D",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "bac8371e-412e-460d-a81d-40589ce52ad5",
+          "url": "https://reddit.surf.cascade.fyi/users/%7Busername%7D/comments",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "d12b1ee6-5723-4d90-a3c2-df3b0e8539be",
+          "url": "https://reddit.surf.cascade.fyi/users/%7Busername%7D/posts",
+          "method": "POST",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "api_vishwalab_com",
+      "name": "Vishwa",
+      "origin": "https://api.vishwalab.com",
+      "description": "Vishwa is building agent-native banking infrastructure for autonomous capital, bringing pre-execution control to agent-driven payments and capital flows.",
+      "x402scanId": "7fdd6134-681d-4556-82b8-6fbb2c707a36",
+      "x402scanUrl": "https://www.x402scan.com/server/7fdd6134-681d-4556-82b8-6fbb2c707a36",
+      "txCount": 8666,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "05896ed9-b6ca-4deb-bfe6-fd0c7b26e8e5",
+          "url": "https://api.vishwalab.com/v1/prediction/events",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "75b1c1e2-0559-4f76-84a8-40e8e06078be",
+          "url": "https://api.vishwalab.com/v1/prediction/events/%7BeventId%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "37dd1613-8afa-4811-bde2-400b2d3e0b51",
+          "url": "https://api.vishwalab.com/v1/prediction/events/%7BeventId%7D/markets",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "6e3c36c4-9399-4fc6-88f8-34f9a6e7f214",
+          "url": "https://api.vishwalab.com/v1/prediction/events/search",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1cd064f9-b0b7-496a-be73-541db1ed2f71",
+          "url": "https://api.vishwalab.com/v1/prediction/execute",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "f30a0643-816c-44e6-913b-da556ff045be",
+          "url": "https://api.vishwalab.com/v1/prediction/history",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1c0606aa-ff95-4d6a-bf68-796aaec6e748",
+          "url": "https://api.vishwalab.com/v1/prediction/markets/%7BmarketId%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "36b12086-0447-4374-a418-370759c9247f",
+          "url": "https://api.vishwalab.com/v1/prediction/orderbook/%7BmarketId%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "aaed9b0b-523e-40a8-8a56-1061db5e0b8c",
+          "url": "https://api.vishwalab.com/v1/prediction/orders",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5223f84b-ad15-4ae1-80d8-50935c30cb0b",
+          "url": "https://api.vishwalab.com/v1/prediction/orders",
+          "method": "DELETE",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e1f86e84-b487-4353-90fe-aa03e6d3c60a",
+          "url": "https://api.vishwalab.com/v1/prediction/orders",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3e07179b-75f9-4436-8472-998af8bfa779",
+          "url": "https://api.vishwalab.com/v1/prediction/orders/%7BorderPubkey%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e95aa1e8-ecce-4b99-8185-3c5d78574484",
+          "url": "https://api.vishwalab.com/v1/prediction/orders/status/%7BorderPubkey%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "24d53743-682e-417d-95a8-05b0229a4586",
+          "url": "https://api.vishwalab.com/v1/prediction/positions",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "fee45bb9-41be-4137-a514-528ef44cd209",
+          "url": "https://api.vishwalab.com/v1/prediction/positions/%7BpositionPubkey%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "cd733151-507a-489e-9400-3de62de8eb18",
+          "url": "https://api.vishwalab.com/v1/prediction/positions/%7BpositionPubkey%7D",
+          "method": "DELETE",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b0bde20d-7257-4501-aab6-8b3d1924d877",
+          "url": "https://api.vishwalab.com/v1/prediction/positions/%7BpositionPubkey%7D/claim",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "6f73ca4c-507b-4a5f-9b82-43a05554651b",
+          "url": "https://api.vishwalab.com/v1/prediction/trades",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e8bd3ac4-b4dc-41c8-947a-e0b7958306bc",
+          "url": "https://api.vishwalab.com/v1/services",
+          "method": "GET",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "id": "api_onesource_io",
+      "name": "OneSource - Ethereum RPC for AI Agents",
+      "origin": "https://api.onesource.io",
+      "description": "Ethereum mainnet and Sepolia testnet RPC for AI agents, served from OneSource-operated nodes. Live block, balance, contract, NFT, transaction, and event data. Pay per call or use batch/session mode — USDC on Base via x402, or pathUSD/USDC.e on Tempo via MPP. No API keys required.",
+      "x402scanId": "bbb78e94-611e-4f0c-9a48-6df8fd9b26be",
+      "x402scanUrl": "https://www.x402scan.com/server/bbb78e94-611e-4f0c-9a48-6df8fd9b26be",
+      "txCount": 7844,
+      "source": "x402scan.com server page",
+      "discovery": "x402scan/server/resources",
+      "apis": [
+        {
+          "x402scanResourceId": "84e3b2d6-7190-4a0e-917a-e0f4059b3dda",
+          "url": "https://api.onesource.io/api/chain/allowance",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "2161f888-54c4-4fad-b84e-03d650304be6",
+          "url": "https://api.onesource.io/api/chain/block-number",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "aafe1620-c4a2-4b03-8538-924e19e6c116",
+          "url": "https://api.onesource.io/api/chain/block/%7Bnumber%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "29bc2bcd-f1cf-45bc-97cd-570df1b2444b",
+          "url": "https://api.onesource.io/api/chain/call",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "5ae718ef-d1a5-4afb-800d-cd9d68c134a4",
+          "url": "https://api.onesource.io/api/chain/chain-id",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "cc0d4b70-bf12-42cb-bd85-dabfe3d84d0e",
+          "url": "https://api.onesource.io/api/chain/code/%7Baddress%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "128e3f8e-36b8-465a-b8f0-7ebc2b99eb97",
+          "url": "https://api.onesource.io/api/chain/contract/%7Baddress%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1e313cfa-92fd-4313-b7d6-652d3dd5827c",
+          "url": "https://api.onesource.io/api/chain/ens/%7Binput%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1c55e081-6c34-4de9-ab3c-b6b9697c5e7e",
+          "url": "https://api.onesource.io/api/chain/erc1155-balance",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "a334adf7-a507-4350-97f9-362eeddbcc4f",
+          "url": "https://api.onesource.io/api/chain/erc20-balance",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "b92125cd-63aa-42e1-bcf6-36448aa212a6",
+          "url": "https://api.onesource.io/api/chain/erc20-transfers",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "343faaa6-2ac3-4867-adc1-510b7e433c93",
+          "url": "https://api.onesource.io/api/chain/erc721-tokens",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "7240775a-29ce-4723-a349-a8fe2489d526",
+          "url": "https://api.onesource.io/api/chain/estimate-gas",
+          "method": "POST",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "8f016a73-4754-4e5e-9d1e-2f647260154d",
+          "url": "https://api.onesource.io/api/chain/events",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3ab549a2-fca6-4786-b2e6-6d3d5da0a930",
+          "url": "https://api.onesource.io/api/chain/live-balance",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "4afaf7ae-6d56-46df-8d62-04b7ef66a832",
+          "url": "https://api.onesource.io/api/chain/network-info",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "e82811dd-c12f-4ca2-8cd9-42090c5e44a7",
+          "url": "https://api.onesource.io/api/chain/nft-metadata",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "1839a9e2-7d55-40a5-94c9-627c80e1a5e6",
+          "url": "https://api.onesource.io/api/chain/nft-owner",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "3934491a-5483-42d3-a479-b63a55a89f88",
+          "url": "https://api.onesource.io/api/chain/nonce/%7Baddress%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "89f0e26f-bae0-4093-9b35-c4fdb22e6a40",
+          "url": "https://api.onesource.io/api/chain/pending",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "ed4a0020-a51d-45d0-bead-30eb396a59a7",
+          "url": "https://api.onesource.io/api/chain/proxy/%7Baddress%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "c3b5baa9-5040-496e-871d-d2b7e45d7054",
+          "url": "https://api.onesource.io/api/chain/receipt/%7Bhash%7D",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "4d8098e1-4bc8-4514-b0cf-ce38e9233a47",
+          "url": "https://api.onesource.io/api/chain/storage",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "0c8b4df7-6365-4e09-9aaa-b465b38540d0",
+          "url": "https://api.onesource.io/api/chain/total-supply",
+          "method": "GET",
+          "name": ""
+        },
+        {
+          "x402scanResourceId": "01dc8aa1-ab7d-4c6a-a03f-af888352b599",
+          "url": "https://api.onesource.io/api/chain/tx/%7Bhash%7D",
+          "method": "GET",
+          "name": ""
+        }
+      ]
+    }
+  ]
+}

@@ -267,6 +267,17 @@ Calls **any** HTTP API that supports x402. No service catalog — provide the pr
 
 Backend signing always uses catalog id `x402_custom` internally — agents never pass serviceIds.
 
+### `list_x402_services`
+
+Browse the **top 30 x402scan.com** paid services bundled in MCP (`config/x402scan-catalog.json`). Each entry includes `origin`, `description`, and discovered `apis[]` with `url` + `method`.
+
+| Input | Type | Description |
+|-------|------|-------------|
+| `query` | string | Optional filter (service name, host, API path) |
+| `limit` | number | Max services (1–30, default 30) |
+
+Regenerate catalog: `npm run catalog:x402scan`
+
 ### `get_android_app_link`
 
 Returns the AgentPay Android APK download URL and install instructions.

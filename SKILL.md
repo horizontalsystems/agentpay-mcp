@@ -52,7 +52,7 @@ Then tell the user to **install the Android app** and say **"pair my wallet"** w
 
 **Do NOT run `npm install -g agentpay-mcp`.** The npm registry package `agentpay-mcp@4.x` is a **different project** (`up2itnow0822/agentpay-mcp`) with tools like `x402_session_start`, `x402_pay`, and binary `dist/index.js`.
 
-**This skill** is for **GitHub `horizontalsystems/agentpay-mcp`** only — tools `get_android_app_link`, `fetch_paid_service`, `get_pairing_link`, `get_spending_status`, binary **`build/index.js`**.
+**This skill** is for **GitHub `horizontalsystems/agentpay-mcp`** only — tools `get_android_app_link`, `list_x402_services`, `fetch_paid_service`, `get_pairing_link`, `get_spending_status`, binary **`build/index.js`**.
 
 Verify after install:
 
@@ -68,12 +68,12 @@ Expected tools JSON includes `"api": "walletconnect-x402-v2"` and the three tool
 
 ## x402 — read this before any paid API call
 
-**AgentPay MCP is a universal x402 client.** There is **no service catalog** and **no `list_x402_services` tool**. Call any x402 HTTP endpoint with `url` + optional `method`, `headers`, `body`.
+**AgentPay MCP is a universal x402 client.** Use **`list_x402_services`** to browse the top-30 **x402scan.com** catalog (paid APIs + urls). Then **`fetch_paid_service({ url, method?, body? })`** to pay and call.
 
 | Do | Don't |
 |----|-------|
-| `fetch_paid_service({ url, method?, body? })` | `AGENT_PRIVATE_KEY` / hot wallet private key |
-| Discover APIs from provider docs, x402 Bazaar, or user | `list_x402_services` (removed) |
+| `list_x402_services` → pick `url` + `method` → `fetch_paid_service` | `AGENT_PRIVATE_KEY` / hot wallet private key |
+| Browse x402scan catalog via MCP before guessing URLs | npm `agentpay-mcp@4.x` `x402_session_*` tools |
 | `get_pairing_link` when WC session is dead | `x402_session_start`, `x402_session_fetch`, `x402_pay` |
 | mcporter: `agentpay.fetch_paid_service` | Direct `POST /v1/pay-and-call` with registry serviceIds |
 
@@ -210,9 +210,20 @@ Call **`get_android_app_link`** after MCP install or when the user has no app. *
 
 Call **`get_pairing_link`** when user asks to connect. Returns three messages: APK link + instructions + raw `wc:` URI. **Paste the APK link and raw `wc:` URI in your reply to the user** (never wrap `wc:` in link.reown.com).
 
+## x402scan catalog (top 30 services)
+
+Source: https://www.x402scan.com/resources — bundled in MCP as `list_x402_services`. Each service includes `x402scanUrl` (server page with full Resources list) and `apis[]` scraped from that page.
+
+```bash
+mcporter call agentpay.list_x402_services
+mcporter call agentpay.list_x402_services query=exa
+```
+
+Returns services with `origin`, `description`, and `apis[]` (`url`, `method`, `name`). Use the exact `url` in `fetch_paid_service`.
+
 ## Calling paid APIs (any x402 service)
 
-**Always use `fetch_paid_service` with a full URL.** Flow: HTTP request → 402 → phone signs USDC → paid retry.
+**Flow:** `list_x402_services` (optional) → `fetch_paid_service` with full URL → 402 → phone signs USDC → paid retry.
 
 ```bash
 mcporter call agentpay.fetch_paid_service \
@@ -233,7 +244,8 @@ mcporter call agentpay.get_spending_status
 
 - Install Android app → `get_android_app_link` (or APK URL above)
 - Pair wallet → `get_pairing_link`
-- Any x402 paid API → `fetch_paid_service({ url, ... })` — discover URL from docs/Bazaar/user
+- Browse paid APIs → `list_x402_services` (x402scan top 30)
+- Any x402 paid API → `fetch_paid_service({ url, ... })` — url from catalog or provider docs
 - Balance / spend today → `get_spending_status`
 
 ## Agent behavior (important)

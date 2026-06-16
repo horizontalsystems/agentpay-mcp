@@ -7,6 +7,7 @@ import type { AgentPayConfig } from './config.js';
 import { getConfigPath } from './config.js';
 import { ANDROID_APK_MESSAGE, fetchPairingUri, PAIRING_INSTRUCTIONS } from './connect.js';
 import { ANDROID_APK_URL } from './defaults.js';
+import { listX402ScanServices } from './x402scan-catalog.js';
 
 function textResult(payload: unknown, isError = false) {
   return {
@@ -136,10 +137,10 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
     },
     {
       instructions: [
-        'AgentPay IS the x402 payment client. Call ANY HTTP API that supports x402 via fetch_paid_service — no service catalog, no serviceId.',
-        'fetch_paid_service({ url, method?, headers?, body? }) — url is required. Agent discovers x402 endpoints from docs, Bazaar, or user input.',
-        'Examples: Exa POST https://api.exa.ai/search body { query, numResults }. Nansen POST https://api.nansen.ai/api/v1/smart-money/holdings body { chains: ["ethereum"] }.',
-        'NEVER ask for AGENT_PRIVATE_KEY or use x402_session_* tools. NEVER call list_x402_services — it does not exist.',
+        'AgentPay IS the x402 payment client. list_x402_services returns top x402scan.com paid APIs (url + method). fetch_paid_service({ url, method?, body? }) pays and calls any listed endpoint.',
+        'Browse list_x402_services first when user asks what paid APIs exist. Then fetch_paid_service with the exact url from the catalog.',
+        'Examples: Exa POST https://api.exa.ai/search body { query, numResults }. Nansen from catalog smart-money endpoints.',
+        'NEVER ask for AGENT_PRIVATE_KEY or use x402_session_* tools from npm agentpay-mcp v4.',
         'Payment flow: HTTP 402 → WalletConnect USDC sign on user phone → paid retry. SPENDS REAL MONEY — tell user cost, report paidAmountBaseUnits + settlement tx.',
         'get_android_app_link for APK download URL. get_pairing_link to pair wallet. CRITICAL: paste https://rafaelekol.github.io/agentpay/agentPay.apk and the raw wc: URI in your user-visible reply — user cannot see tool output. get_spending_status for budget/activity.',
         'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_pairing_link.',
@@ -149,12 +150,32 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
   );
 
   server.registerTool(
+    'list_x402_services',
+    {
+      title: 'AgentPay: browse x402scan paid API catalog',
+      description:
+        'Top 30 x402-paid services from x402scan.com — apis match each server page (e.g. x402scan.com/server/{id} Resources list). ' +
+        'Returns x402scanUrl, origin, and apis[].url + method. Read-only — use fetch_paid_service with a catalog url. Optional query filter.',
+      inputSchema: z.object({
+        query: z.string().optional().describe('Filter by service name, origin host, or API path'),
+        limit: z.number().int().min(1).max(30).optional().describe('Max services to return (default 30)')
+      }),
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false
+      }
+    },
+    async (input) => textResult(listX402ScanServices({ query: input.query, limit: input.limit }))
+  );
+
+  server.registerTool(
     'fetch_paid_service',
     {
       title: 'AgentPay: call any x402-paid HTTP API',
       description: [
         'Universal x402 client — call ANY HTTP endpoint that returns 402 Payment Required.',
-        'Provide url (required), method (default POST), optional headers and JSON body. No service catalog or serviceId.',
+        'Provide url (required), method (default POST), optional headers and JSON body. Get urls from list_x402_services or provider docs.',
         'SPENDS REAL USDC on Base; user approves on Android wallet via WalletConnect.',
         'Flow: request → 402 + PAYMENT-REQUIRED → phone signs EIP-712 USDC authorization → retry with PAYMENT-SIGNATURE → API response.',
         'Do NOT use AGENT_PRIVATE_KEY or x402_session_* tools.'
