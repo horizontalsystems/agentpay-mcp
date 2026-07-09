@@ -5,6 +5,9 @@ import { runSetup } from './setup.js';
 import { runConnect } from './connect.js';
 import { printInitResult, runInit } from './init.js';
 import { printToolsJson, runDoctor } from './doctor.js';
+import { loadRootDotenv } from './env.js';
+
+loadRootDotenv();
 
 const program = new Command();
 
@@ -26,14 +29,14 @@ program
   .option('--backend-url <url>', 'AgentPay API base URL (no /v1 suffix)')
   .option('--agent-id <id>', 'Agent id (default: agent_123)')
   .option('--api-key <key>', 'Optional bearer token')
-  .action((opts: { backendUrl?: string; agentId?: string; apiKey?: string }) => {
+  .action(async (opts: { backendUrl?: string; agentId?: string; apiKey?: string }) => {
     try {
-      const config = runInit({
+      const config = await runInit({
         backendUrl: opts.backendUrl,
         agentId: opts.agentId,
         apiKey: opts.apiKey
       });
-      printInitResult(config);
+      await printInitResult(config);
     } catch (err: unknown) {
       console.error(err instanceof Error ? err.message : err);
       process.exit(1);
@@ -42,7 +45,7 @@ program
 
 program
   .command('connect')
-  .description('Pair your Android wallet via WalletConnect (prints wc: URI)')
+  .description('Pair your Android wallet via WalletConnect (QR code + deep link)')
   .option('--url-only', 'Print only the raw wc: pairing URI and exit (for agents; do not wait)')
   .action(async (opts: { urlOnly?: boolean }) => {
     const config = loadConfig();
@@ -67,7 +70,7 @@ program
 
 program
   .command('doctor')
-  .description('Check bundle has fetch_paid_service / get_pairing_link (not npm v4.x x402_session_* API)')
+  .description('Check bundle has fetch_paid_service / get_x402_pairing_link (not npm v4.x x402_session_* API)')
   .action(() => {
     process.exit(runDoctor());
   });

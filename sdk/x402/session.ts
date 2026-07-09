@@ -51,7 +51,7 @@ export async function createAlchemySiweSession(
 ): Promise<X402Session> {
   const wc = await agentPay.getWalletConnectStatus();
   if (!wc.active || !wc.address) {
-    throw new Error('WalletConnect: pair the wallet before Alchemy SIWE (get_pairing_link).');
+    throw new Error('WalletConnect: pair the wallet before Alchemy SIWE (get_x402_pairing_link).');
   }
 
   const { message } = buildAlchemySiweMessage(wc.address);

@@ -14,8 +14,8 @@ if [[ ! -f "$EXPECTED_BIN" ]]; then
   echo "[verify] Fix: git clone https://github.com/horizontalsystems/agentpay-mcp.git \"$AGENTPAY_MCP_ROOT\" && cd \"$AGENTPAY_MCP_ROOT\" && npm install && npm run build" >&2
   ERR=1
 else
-  if grep -q 'get_pairing_link' "$EXPECTED_BIN" && grep -q 'fetch_paid_service' "$EXPECTED_BIN" && grep -q 'walletconnect-x402-v2' "$EXPECTED_BIN"; then
-    echo "[verify] OK: bundle has fetch_paid_service + get_pairing_link (v2 API)"
+  if grep -q 'get_x402_pairing_link' "$EXPECTED_BIN" && grep -q 'fetch_paid_service' "$EXPECTED_BIN" && grep -q 'walletconnect-x402-v2' "$EXPECTED_BIN"; then
+    echo "[verify] OK: bundle has fetch_paid_service + get_x402_pairing_link (v2 API)"
   else
     echo "[verify] FAIL: $EXPECTED_BIN is not horizontalsystems/agentpay-mcp v2 (missing expected tools/API marker)" >&2
     ERR=1

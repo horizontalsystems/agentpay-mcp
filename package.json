@@ -7,11 +7,11 @@
   },
   "files": [
     "build",
+    "sdk",
     "SKILL.md",
     "README.md",
     "openclaw.env.example",
     "config",
-    "config/x402scan-catalog.json",
     "scripts"
   ],
   "scripts": {
@@ -21,36 +21,25 @@
     "setup": "node build/index.js setup",
     "init": "node build/index.js init",
     "install:openclaw": "bash scripts/openclaw-install.sh",
-    "verify:openclaw": "bash scripts/openclaw-verify-mcp.sh",
-    "catalog:x402scan": "node scripts/build-x402scan-catalog.mjs"
+    "verify:openclaw": "bash scripts/openclaw-verify-mcp.sh"
   },
-  "keywords": [
-    "mcp",
-    "agentpay",
-    "walletconnect",
-    "x402",
-    "llm",
-    "skills"
-  ],
+  "keywords": ["mcp", "agentpay", "walletconnect", "x402", "llm", "skills"],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/horizontalsystems/agentpay-mcp.git",
-    "directory": "mcp-server"
+    "url": "https://github.com/horizontalsystems/agentpay-mcp.git"
   },
-  "engines": {
-    "node": ">=18"
-  },
-  "dependencies": {
-    "@agentpay/sdk": "*",
+  "engines": { "node": ">=18" },
+  "dependencies": {},
+  "devDependencies": {
+    "@agentpay/sdk": "file:./sdk",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "axios": "^1.6.0",
     "commander": "^12.1.0",
     "conf": "^13.0.0",
     "inquirer": "^12.0.0",
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "zod": "^3.23.8",
     "@types/node": "^20.0.0",
     "esbuild": "^0.24.0",
     "typescript": "^5.0.0"

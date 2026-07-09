@@ -6,7 +6,7 @@ export const AGENTPAY_MCP_TOOLS = [
   'get_android_app_link',
   'list_x402_services',
   'fetch_paid_service',
-  'get_pairing_link',
+  'get_x402_pairing_link',
   'get_spending_status'
 ] as const;
 
@@ -33,7 +33,7 @@ export function inspectBundle(path = bundlePath()): {
   }
   const src = readFileSync(path, 'utf8');
   const hasNewTools =
-    src.includes('get_pairing_link') && src.includes('fetch_paid_service');
+    src.includes('get_x402_pairing_link') && src.includes('fetch_paid_service');
   const hasOldTools =
     /registerTool\(\s*['"]x402_session_start['"]/.test(src) ||
     /registerTool\(\s*['"]x402_pay['"]/.test(src);
@@ -42,7 +42,7 @@ export function inspectBundle(path = bundlePath()): {
     issues.push('bundle may be stale — rebuild from horizontalsystems/agentpay-mcp v2+');
   }
   if (!hasNewTools) {
-    issues.push('bundle missing fetch_paid_service / get_pairing_link');
+    issues.push('bundle missing fetch_paid_service / get_x402_pairing_link');
   }
   if (hasOldTools) {
     issues.push(

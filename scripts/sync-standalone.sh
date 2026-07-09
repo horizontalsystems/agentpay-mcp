@@ -79,6 +79,7 @@ cat > "$STANDALONE/package.json" <<'EOF'
     "commander": "^12.1.0",
     "conf": "^13.0.0",
     "inquirer": "^12.0.0",
+    "qrcode-terminal": "^0.12.0",
     "zod": "^3.23.8",
     "@types/node": "^20.0.0",
     "esbuild": "^0.24.0",

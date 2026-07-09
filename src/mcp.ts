@@ -33,7 +33,7 @@ function hintForErrorCode(code: AgentPayErrorCode | undefined, message: string):
     case 'WC_SESSION_DEAD':
     case 'NO_ACTIVE_SESSION':
       return (
-        `code=${code}: WalletConnect session is dead or not paired. Call get_pairing_link, send raw wc: URI, user taps Connect, retry.`
+        `code=${code}: WalletConnect session is dead or not paired. Call get_x402_pairing_link, send raw wc: URI, user taps Connect, retry.`
       );
     case 'NO_PAYMENT_SIGNATURE':
       return (
@@ -47,7 +47,7 @@ function hintForErrorCode(code: AgentPayErrorCode | undefined, message: string):
 
   const m = message.toLowerCase();
   if (m.includes('payment verification failed') || m.includes('simulation failed') || m.includes('signer mismatch')) {
-    return 'On-chain payment failed after signing — wrong account, insufficient USDC, or facilitator timeout. Re-pair with funded account via get_pairing_link.';
+    return 'On-chain payment failed after signing — wrong account, insufficient USDC, or facilitator timeout. Re-pair with funded account via get_x402_pairing_link.';
   }
   return 'Read the "code" field in this JSON — never guess from timing alone.';
 }
@@ -142,8 +142,8 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
         'Examples: Exa POST https://api.exa.ai/search body { query, numResults }. Nansen from catalog smart-money endpoints.',
         'NEVER ask for AGENT_PRIVATE_KEY or use x402_session_* tools from npm agentpay-mcp v4.',
         'Payment flow: HTTP 402 → WalletConnect USDC sign on user phone → paid retry. SPENDS REAL MONEY — tell user cost, report paidAmountBaseUnits + settlement tx.',
-        'get_android_app_link for APK download URL. get_pairing_link to pair wallet. CRITICAL: paste https://rafaelekol.github.io/agentpay/agentPay.apk and the raw wc: URI in your user-visible reply — user cannot see tool output. get_spending_status for budget/activity.',
-        'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_pairing_link.',
+        'get_android_app_link for APK download URL. get_x402_pairing_link to pair wallet. CRITICAL: paste https://rafaelekol.github.io/agentpay/agentPay.apk and the raw wc: URI in your user-visible reply — user cannot see tool output. get_spending_status for budget/activity.',
+        'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_x402_pairing_link.',
         'Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: binary MUST be GitHub horizontalsystems/agentpay-mcp build/index.js — NEVER npm install -g agentpay-mcp (registry v4.x has x402_session_* only). Register MCP ONCE via openclaw-register-mcp.sh — NEVER re-run mcp add during normal operation.'
       ].join(' ')
     }
@@ -206,7 +206,7 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
               error: 'WalletConnect session not active on backend',
               walletConnect: wc,
               action:
-                'Call get_pairing_link, forward BOTH messages to the user (instructions + raw wc: URI only). Never use link.reown.com. Then retry fetch_paid_service.',
+                'Call get_x402_pairing_link, forward BOTH messages to the user (instructions + raw wc: URI only). Never use link.reown.com. Then retry fetch_paid_service.',
               configPath: getConfigPath(),
               agentId: config.agentId,
               backendUrl: config.backendUrl
@@ -278,9 +278,9 @@ export async function startMcpServer(config: AgentPayConfig): Promise<void> {
   );
 
   server.registerTool(
-    'get_pairing_link',
+    'get_x402_pairing_link',
     {
-      title: 'AgentPay: get WalletConnect pairing link',
+      title: 'AgentPay: get WalletConnect pairing link (x402 profile)',
       description:
         'Creates a new WalletConnect pairing proposal and returns three text blocks: (1) Android APK download link, (2) paste instructions for AgentPay app, (3) raw wc: URI only — do not wrap in link.reown.com. ' +
         'You MUST include the APK link and the raw wc: URI in your reply to the user — paste both verbatim; the user cannot see tool output. ' +

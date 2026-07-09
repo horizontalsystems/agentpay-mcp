@@ -966,8 +966,8 @@ var require_command = __commonJS({
   "node_modules/commander/lib/command.js"(exports2) {
     var EventEmitter2 = require("node:events").EventEmitter;
     var childProcess = require("node:child_process");
-    var path8 = require("node:path");
-    var fs4 = require("node:fs");
+    var path9 = require("node:path");
+    var fs5 = require("node:fs");
     var process11 = require("node:process");
     var { Argument: Argument2, humanReadableArgName } = require_argument();
     var { CommanderError: CommanderError2 } = require_error();
@@ -1899,11 +1899,11 @@ Expecting one of '${allowedValues.join("', '")}'`);
         let launchWithNode = false;
         const sourceExt = [".js", ".ts", ".tsx", ".mjs", ".cjs"];
         function findFile(baseDir, baseName) {
-          const localBin = path8.resolve(baseDir, baseName);
-          if (fs4.existsSync(localBin)) return localBin;
-          if (sourceExt.includes(path8.extname(baseName))) return void 0;
+          const localBin = path9.resolve(baseDir, baseName);
+          if (fs5.existsSync(localBin)) return localBin;
+          if (sourceExt.includes(path9.extname(baseName))) return void 0;
           const foundExt = sourceExt.find(
-            (ext) => fs4.existsSync(`${localBin}${ext}`)
+            (ext) => fs5.existsSync(`${localBin}${ext}`)
           );
           if (foundExt) return `${localBin}${foundExt}`;
           return void 0;
@@ -1915,21 +1915,21 @@ Expecting one of '${allowedValues.join("', '")}'`);
         if (this._scriptPath) {
           let resolvedScriptPath;
           try {
-            resolvedScriptPath = fs4.realpathSync(this._scriptPath);
+            resolvedScriptPath = fs5.realpathSync(this._scriptPath);
           } catch (err) {
             resolvedScriptPath = this._scriptPath;
           }
-          executableDir = path8.resolve(
-            path8.dirname(resolvedScriptPath),
+          executableDir = path9.resolve(
+            path9.dirname(resolvedScriptPath),
             executableDir
           );
         }
         if (executableDir) {
           let localFile = findFile(executableDir, executableFile);
           if (!localFile && !subcommand._executableFile && this._scriptPath) {
-            const legacyName = path8.basename(
+            const legacyName = path9.basename(
               this._scriptPath,
-              path8.extname(this._scriptPath)
+              path9.extname(this._scriptPath)
             );
             if (legacyName !== this._name) {
               localFile = findFile(
@@ -1940,7 +1940,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
           }
           executableFile = localFile || executableFile;
         }
-        launchWithNode = sourceExt.includes(path8.extname(executableFile));
+        launchWithNode = sourceExt.includes(path9.extname(executableFile));
         let proc;
         if (process11.platform !== "win32") {
           if (launchWithNode) {
@@ -2780,7 +2780,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
        * @return {Command}
        */
       nameFromFilename(filename) {
-        this._name = path8.basename(filename, path8.extname(filename));
+        this._name = path9.basename(filename, path9.extname(filename));
         return this;
       }
       /**
@@ -2794,9 +2794,9 @@ Expecting one of '${allowedValues.join("', '")}'`);
        * @param {string} [path]
        * @return {(string|null|Command)}
        */
-      executableDir(path9) {
-        if (path9 === void 0) return this._executableDir;
-        this._executableDir = path9;
+      executableDir(path10) {
+        if (path10 === void 0) return this._executableDir;
+        this._executableDir = path10;
         return this;
       }
       /**
@@ -6222,8 +6222,8 @@ var require_utils = __commonJS({
       }
       return ind;
     }
-    function removeDotSegments(path8) {
-      let input = path8;
+    function removeDotSegments(path9) {
+      let input = path9;
       const output = [];
       let nextSlash = -1;
       let len = 0;
@@ -6475,8 +6475,8 @@ var require_schemes = __commonJS({
         wsComponent.secure = void 0;
       }
       if (wsComponent.resourceName) {
-        const [path8, query] = wsComponent.resourceName.split("?");
-        wsComponent.path = path8 && path8 !== "/" ? path8 : void 0;
+        const [path9, query] = wsComponent.resourceName.split("?");
+        wsComponent.path = path9 && path9 !== "/" ? path9 : void 0;
         wsComponent.query = query;
         wsComponent.resourceName = void 0;
       }
@@ -10693,12 +10693,12 @@ var require_dist = __commonJS({
         throw new Error(`Unknown format "${name}"`);
       return f;
     };
-    function addFormats(ajv, list, fs4, exportName) {
+    function addFormats(ajv, list, fs5, exportName) {
       var _a;
       var _b;
       (_a = (_b = ajv.opts.code).formats) !== null && _a !== void 0 ? _a : _b.formats = (0, codegen_1._)`require("ajv-formats/dist/formats").${exportName}`;
       for (const f of list)
-        ajv.addFormat(f, fs4[f]);
+        ajv.addFormat(f, fs5[f]);
     }
     module2.exports = exports2 = formatsPlugin;
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -21526,11 +21526,11 @@ var require_mime_types = __commonJS({
       }
       return exts[0];
     }
-    function lookup(path8) {
-      if (!path8 || typeof path8 !== "string") {
+    function lookup(path9) {
+      if (!path9 || typeof path9 !== "string") {
         return false;
       }
-      var extension2 = extname("x." + path8).toLowerCase().substr(1);
+      var extension2 = extname("x." + path9).toLowerCase().substr(1);
       if (!extension2) {
         return false;
       }
@@ -22635,11 +22635,11 @@ var require_form_data = __commonJS({
     "use strict";
     var CombinedStream = require_combined_stream();
     var util4 = require("util");
-    var path8 = require("path");
+    var path9 = require("path");
     var http3 = require("http");
     var https2 = require("https");
     var parseUrl2 = require("url").parse;
-    var fs4 = require("fs");
+    var fs5 = require("fs");
     var Stream = require("stream").Stream;
     var crypto3 = require("crypto");
     var mime = require_mime_types();
@@ -22706,7 +22706,7 @@ var require_form_data = __commonJS({
         if (value.end != void 0 && value.end != Infinity && value.start != void 0) {
           callback(null, value.end + 1 - (value.start ? value.start : 0));
         } else {
-          fs4.stat(value.path, function(err, stat) {
+          fs5.stat(value.path, function(err, stat) {
             if (err) {
               callback(err);
               return;
@@ -22763,11 +22763,11 @@ var require_form_data = __commonJS({
     FormData3.prototype._getContentDisposition = function(value, options) {
       var filename;
       if (typeof options.filepath === "string") {
-        filename = path8.normalize(options.filepath).replace(/\\/g, "/");
+        filename = path9.normalize(options.filepath).replace(/\\/g, "/");
       } else if (options.filename || value && (value.name || value.path)) {
-        filename = path8.basename(options.filename || value && (value.name || value.path));
+        filename = path9.basename(options.filename || value && (value.name || value.path));
       } else if (value && value.readable && hasOwn(value, "httpVersion")) {
-        filename = path8.basename(value.client._httpMessage.path || "");
+        filename = path9.basename(value.client._httpMessage.path || "");
       }
       if (filename) {
         return 'filename="' + filename + '"';
@@ -23324,8 +23324,8 @@ var require_node = __commonJS({
           }
           break;
         case "FILE":
-          var fs4 = require("fs");
-          stream5 = new fs4.SyncWriteStream(fd2, { autoClose: false });
+          var fs5 = require("fs");
+          stream5 = new fs5.SyncWriteStream(fd2, { autoClose: false });
           stream5._type = "fs";
           break;
         case "PIPE":
@@ -24171,6 +24171,1076 @@ var init_buildRequest = __esm({
     "use strict";
     init_registry();
     METHODS_WITH_BODY = /* @__PURE__ */ new Set(["POST", "PUT", "PATCH"]);
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QRMode.js
+var require_QRMode = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QRMode.js"(exports2, module2) {
+    module2.exports = {
+      MODE_NUMBER: 1 << 0,
+      MODE_ALPHA_NUM: 1 << 1,
+      MODE_8BIT_BYTE: 1 << 2,
+      MODE_KANJI: 1 << 3
+    };
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QR8bitByte.js
+var require_QR8bitByte = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QR8bitByte.js"(exports2, module2) {
+    var QRMode = require_QRMode();
+    function QR8bitByte(data) {
+      this.mode = QRMode.MODE_8BIT_BYTE;
+      this.data = data;
+    }
+    QR8bitByte.prototype = {
+      getLength: function() {
+        return this.data.length;
+      },
+      write: function(buffer) {
+        for (var i = 0; i < this.data.length; i++) {
+          buffer.put(this.data.charCodeAt(i), 8);
+        }
+      }
+    };
+    module2.exports = QR8bitByte;
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QRMath.js
+var require_QRMath = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QRMath.js"(exports2, module2) {
+    var QRMath = {
+      glog: function(n) {
+        if (n < 1) {
+          throw new Error("glog(" + n + ")");
+        }
+        return QRMath.LOG_TABLE[n];
+      },
+      gexp: function(n) {
+        while (n < 0) {
+          n += 255;
+        }
+        while (n >= 256) {
+          n -= 255;
+        }
+        return QRMath.EXP_TABLE[n];
+      },
+      EXP_TABLE: new Array(256),
+      LOG_TABLE: new Array(256)
+    };
+    for (i = 0; i < 8; i++) {
+      QRMath.EXP_TABLE[i] = 1 << i;
+    }
+    var i;
+    for (i = 8; i < 256; i++) {
+      QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4] ^ QRMath.EXP_TABLE[i - 5] ^ QRMath.EXP_TABLE[i - 6] ^ QRMath.EXP_TABLE[i - 8];
+    }
+    var i;
+    for (i = 0; i < 255; i++) {
+      QRMath.LOG_TABLE[QRMath.EXP_TABLE[i]] = i;
+    }
+    var i;
+    module2.exports = QRMath;
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QRPolynomial.js
+var require_QRPolynomial = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QRPolynomial.js"(exports2, module2) {
+    var QRMath = require_QRMath();
+    function QRPolynomial(num, shift) {
+      if (num.length === void 0) {
+        throw new Error(num.length + "/" + shift);
+      }
+      var offset = 0;
+      while (offset < num.length && num[offset] === 0) {
+        offset++;
+      }
+      this.num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i++) {
+        this.num[i] = num[i + offset];
+      }
+    }
+    QRPolynomial.prototype = {
+      get: function(index) {
+        return this.num[index];
+      },
+      getLength: function() {
+        return this.num.length;
+      },
+      multiply: function(e) {
+        var num = new Array(this.getLength() + e.getLength() - 1);
+        for (var i = 0; i < this.getLength(); i++) {
+          for (var j = 0; j < e.getLength(); j++) {
+            num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i)) + QRMath.glog(e.get(j)));
+          }
+        }
+        return new QRPolynomial(num, 0);
+      },
+      mod: function(e) {
+        if (this.getLength() - e.getLength() < 0) {
+          return this;
+        }
+        var ratio = QRMath.glog(this.get(0)) - QRMath.glog(e.get(0));
+        var num = new Array(this.getLength());
+        for (var i = 0; i < this.getLength(); i++) {
+          num[i] = this.get(i);
+        }
+        for (var x = 0; x < e.getLength(); x++) {
+          num[x] ^= QRMath.gexp(QRMath.glog(e.get(x)) + ratio);
+        }
+        return new QRPolynomial(num, 0).mod(e);
+      }
+    };
+    module2.exports = QRPolynomial;
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QRMaskPattern.js
+var require_QRMaskPattern = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QRMaskPattern.js"(exports2, module2) {
+    module2.exports = {
+      PATTERN000: 0,
+      PATTERN001: 1,
+      PATTERN010: 2,
+      PATTERN011: 3,
+      PATTERN100: 4,
+      PATTERN101: 5,
+      PATTERN110: 6,
+      PATTERN111: 7
+    };
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QRUtil.js
+var require_QRUtil = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QRUtil.js"(exports2, module2) {
+    var QRMode = require_QRMode();
+    var QRPolynomial = require_QRPolynomial();
+    var QRMath = require_QRMath();
+    var QRMaskPattern = require_QRMaskPattern();
+    var QRUtil = {
+      PATTERN_POSITION_TABLE: [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+      ],
+      G15: 1 << 10 | 1 << 8 | 1 << 5 | 1 << 4 | 1 << 2 | 1 << 1 | 1 << 0,
+      G18: 1 << 12 | 1 << 11 | 1 << 10 | 1 << 9 | 1 << 8 | 1 << 5 | 1 << 2 | 1 << 0,
+      G15_MASK: 1 << 14 | 1 << 12 | 1 << 10 | 1 << 4 | 1 << 1,
+      getBCHTypeInfo: function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+          d ^= QRUtil.G15 << QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15);
+        }
+        return (data << 10 | d) ^ QRUtil.G15_MASK;
+      },
+      getBCHTypeNumber: function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+          d ^= QRUtil.G18 << QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18);
+        }
+        return data << 12 | d;
+      },
+      getBCHDigit: function(data) {
+        var digit = 0;
+        while (data !== 0) {
+          digit++;
+          data >>>= 1;
+        }
+        return digit;
+      },
+      getPatternPosition: function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+      },
+      getMask: function(maskPattern, i, j) {
+        switch (maskPattern) {
+          case QRMaskPattern.PATTERN000:
+            return (i + j) % 2 === 0;
+          case QRMaskPattern.PATTERN001:
+            return i % 2 === 0;
+          case QRMaskPattern.PATTERN010:
+            return j % 3 === 0;
+          case QRMaskPattern.PATTERN011:
+            return (i + j) % 3 === 0;
+          case QRMaskPattern.PATTERN100:
+            return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 === 0;
+          case QRMaskPattern.PATTERN101:
+            return i * j % 2 + i * j % 3 === 0;
+          case QRMaskPattern.PATTERN110:
+            return (i * j % 2 + i * j % 3) % 2 === 0;
+          case QRMaskPattern.PATTERN111:
+            return (i * j % 3 + (i + j) % 2) % 2 === 0;
+          default:
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+      },
+      getErrorCorrectPolynomial: function(errorCorrectLength) {
+        var a = new QRPolynomial([1], 0);
+        for (var i = 0; i < errorCorrectLength; i++) {
+          a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0));
+        }
+        return a;
+      },
+      getLengthInBits: function(mode, type) {
+        if (1 <= type && type < 10) {
+          switch (mode) {
+            case QRMode.MODE_NUMBER:
+              return 10;
+            case QRMode.MODE_ALPHA_NUM:
+              return 9;
+            case QRMode.MODE_8BIT_BYTE:
+              return 8;
+            case QRMode.MODE_KANJI:
+              return 8;
+            default:
+              throw new Error("mode:" + mode);
+          }
+        } else if (type < 27) {
+          switch (mode) {
+            case QRMode.MODE_NUMBER:
+              return 12;
+            case QRMode.MODE_ALPHA_NUM:
+              return 11;
+            case QRMode.MODE_8BIT_BYTE:
+              return 16;
+            case QRMode.MODE_KANJI:
+              return 10;
+            default:
+              throw new Error("mode:" + mode);
+          }
+        } else if (type < 41) {
+          switch (mode) {
+            case QRMode.MODE_NUMBER:
+              return 14;
+            case QRMode.MODE_ALPHA_NUM:
+              return 13;
+            case QRMode.MODE_8BIT_BYTE:
+              return 16;
+            case QRMode.MODE_KANJI:
+              return 12;
+            default:
+              throw new Error("mode:" + mode);
+          }
+        } else {
+          throw new Error("type:" + type);
+        }
+      },
+      getLostPoint: function(qrCode) {
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0;
+        var col = 0;
+        for (row = 0; row < moduleCount; row++) {
+          for (col = 0; col < moduleCount; col++) {
+            var sameCount = 0;
+            var dark = qrCode.isDark(row, col);
+            for (var r = -1; r <= 1; r++) {
+              if (row + r < 0 || moduleCount <= row + r) {
+                continue;
+              }
+              for (var c = -1; c <= 1; c++) {
+                if (col + c < 0 || moduleCount <= col + c) {
+                  continue;
+                }
+                if (r === 0 && c === 0) {
+                  continue;
+                }
+                if (dark === qrCode.isDark(row + r, col + c)) {
+                  sameCount++;
+                }
+              }
+            }
+            if (sameCount > 5) {
+              lostPoint += 3 + sameCount - 5;
+            }
+          }
+        }
+        for (row = 0; row < moduleCount - 1; row++) {
+          for (col = 0; col < moduleCount - 1; col++) {
+            var count = 0;
+            if (qrCode.isDark(row, col)) count++;
+            if (qrCode.isDark(row + 1, col)) count++;
+            if (qrCode.isDark(row, col + 1)) count++;
+            if (qrCode.isDark(row + 1, col + 1)) count++;
+            if (count === 0 || count === 4) {
+              lostPoint += 3;
+            }
+          }
+        }
+        for (row = 0; row < moduleCount; row++) {
+          for (col = 0; col < moduleCount - 6; col++) {
+            if (qrCode.isDark(row, col) && !qrCode.isDark(row, col + 1) && qrCode.isDark(row, col + 2) && qrCode.isDark(row, col + 3) && qrCode.isDark(row, col + 4) && !qrCode.isDark(row, col + 5) && qrCode.isDark(row, col + 6)) {
+              lostPoint += 40;
+            }
+          }
+        }
+        for (col = 0; col < moduleCount; col++) {
+          for (row = 0; row < moduleCount - 6; row++) {
+            if (qrCode.isDark(row, col) && !qrCode.isDark(row + 1, col) && qrCode.isDark(row + 2, col) && qrCode.isDark(row + 3, col) && qrCode.isDark(row + 4, col) && !qrCode.isDark(row + 5, col) && qrCode.isDark(row + 6, col)) {
+              lostPoint += 40;
+            }
+          }
+        }
+        var darkCount = 0;
+        for (col = 0; col < moduleCount; col++) {
+          for (row = 0; row < moduleCount; row++) {
+            if (qrCode.isDark(row, col)) {
+              darkCount++;
+            }
+          }
+        }
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+        return lostPoint;
+      }
+    };
+    module2.exports = QRUtil;
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QRErrorCorrectLevel.js
+var require_QRErrorCorrectLevel = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QRErrorCorrectLevel.js"(exports2, module2) {
+    module2.exports = {
+      L: 1,
+      M: 0,
+      Q: 3,
+      H: 2
+    };
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QRRSBlock.js
+var require_QRRSBlock = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QRRSBlock.js"(exports2, module2) {
+    var QRErrorCorrectLevel = require_QRErrorCorrectLevel();
+    function QRRSBlock(totalCount, dataCount) {
+      this.totalCount = totalCount;
+      this.dataCount = dataCount;
+    }
+    QRRSBlock.RS_BLOCK_TABLE = [
+      // L
+      // M
+      // Q
+      // H
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+      // 4		
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+      // 7		
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+      // 10		
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12],
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+    QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+      var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+      if (rsBlock === void 0) {
+        throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+      }
+      var length = rsBlock.length / 3;
+      var list = [];
+      for (var i = 0; i < length; i++) {
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+        for (var j = 0; j < count; j++) {
+          list.push(new QRRSBlock(totalCount, dataCount));
+        }
+      }
+      return list;
+    };
+    QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+      switch (errorCorrectLevel) {
+        case QRErrorCorrectLevel.L:
+          return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+        case QRErrorCorrectLevel.M:
+          return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+        case QRErrorCorrectLevel.Q:
+          return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+        case QRErrorCorrectLevel.H:
+          return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+        default:
+          return void 0;
+      }
+    };
+    module2.exports = QRRSBlock;
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/QRBitBuffer.js
+var require_QRBitBuffer = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/QRBitBuffer.js"(exports2, module2) {
+    function QRBitBuffer() {
+      this.buffer = [];
+      this.length = 0;
+    }
+    QRBitBuffer.prototype = {
+      get: function(index) {
+        var bufIndex = Math.floor(index / 8);
+        return (this.buffer[bufIndex] >>> 7 - index % 8 & 1) == 1;
+      },
+      put: function(num, length) {
+        for (var i = 0; i < length; i++) {
+          this.putBit((num >>> length - i - 1 & 1) == 1);
+        }
+      },
+      getLengthInBits: function() {
+        return this.length;
+      },
+      putBit: function(bit) {
+        var bufIndex = Math.floor(this.length / 8);
+        if (this.buffer.length <= bufIndex) {
+          this.buffer.push(0);
+        }
+        if (bit) {
+          this.buffer[bufIndex] |= 128 >>> this.length % 8;
+        }
+        this.length++;
+      }
+    };
+    module2.exports = QRBitBuffer;
+  }
+});
+
+// ../node_modules/qrcode-terminal/vendor/QRCode/index.js
+var require_QRCode = __commonJS({
+  "../node_modules/qrcode-terminal/vendor/QRCode/index.js"(exports2, module2) {
+    var QR8bitByte = require_QR8bitByte();
+    var QRUtil = require_QRUtil();
+    var QRPolynomial = require_QRPolynomial();
+    var QRRSBlock = require_QRRSBlock();
+    var QRBitBuffer = require_QRBitBuffer();
+    function QRCode(typeNumber, errorCorrectLevel) {
+      this.typeNumber = typeNumber;
+      this.errorCorrectLevel = errorCorrectLevel;
+      this.modules = null;
+      this.moduleCount = 0;
+      this.dataCache = null;
+      this.dataList = [];
+    }
+    QRCode.prototype = {
+      addData: function(data) {
+        var newData = new QR8bitByte(data);
+        this.dataList.push(newData);
+        this.dataCache = null;
+      },
+      isDark: function(row, col) {
+        if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+          throw new Error(row + "," + col);
+        }
+        return this.modules[row][col];
+      },
+      getModuleCount: function() {
+        return this.moduleCount;
+      },
+      make: function() {
+        if (this.typeNumber < 1) {
+          var typeNumber = 1;
+          for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+            var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+            var buffer = new QRBitBuffer();
+            var totalDataCount = 0;
+            for (var i = 0; i < rsBlocks.length; i++) {
+              totalDataCount += rsBlocks[i].dataCount;
+            }
+            for (var x = 0; x < this.dataList.length; x++) {
+              var data = this.dataList[x];
+              buffer.put(data.mode, 4);
+              buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber));
+              data.write(buffer);
+            }
+            if (buffer.getLengthInBits() <= totalDataCount * 8)
+              break;
+          }
+          this.typeNumber = typeNumber;
+        }
+        this.makeImpl(false, this.getBestMaskPattern());
+      },
+      makeImpl: function(test2, maskPattern) {
+        this.moduleCount = this.typeNumber * 4 + 17;
+        this.modules = new Array(this.moduleCount);
+        for (var row = 0; row < this.moduleCount; row++) {
+          this.modules[row] = new Array(this.moduleCount);
+          for (var col = 0; col < this.moduleCount; col++) {
+            this.modules[row][col] = null;
+          }
+        }
+        this.setupPositionProbePattern(0, 0);
+        this.setupPositionProbePattern(this.moduleCount - 7, 0);
+        this.setupPositionProbePattern(0, this.moduleCount - 7);
+        this.setupPositionAdjustPattern();
+        this.setupTimingPattern();
+        this.setupTypeInfo(test2, maskPattern);
+        if (this.typeNumber >= 7) {
+          this.setupTypeNumber(test2);
+        }
+        if (this.dataCache === null) {
+          this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+        }
+        this.mapData(this.dataCache, maskPattern);
+      },
+      setupPositionProbePattern: function(row, col) {
+        for (var r = -1; r <= 7; r++) {
+          if (row + r <= -1 || this.moduleCount <= row + r) continue;
+          for (var c = -1; c <= 7; c++) {
+            if (col + c <= -1 || this.moduleCount <= col + c) continue;
+            if (0 <= r && r <= 6 && (c === 0 || c === 6) || 0 <= c && c <= 6 && (r === 0 || r === 6) || 2 <= r && r <= 4 && 2 <= c && c <= 4) {
+              this.modules[row + r][col + c] = true;
+            } else {
+              this.modules[row + r][col + c] = false;
+            }
+          }
+        }
+      },
+      getBestMaskPattern: function() {
+        var minLostPoint = 0;
+        var pattern = 0;
+        for (var i = 0; i < 8; i++) {
+          this.makeImpl(true, i);
+          var lostPoint = QRUtil.getLostPoint(this);
+          if (i === 0 || minLostPoint > lostPoint) {
+            minLostPoint = lostPoint;
+            pattern = i;
+          }
+        }
+        return pattern;
+      },
+      createMovieClip: function(target_mc, instance_name, depth) {
+        var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+        var cs = 1;
+        this.make();
+        for (var row = 0; row < this.modules.length; row++) {
+          var y = row * cs;
+          for (var col = 0; col < this.modules[row].length; col++) {
+            var x = col * cs;
+            var dark = this.modules[row][col];
+            if (dark) {
+              qr_mc.beginFill(0, 100);
+              qr_mc.moveTo(x, y);
+              qr_mc.lineTo(x + cs, y);
+              qr_mc.lineTo(x + cs, y + cs);
+              qr_mc.lineTo(x, y + cs);
+              qr_mc.endFill();
+            }
+          }
+        }
+        return qr_mc;
+      },
+      setupTimingPattern: function() {
+        for (var r = 8; r < this.moduleCount - 8; r++) {
+          if (this.modules[r][6] !== null) {
+            continue;
+          }
+          this.modules[r][6] = r % 2 === 0;
+        }
+        for (var c = 8; c < this.moduleCount - 8; c++) {
+          if (this.modules[6][c] !== null) {
+            continue;
+          }
+          this.modules[6][c] = c % 2 === 0;
+        }
+      },
+      setupPositionAdjustPattern: function() {
+        var pos = QRUtil.getPatternPosition(this.typeNumber);
+        for (var i = 0; i < pos.length; i++) {
+          for (var j = 0; j < pos.length; j++) {
+            var row = pos[i];
+            var col = pos[j];
+            if (this.modules[row][col] !== null) {
+              continue;
+            }
+            for (var r = -2; r <= 2; r++) {
+              for (var c = -2; c <= 2; c++) {
+                if (Math.abs(r) === 2 || Math.abs(c) === 2 || r === 0 && c === 0) {
+                  this.modules[row + r][col + c] = true;
+                } else {
+                  this.modules[row + r][col + c] = false;
+                }
+              }
+            }
+          }
+        }
+      },
+      setupTypeNumber: function(test2) {
+        var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+        for (var i = 0; i < 18; i++) {
+          mod = !test2 && (bits >> i & 1) === 1;
+          this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+        }
+        for (var x = 0; x < 18; x++) {
+          mod = !test2 && (bits >> x & 1) === 1;
+          this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+        }
+      },
+      setupTypeInfo: function(test2, maskPattern) {
+        var data = this.errorCorrectLevel << 3 | maskPattern;
+        var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+        for (var v = 0; v < 15; v++) {
+          mod = !test2 && (bits >> v & 1) === 1;
+          if (v < 6) {
+            this.modules[v][8] = mod;
+          } else if (v < 8) {
+            this.modules[v + 1][8] = mod;
+          } else {
+            this.modules[this.moduleCount - 15 + v][8] = mod;
+          }
+        }
+        for (var h = 0; h < 15; h++) {
+          mod = !test2 && (bits >> h & 1) === 1;
+          if (h < 8) {
+            this.modules[8][this.moduleCount - h - 1] = mod;
+          } else if (h < 9) {
+            this.modules[8][15 - h - 1 + 1] = mod;
+          } else {
+            this.modules[8][15 - h - 1] = mod;
+          }
+        }
+        this.modules[this.moduleCount - 8][8] = !test2;
+      },
+      mapData: function(data, maskPattern) {
+        var inc = -1;
+        var row = this.moduleCount - 1;
+        var bitIndex = 7;
+        var byteIndex = 0;
+        for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+          if (col === 6) col--;
+          while (true) {
+            for (var c = 0; c < 2; c++) {
+              if (this.modules[row][col - c] === null) {
+                var dark = false;
+                if (byteIndex < data.length) {
+                  dark = (data[byteIndex] >>> bitIndex & 1) === 1;
+                }
+                var mask = QRUtil.getMask(maskPattern, row, col - c);
+                if (mask) {
+                  dark = !dark;
+                }
+                this.modules[row][col - c] = dark;
+                bitIndex--;
+                if (bitIndex === -1) {
+                  byteIndex++;
+                  bitIndex = 7;
+                }
+              }
+            }
+            row += inc;
+            if (row < 0 || this.moduleCount <= row) {
+              row -= inc;
+              inc = -inc;
+              break;
+            }
+          }
+        }
+      }
+    };
+    QRCode.PAD0 = 236;
+    QRCode.PAD1 = 17;
+    QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+      var buffer = new QRBitBuffer();
+      for (var i = 0; i < dataList.length; i++) {
+        var data = dataList[i];
+        buffer.put(data.mode, 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber));
+        data.write(buffer);
+      }
+      var totalDataCount = 0;
+      for (var x = 0; x < rsBlocks.length; x++) {
+        totalDataCount += rsBlocks[x].dataCount;
+      }
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw new Error("code length overflow. (" + buffer.getLengthInBits() + ">" + totalDataCount * 8 + ")");
+      }
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+      while (buffer.getLengthInBits() % 8 !== 0) {
+        buffer.putBit(false);
+      }
+      while (true) {
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(QRCode.PAD0, 8);
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(QRCode.PAD1, 8);
+      }
+      return QRCode.createBytes(buffer, rsBlocks);
+    };
+    QRCode.createBytes = function(buffer, rsBlocks) {
+      var offset = 0;
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+      for (var r = 0; r < rsBlocks.length; r++) {
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+        dcdata[r] = new Array(dcCount);
+        for (var i = 0; i < dcdata[r].length; i++) {
+          dcdata[r][i] = 255 & buffer.buffer[i + offset];
+        }
+        offset += dcCount;
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var x = 0; x < ecdata[r].length; x++) {
+          var modIndex = x + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][x] = modIndex >= 0 ? modPoly.get(modIndex) : 0;
+        }
+      }
+      var totalCodeCount = 0;
+      for (var y = 0; y < rsBlocks.length; y++) {
+        totalCodeCount += rsBlocks[y].totalCount;
+      }
+      var data = new Array(totalCodeCount);
+      var index = 0;
+      for (var z = 0; z < maxDcCount; z++) {
+        for (var s = 0; s < rsBlocks.length; s++) {
+          if (z < dcdata[s].length) {
+            data[index++] = dcdata[s][z];
+          }
+        }
+      }
+      for (var xx = 0; xx < maxEcCount; xx++) {
+        for (var t = 0; t < rsBlocks.length; t++) {
+          if (xx < ecdata[t].length) {
+            data[index++] = ecdata[t][xx];
+          }
+        }
+      }
+      return data;
+    };
+    module2.exports = QRCode;
+  }
+});
+
+// ../node_modules/qrcode-terminal/lib/main.js
+var require_main = __commonJS({
+  "../node_modules/qrcode-terminal/lib/main.js"(exports2, module2) {
+    var QRCode = require_QRCode();
+    var QRErrorCorrectLevel = require_QRErrorCorrectLevel();
+    var black = "\x1B[40m  \x1B[0m";
+    var white = "\x1B[47m  \x1B[0m";
+    var toCell = function(isBlack) {
+      return isBlack ? black : white;
+    };
+    var repeat = function(color) {
+      return {
+        times: function(count) {
+          return new Array(count).join(color);
+        }
+      };
+    };
+    var fill = function(length, value) {
+      var arr = new Array(length);
+      for (var i = 0; i < length; i++) {
+        arr[i] = value;
+      }
+      return arr;
+    };
+    module2.exports = {
+      error: QRErrorCorrectLevel.L,
+      generate: function(input, opts, cb) {
+        if (typeof opts === "function") {
+          cb = opts;
+          opts = {};
+        }
+        var qrcode2 = new QRCode(-1, this.error);
+        qrcode2.addData(input);
+        qrcode2.make();
+        var output = "";
+        if (opts && opts.small) {
+          var BLACK = true, WHITE = false;
+          var moduleCount = qrcode2.getModuleCount();
+          var moduleData = qrcode2.modules.slice();
+          var oddRow = moduleCount % 2 === 1;
+          if (oddRow) {
+            moduleData.push(fill(moduleCount, WHITE));
+          }
+          var platte = {
+            WHITE_ALL: "\u2588",
+            WHITE_BLACK: "\u2580",
+            BLACK_WHITE: "\u2584",
+            BLACK_ALL: " "
+          };
+          var borderTop = repeat(platte.BLACK_WHITE).times(moduleCount + 3);
+          var borderBottom = repeat(platte.WHITE_BLACK).times(moduleCount + 3);
+          output += borderTop + "\n";
+          for (var row = 0; row < moduleCount; row += 2) {
+            output += platte.WHITE_ALL;
+            for (var col = 0; col < moduleCount; col++) {
+              if (moduleData[row][col] === WHITE && moduleData[row + 1][col] === WHITE) {
+                output += platte.WHITE_ALL;
+              } else if (moduleData[row][col] === WHITE && moduleData[row + 1][col] === BLACK) {
+                output += platte.WHITE_BLACK;
+              } else if (moduleData[row][col] === BLACK && moduleData[row + 1][col] === WHITE) {
+                output += platte.BLACK_WHITE;
+              } else {
+                output += platte.BLACK_ALL;
+              }
+            }
+            output += platte.WHITE_ALL + "\n";
+          }
+          if (!oddRow) {
+            output += borderBottom;
+          }
+        } else {
+          var border = repeat(white).times(qrcode2.getModuleCount() + 3);
+          output += border + "\n";
+          qrcode2.modules.forEach(function(row2) {
+            output += white;
+            output += row2.map(toCell).join("");
+            output += white + "\n";
+          });
+          output += border;
+        }
+        if (cb) cb(output);
+        else console.log(output);
+      },
+      setErrorLevel: function(error2) {
+        this.error = QRErrorCorrectLevel[error2] || this.error;
+      }
+    };
   }
 });
 
@@ -25266,15 +26336,15 @@ var require_route = __commonJS({
       };
     }
     function wrapConversion(toModel, graph) {
-      const path8 = [graph[toModel].parent, toModel];
+      const path9 = [graph[toModel].parent, toModel];
       let fn = conversions[graph[toModel].parent][toModel];
       let cur = graph[toModel].parent;
       while (graph[cur].parent) {
-        path8.unshift(graph[cur].parent);
+        path9.unshift(graph[cur].parent);
         fn = link(conversions[graph[cur].parent][cur], fn);
         cur = graph[cur].parent;
       }
-      fn.conversion = path8;
+      fn.conversion = path9;
       return fn;
     }
     module2.exports = function(fromModel) {
@@ -31330,10 +32400,10 @@ var require_lib2 = __commonJS({
     exports2.analyse = analyse;
     var detectFile = (filepath, opts = {}) => new Promise((resolve, reject) => {
       let fd;
-      const fs4 = (0, node_1.default)();
+      const fs5 = (0, node_1.default)();
       const handler = (err, buffer) => {
         if (fd) {
-          fs4.closeSync(fd);
+          fs5.closeSync(fd);
         }
         if (err) {
           reject(err);
@@ -31345,9 +32415,9 @@ var require_lib2 = __commonJS({
       };
       const sampleSize = (opts === null || opts === void 0 ? void 0 : opts.sampleSize) || 0;
       if (sampleSize > 0) {
-        fd = fs4.openSync(filepath, "r");
+        fd = fs5.openSync(filepath, "r");
         let sample = Buffer.allocUnsafe(sampleSize);
-        fs4.read(fd, sample, 0, sampleSize, opts.offset, (err, bytesRead) => {
+        fs5.read(fd, sample, 0, sampleSize, opts.offset, (err, bytesRead) => {
           if (err) {
             handler(err, null);
           } else {
@@ -31359,22 +32429,22 @@ var require_lib2 = __commonJS({
         });
         return;
       }
-      fs4.readFile(filepath, handler);
+      fs5.readFile(filepath, handler);
     });
     exports2.detectFile = detectFile;
     var detectFileSync = (filepath, opts = {}) => {
-      const fs4 = (0, node_1.default)();
+      const fs5 = (0, node_1.default)();
       if (opts && opts.sampleSize) {
-        const fd = fs4.openSync(filepath, "r");
+        const fd = fs5.openSync(filepath, "r");
         let sample = Buffer.allocUnsafe(opts.sampleSize);
-        const bytesRead = fs4.readSync(fd, sample, 0, opts.sampleSize, opts.offset);
+        const bytesRead = fs5.readSync(fd, sample, 0, opts.sampleSize, opts.offset);
         if (bytesRead < opts.sampleSize) {
           sample = sample.subarray(0, bytesRead);
         }
-        fs4.closeSync(fd);
+        fs5.closeSync(fd);
         return (0, exports2.detect)(sample);
       }
-      return (0, exports2.detect)(fs4.readFileSync(filepath));
+      return (0, exports2.detect)(fs5.readFileSync(filepath));
     };
     exports2.detectFileSync = detectFileSync;
     exports2.default = {
@@ -44710,12 +45780,12 @@ var disallowedKeys = /* @__PURE__ */ new Set([
   "constructor"
 ]);
 var digits = new Set("0123456789");
-function getPathSegments(path8) {
+function getPathSegments(path9) {
   const parts = [];
   let currentSegment = "";
   let currentPart = "start";
   let isIgnoring = false;
-  for (const character of path8) {
+  for (const character of path9) {
     switch (character) {
       case "\\": {
         if (currentPart === "index") {
@@ -44837,11 +45907,11 @@ function assertNotStringIndex(object3, key) {
     throw new Error("Cannot use string index");
   }
 }
-function getProperty(object3, path8, value) {
-  if (!isObject(object3) || typeof path8 !== "string") {
+function getProperty(object3, path9, value) {
+  if (!isObject(object3) || typeof path9 !== "string") {
     return value === void 0 ? object3 : value;
   }
-  const pathArray = getPathSegments(path8);
+  const pathArray = getPathSegments(path9);
   if (pathArray.length === 0) {
     return value;
   }
@@ -44861,12 +45931,12 @@ function getProperty(object3, path8, value) {
   }
   return object3 === void 0 ? value : object3;
 }
-function setProperty(object3, path8, value) {
-  if (!isObject(object3) || typeof path8 !== "string") {
+function setProperty(object3, path9, value) {
+  if (!isObject(object3) || typeof path9 !== "string") {
     return object3;
   }
   const root = object3;
-  const pathArray = getPathSegments(path8);
+  const pathArray = getPathSegments(path9);
   for (let index = 0; index < pathArray.length; index++) {
     const key = pathArray[index];
     assertNotStringIndex(object3, key);
@@ -44879,11 +45949,11 @@ function setProperty(object3, path8, value) {
   }
   return root;
 }
-function deleteProperty(object3, path8) {
-  if (!isObject(object3) || typeof path8 !== "string") {
+function deleteProperty(object3, path9) {
+  if (!isObject(object3) || typeof path9 !== "string") {
     return false;
   }
-  const pathArray = getPathSegments(path8);
+  const pathArray = getPathSegments(path9);
   for (let index = 0; index < pathArray.length; index++) {
     const key = pathArray[index];
     assertNotStringIndex(object3, key);
@@ -44897,11 +45967,11 @@ function deleteProperty(object3, path8) {
     }
   }
 }
-function hasProperty(object3, path8) {
-  if (!isObject(object3) || typeof path8 !== "string") {
+function hasProperty(object3, path9) {
+  if (!isObject(object3) || typeof path9 !== "string") {
     return false;
   }
-  const pathArray = getPathSegments(path8);
+  const pathArray = getPathSegments(path9);
   if (pathArray.length === 0) {
     return false;
   }
@@ -45956,7 +47026,8 @@ var import_os = __toESM(require("os"));
 var import_path = __toESM(require("path"));
 
 // src/defaults.ts
-var DEFAULT_BACKEND_URL = "http://206.189.229.113:3000";
+var DEFAULT_BACKEND_URL = "http://localhost:3000";
+var FALLBACK_BACKEND_URL = "http://206.189.229.113:3000";
 var ANDROID_APK_URL = "https://rafaelekol.github.io/agentpay/agentPay.apk";
 
 // src/config.ts
@@ -46488,8 +47559,8 @@ function getErrorMap() {
 
 // ../node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data, path: path8, errorMaps, issueData } = params;
-  const fullPath = [...path8, ...issueData.path || []];
+  const { data, path: path9, errorMaps, issueData } = params;
+  const fullPath = [...path9, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -46605,11 +47676,11 @@ var errorUtil;
 
 // ../node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value, path8, key) {
+  constructor(parent, value, path9, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value;
-    this._path = path8;
+    this._path = path9;
     this._key = key;
   }
   get path() {
@@ -50247,10 +51318,10 @@ function assignProp(target, prop, value) {
     configurable: true
   });
 }
-function getElementAtPath(obj, path8) {
-  if (!path8)
+function getElementAtPath(obj, path9) {
+  if (!path9)
     return obj;
-  return path8.reduce((acc, key) => acc?.[key], obj);
+  return path9.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -50570,11 +51641,11 @@ function aborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path8, issues) {
+function prefixIssues(path9, issues) {
   return issues.map((iss) => {
     var _a;
     (_a = iss).path ?? (_a.path = []);
-    iss.path.unshift(path8);
+    iss.path.unshift(path9);
     return iss;
   });
 }
@@ -61122,9 +62193,9 @@ function isVisitable(thing) {
 function removeBrackets(key) {
   return utils_default.endsWith(key, "[]") ? key.slice(0, -2) : key;
 }
-function renderKey(path8, key, dots) {
-  if (!path8) return key;
-  return path8.concat(key).map(function each(token, i) {
+function renderKey(path9, key, dots) {
+  if (!path9) return key;
+  return path9.concat(key).map(function each(token, i) {
     token = removeBrackets(token);
     return !dots && i ? "[" + token + "]" : token;
   }).join(dots ? "." : "");
@@ -61178,13 +62249,13 @@ function toFormData(obj, formData, options) {
     }
     return value;
   }
-  function defaultVisitor(value, key, path8) {
+  function defaultVisitor(value, key, path9) {
     let arr = value;
     if (utils_default.isReactNative(formData) && utils_default.isReactNativeBlob(value)) {
-      formData.append(renderKey(path8, key, dots), convertValue(value));
+      formData.append(renderKey(path9, key, dots), convertValue(value));
       return false;
     }
-    if (value && !path8 && typeof value === "object") {
+    if (value && !path9 && typeof value === "object") {
       if (utils_default.endsWith(key, "{}")) {
         key = metaTokens ? key : key.slice(0, -2);
         value = JSON.stringify(value);
@@ -61203,7 +62274,7 @@ function toFormData(obj, formData, options) {
     if (isVisitable(value)) {
       return true;
     }
-    formData.append(renderKey(path8, key, dots), convertValue(value));
+    formData.append(renderKey(path9, key, dots), convertValue(value));
     return false;
   }
   const stack = [];
@@ -61212,7 +62283,7 @@ function toFormData(obj, formData, options) {
     convertValue,
     isVisitable
   });
-  function build(value, path8, depth = 0) {
+  function build(value, path9, depth = 0) {
     if (utils_default.isUndefined(value)) return;
     if (depth > maxDepth) {
       throw new AxiosError_default(
@@ -61221,13 +62292,13 @@ function toFormData(obj, formData, options) {
       );
     }
     if (stack.indexOf(value) !== -1) {
-      throw Error("Circular reference detected in " + path8.join("."));
+      throw Error("Circular reference detected in " + path9.join("."));
     }
     stack.push(value);
     utils_default.forEach(value, function each(el, key) {
-      const result = !(utils_default.isUndefined(el) || el === null) && visitor.call(formData, el, utils_default.isString(key) ? key.trim() : key, path8, exposedHelpers);
+      const result = !(utils_default.isUndefined(el) || el === null) && visitor.call(formData, el, utils_default.isString(key) ? key.trim() : key, path9, exposedHelpers);
       if (result === true) {
-        build(el, path8 ? path8.concat(key) : [key], depth + 1);
+        build(el, path9 ? path9.concat(key) : [key], depth + 1);
       }
     });
     stack.pop();
@@ -61438,7 +62509,7 @@ var platform_default = {
 // ../node_modules/axios/lib/helpers/toURLEncodedForm.js
 function toURLEncodedForm(data, options) {
   return toFormData_default(data, new platform_default.classes.URLSearchParams(), {
-    visitor: function(value, key, path8, helpers) {
+    visitor: function(value, key, path9, helpers) {
       if (platform_default.isNode && utils_default.isBuffer(value)) {
         this.append(key, value.toString("base64"));
         return false;
@@ -61468,11 +62539,11 @@ function arrayToObject(arr) {
   return obj;
 }
 function formDataToJSON(formData) {
-  function buildPath(path8, value, target, index) {
-    let name = path8[index++];
+  function buildPath(path9, value, target, index) {
+    let name = path9[index++];
     if (name === "__proto__") return true;
     const isNumericKey = Number.isFinite(+name);
-    const isLast = index >= path8.length;
+    const isLast = index >= path9.length;
     name = !name && utils_default.isArray(target) ? target.length : name;
     if (isLast) {
       if (utils_default.hasOwnProp(target, name)) {
@@ -61485,7 +62556,7 @@ function formDataToJSON(formData) {
     if (!target[name] || !utils_default.isObject(target[name])) {
       target[name] = [];
     }
-    const result = buildPath(path8, value, target[name], index);
+    const result = buildPath(path9, value, target[name], index);
     if (result && utils_default.isArray(target[name])) {
       target[name] = arrayToObject(target[name]);
     }
@@ -62883,9 +63954,9 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
       auth = urlUsername + ":" + urlPassword;
     }
     auth && headers.delete("authorization");
-    let path8;
+    let path9;
     try {
-      path8 = buildURL(
+      path9 = buildURL(
         parsed.pathname + parsed.search,
         config2.params,
         config2.paramsSerializer
@@ -62903,7 +63974,7 @@ var http_default = isHttpAdapterSupported && function httpAdapter(config2) {
       false
     );
     const options = Object.assign(/* @__PURE__ */ Object.create(null), {
-      path: path8,
+      path: path9,
       method,
       headers: headers.toJSON(),
       agents: { http: config2.httpAgent, https: config2.httpsAgent },
@@ -63242,14 +64313,14 @@ var isURLSameOrigin_default = platform_default.hasStandardBrowserEnv ? /* @__PUR
 var cookies_default = platform_default.hasStandardBrowserEnv ? (
   // Standard browser envs support document.cookie
   {
-    write(name, value, expires, path8, domain, secure, sameSite) {
+    write(name, value, expires, path9, domain, secure, sameSite) {
       if (typeof document === "undefined") return;
       const cookie = [`${name}=${encodeURIComponent(value)}`];
       if (utils_default.isNumber(expires)) {
         cookie.push(`expires=${new Date(expires).toUTCString()}`);
       }
-      if (utils_default.isString(path8)) {
-        cookie.push(`path=${path8}`);
+      if (utils_default.isString(path9)) {
+        cookie.push(`path=${path9}`);
       }
       if (utils_default.isString(domain)) {
         cookie.push(`domain=${domain}`);
@@ -64659,8 +65730,8 @@ var AgentPayError = class extends Error {
   }
 };
 var PAYMENT_REJECTED_MESSAGE = "Payment rejected on phone. The user declined the USDC approval in Unstoppable Wallet. Session is still paired \u2014 retry fetch_paid_service and tap Approve.";
-var WC_SESSION_DEAD_MESSAGE = "WalletConnect session dead on relay (no response from phone). Call get_pairing_link, reconnect Unstoppable Wallet, then retry fetch_paid_service.";
-var NO_ACTIVE_SESSION_MESSAGE = "WalletConnect session not active on backend. Call get_pairing_link, send the raw wc: URI, user taps Connect, then retry fetch_paid_service.";
+var WC_SESSION_DEAD_MESSAGE = "WalletConnect session dead on relay (no response from phone). Call get_x402_pairing_link, reconnect Unstoppable Wallet, then retry fetch_paid_service.";
+var NO_ACTIVE_SESSION_MESSAGE = "WalletConnect session not active on backend. Call get_x402_pairing_link, send the raw wc: URI, user taps Connect, then retry fetch_paid_service.";
 
 // ../sdk/x402/constants.ts
 var X402_SIGNING_SERVICE_ID = "x402_custom";
@@ -64843,7 +65914,7 @@ function buildAlchemySiweMessage(address) {
 async function createAlchemySiweSession(agentPay, registryId) {
   const wc = await agentPay.getWalletConnectStatus();
   if (!wc.active || !wc.address) {
-    throw new Error("WalletConnect: pair the wallet before Alchemy SIWE (get_pairing_link).");
+    throw new Error("WalletConnect: pair the wallet before Alchemy SIWE (get_x402_pairing_link).");
   }
   const { message } = buildAlchemySiweMessage(wc.address);
   const res = await agentPay.payAndCall(X402_SIGNING_SERVICE_ID, {
@@ -65232,7 +66303,10 @@ var AgentPay = class {
   }
   async getWalletConnectStatus() {
     const headers = this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : void 0;
-    const response = await axios_default.get(`${this.baseURL}/wc/status`, { headers });
+    const response = await axios_default.get(`${this.baseURL}/wc/status`, {
+      params: { agentId: this.agentId },
+      headers
+    });
     return response.data;
   }
   async payAndCall(serviceId, payload) {
@@ -65280,6 +66354,7 @@ var AgentPay = class {
 };
 
 // src/connect.ts
+var import_qrcode_terminal = __toESM(require_main());
 var ANDROID_APK_MESSAGE = [
   "Install the AgentPay Android app (required before pairing):",
   ANDROID_APK_URL,
@@ -65301,10 +66376,18 @@ var PAIRING_INSTRUCTIONS = [
 async function fetchPairingUri(config2) {
   const base = config2.backendUrl.replace(/\/$/, "");
   const headers = config2.apiKey ? { Authorization: `Bearer ${config2.apiKey}` } : {};
-  const res = await fetch(`${base}/v1/wc/connect`, { headers });
+  const url2 = new URL(`${base}/v1/wc/connect`);
+  url2.searchParams.set("type", "x402");
+  url2.searchParams.set("agentId", config2.agentId);
+  const res = await fetch(url2.toString(), { headers });
   const data = await res.json();
   if (!res.ok || !data.uri) {
     throw new Error(data.error ?? `Failed to get pairing URI (HTTP ${res.status})`);
+  }
+  if (!data.metadata?.url?.toLowerCase().includes("x402.agentpay.app")) {
+    throw new Error(
+      `Backend returned non-x402 metadata (url=${data.metadata?.url ?? "missing"}). Use a backend with x402 pairing support.`
+    );
   }
   return data.uri;
 }
@@ -65316,8 +66399,15 @@ async function runConnect(config2, options) {
   console.log("\nAgentPay \u2014 pair your Android wallet\n");
   console.log("Open this WalletConnect URI on your phone (Unstoppable Wallet or any WC v2 wallet):\n");
   console.log(pairingUri);
-  console.log("\nPairing link printed above. Approve on your phone when ready.");
-  console.log("This command does not wait for approval \u2014 re-run status checks via the backend or app.\n");
+  console.log("\nOr scan the QR code below:\n");
+  await new Promise((resolve) => {
+    import_qrcode_terminal.default.generate(pairingUri, { small: true }, (code) => {
+      console.log(code);
+      console.log("\nPairing link printed above. Approve on your phone when ready.");
+      console.log("This command does not wait for approval \u2014 re-run status checks via the backend or app.\n");
+      resolve();
+    });
+  });
   return pairingUri;
 }
 
@@ -67890,7 +68980,7 @@ function hintForErrorCode(code, message) {
       return 'code=PAYMENT_REJECTED: User declined USDC on phone. Say "You rejected the payment \u2014 tap Approve and I will retry." Retry the same fetch_paid_service. Do NOT re-pair.';
     case "WC_SESSION_DEAD":
     case "NO_ACTIVE_SESSION":
-      return `code=${code}: WalletConnect session is dead or not paired. Call get_pairing_link, send raw wc: URI, user taps Connect, retry.`;
+      return `code=${code}: WalletConnect session is dead or not paired. Call get_x402_pairing_link, send raw wc: URI, user taps Connect, retry.`;
     case "NO_PAYMENT_SIGNATURE":
       return "code=NO_PAYMENT_SIGNATURE: Stale MCP/SDK \u2014 redeploy agentpay-mcp. If updated: ask user if they saw a signing prompt; rejection vs dead session need backend code field.";
     case "CATALOG_MISMATCH":
@@ -67900,7 +68990,7 @@ function hintForErrorCode(code, message) {
   }
   const m = message.toLowerCase();
   if (m.includes("payment verification failed") || m.includes("simulation failed") || m.includes("signer mismatch")) {
-    return "On-chain payment failed after signing \u2014 wrong account, insufficient USDC, or facilitator timeout. Re-pair with funded account via get_pairing_link.";
+    return "On-chain payment failed after signing \u2014 wrong account, insufficient USDC, or facilitator timeout. Re-pair with funded account via get_x402_pairing_link.";
   }
   return 'Read the "code" field in this JSON \u2014 never guess from timing alone.';
 }
@@ -67969,8 +69059,8 @@ async function startMcpServer(config2) {
         "Examples: Exa POST https://api.exa.ai/search body { query, numResults }. Nansen from catalog smart-money endpoints.",
         "NEVER ask for AGENT_PRIVATE_KEY or use x402_session_* tools from npm agentpay-mcp v4.",
         "Payment flow: HTTP 402 \u2192 WalletConnect USDC sign on user phone \u2192 paid retry. SPENDS REAL MONEY \u2014 tell user cost, report paidAmountBaseUnits + settlement tx.",
-        "get_android_app_link for APK download URL. get_pairing_link to pair wallet. CRITICAL: paste https://rafaelekol.github.io/agentpay/agentPay.apk and the raw wc: URI in your user-visible reply \u2014 user cannot see tool output. get_spending_status for budget/activity.",
-        'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_pairing_link.',
+        "get_android_app_link for APK download URL. get_x402_pairing_link to pair wallet. CRITICAL: paste https://rafaelekol.github.io/agentpay/agentPay.apk and the raw wc: URI in your user-visible reply \u2014 user cannot see tool output. get_spending_status for budget/activity.",
+        'fetch_paid_service errors have "code": PAYMENT_REJECTED = user declined (retry, no re-pair); WC_SESSION_DEAD / NO_ACTIVE_SESSION = get_x402_pairing_link.',
         "Backend: AGENTPAY_BACKEND_URL / AGENTPAY_AGENT_ID. OpenClaw: binary MUST be GitHub horizontalsystems/agentpay-mcp build/index.js \u2014 NEVER npm install -g agentpay-mcp (registry v4.x has x402_session_* only). Register MCP ONCE via openclaw-register-mcp.sh \u2014 NEVER re-run mcp add during normal operation."
       ].join(" ")
     }
@@ -68025,7 +69115,7 @@ async function startMcpServer(config2) {
               success: false,
               error: "WalletConnect session not active on backend",
               walletConnect: wc,
-              action: "Call get_pairing_link, forward BOTH messages to the user (instructions + raw wc: URI only). Never use link.reown.com. Then retry fetch_paid_service.",
+              action: "Call get_x402_pairing_link, forward BOTH messages to the user (instructions + raw wc: URI only). Never use link.reown.com. Then retry fetch_paid_service.",
               configPath: getConfigPath(),
               agentId: config2.agentId,
               backendUrl: config2.backendUrl
@@ -68089,9 +69179,9 @@ async function startMcpServer(config2) {
     async () => textResult({ url: ANDROID_APK_URL, message: ANDROID_APK_MESSAGE })
   );
   server.registerTool(
-    "get_pairing_link",
+    "get_x402_pairing_link",
     {
-      title: "AgentPay: get WalletConnect pairing link",
+      title: "AgentPay: get WalletConnect pairing link (x402 profile)",
       description: "Creates a new WalletConnect pairing proposal and returns three text blocks: (1) Android APK download link, (2) paste instructions for AgentPay app, (3) raw wc: URI only \u2014 do not wrap in link.reown.com. You MUST include the APK link and the raw wc: URI in your reply to the user \u2014 paste both verbatim; the user cannot see tool output. The user must pair/approve with their FUNDED account: the account that signs on the phone must match the paired session, or payments will be rejected by the facilitator.",
       inputSchema: external_exports.object({}),
       annotations: {
@@ -70543,9 +71633,9 @@ var import_rxjs = __toESM(require_cjs(), 1);
 var import_run_async = __toESM(require_run_async(), 1);
 var import_mute_stream2 = __toESM(require_lib(), 1);
 var _ = {
-  set: (obj, path8 = "", value) => {
+  set: (obj, path9 = "", value) => {
     let pointer = obj;
-    path8.split(".").forEach((key, index, arr) => {
+    path9.split(".").forEach((key, index, arr) => {
       if (key === "__proto__" || key === "constructor")
         return;
       if (index === arr.length - 1) {
@@ -70556,8 +71646,8 @@ var _ = {
       pointer = pointer[key];
     });
   },
-  get: (obj, path8 = "", defaultValue) => {
-    const travel = (regexp) => String.prototype.split.call(path8, regexp).filter(Boolean).reduce(
+  get: (obj, path9 = "", defaultValue) => {
+    const travel = (regexp) => String.prototype.split.call(path9, regexp).filter(Boolean).reduce(
       // @ts-expect-error implicit any on res[key]
       (res, key) => res == null ? res : res[key],
       obj
@@ -70804,25 +71894,110 @@ var inquirer = {
 };
 var esm_default12 = inquirer;
 
+// src/env.ts
+var import_fs3 = __toESM(require("fs"));
+var import_path4 = __toESM(require("path"));
+function loadRootDotenv() {
+  const roots = [process.cwd(), import_path4.default.resolve(process.cwd(), ".."), import_path4.default.resolve(process.cwd(), "../..")];
+  for (const root of roots) {
+    const envPath = import_path4.default.join(root, ".env");
+    if (!import_fs3.default.existsSync(envPath)) continue;
+    try {
+      const raw = import_fs3.default.readFileSync(envPath, "utf8");
+      for (const line of raw.split("\n")) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#")) continue;
+        const eq = trimmed.indexOf("=");
+        if (eq <= 0) continue;
+        const key = trimmed.slice(0, eq).trim();
+        let value = trimmed.slice(eq + 1).trim();
+        if (value.startsWith('"') && value.endsWith('"') || value.startsWith("'") && value.endsWith("'")) {
+          value = value.slice(1, -1);
+        }
+        if (process.env[key] === void 0) {
+          process.env[key] = value;
+        }
+      }
+      return;
+    } catch {
+    }
+  }
+}
+
+// src/backend.ts
+async function probeBackend(baseUrl) {
+  const base = baseUrl.replace(/\/$/, "");
+  try {
+    const res = await fetch(`${base}/v1/wc/status`, {
+      signal: AbortSignal.timeout(2500)
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+async function resolveBackendUrlForSetup(existingUrl) {
+  const candidates = [];
+  if (existingUrl?.trim()) {
+    candidates.push({ url: existingUrl.trim().replace(/\/$/, ""), source: "saved config" });
+  }
+  const fromEnv = (process.env.AGENTPAY_BACKEND_URL || process.env.AGENTPAY_API_BASE_URL || "").trim();
+  if (fromEnv) {
+    candidates.push({ url: fromEnv.replace(/\/$/, ""), source: "AGENTPAY_BACKEND_URL in .env" });
+  }
+  candidates.push({ url: DEFAULT_BACKEND_URL, source: "local backend (npm run start:backend)" });
+  candidates.push({ url: FALLBACK_BACKEND_URL, source: "hosted MVP fallback" });
+  const seen = /* @__PURE__ */ new Set();
+  for (const candidate of candidates) {
+    if (seen.has(candidate.url)) continue;
+    seen.add(candidate.url);
+    const reachable = await probeBackend(candidate.url);
+    if (reachable) {
+      return { ...candidate, reachable: true };
+    }
+  }
+  const fallback = candidates[0] ?? { url: DEFAULT_BACKEND_URL, source: "default" };
+  return { ...fallback, reachable: false };
+}
+
 // src/setup.ts
-async function runSetup() {
+async function runSetup(options) {
+  loadRootDotenv();
   const existing = loadConfig();
-  const answers = await esm_default12.prompt([
-    {
+  const detected = await resolveBackendUrlForSetup(options?.backendUrl ?? existing?.backendUrl);
+  let backendUrl = options?.backendUrl?.trim() || detected.url;
+  if (detected.reachable) {
+    console.log(`
+\u2713 AgentPay backend detected at ${backendUrl}`);
+    console.log(`  (${detected.source})
+`);
+  } else {
+    console.warn(
+      `
+\u26A0 Backend not reachable at ${backendUrl}. Start it with: npm run start:backend
+`
+    );
+  }
+  const shouldAskBackend = Boolean(options?.askBackend) || !detected.reachable && !options?.backendUrl;
+  const prompts = [];
+  if (shouldAskBackend) {
+    prompts.push({
       type: "input",
       name: "backendUrl",
       message: "AgentPay Backend URL",
-      default: existing?.backendUrl ?? DEFAULT_BACKEND_URL,
+      default: backendUrl,
       validate: (value) => {
         try {
           const u = new URL(value.trim());
           if (!["http:", "https:"].includes(u.protocol)) return "Use http:// or https://";
           return true;
         } catch {
-          return "Enter a valid URL (e.g. http://206.189.229.113:3000)";
+          return `Enter a valid URL (e.g. ${DEFAULT_BACKEND_URL})`;
         }
       }
-    },
+    });
+  }
+  prompts.push(
     {
       type: "input",
       name: "agentId",
@@ -70836,15 +72011,21 @@ async function runSetup() {
       message: "API Key (optional, press Enter to skip)",
       mask: "*"
     }
-  ]);
+  );
+  const answers = await esm_default12.prompt(prompts);
+  if (answers.backendUrl?.trim()) {
+    backendUrl = answers.backendUrl.trim().replace(/\/$/, "");
+  }
   const config2 = {
-    backendUrl: answers.backendUrl.trim().replace(/\/$/, ""),
+    backendUrl,
     agentId: answers.agentId.trim(),
     apiKey: answers.apiKey?.trim() ? answers.apiKey.trim() : void 0
   };
   saveConfig(config2);
+  const ok = await probeBackend(config2.backendUrl);
   console.log(`
 Saved AgentPay config to ${getConfigPath()}`);
+  console.log(`  backendUrl: ${config2.backendUrl}${ok ? " \u2713" : " (not reachable)"}`);
   console.log(`
 Install the AgentPay Android app (required for pairing and payments):`);
   console.log(`  ${ANDROID_APK_URL}`);
@@ -70854,8 +72035,10 @@ Install the AgentPay Android app (required for pairing and payments):`);
 }
 
 // src/init.ts
-function runInit(options) {
-  const backendUrl = (options?.backendUrl ?? process.env.AGENTPAY_BACKEND_URL ?? process.env.AGENTPAY_API_BASE_URL ?? DEFAULT_BACKEND_URL).trim().replace(/\/$/, "");
+async function runInit(options) {
+  loadRootDotenv();
+  const detected = await resolveBackendUrlForSetup(options?.backendUrl);
+  const backendUrl = (options?.backendUrl ?? process.env.AGENTPAY_BACKEND_URL ?? process.env.AGENTPAY_API_BASE_URL ?? detected.url).trim().replace(/\/$/, "");
   const agentId = (options?.agentId ?? process.env.AGENTPAY_AGENT_ID ?? "agent_123").trim();
   if (!agentId) {
     throw new Error("agentId is required (pass --agent-id or set AGENTPAY_AGENT_ID)");
@@ -70865,13 +72048,16 @@ function runInit(options) {
   saveConfig(config2);
   return config2;
 }
-function printInitResult(config2) {
+async function printInitResult(config2) {
+  const ok = await probeBackend(config2.backendUrl);
   console.log(`AgentPay config written to ${getConfigPath()}`);
-  console.log(`  backendUrl: ${config2.backendUrl}`);
+  console.log(`  backendUrl: ${config2.backendUrl}${ok ? " \u2713" : " (not reachable \u2014 is backend running?)"}`);
   console.log(`  agentId: ${config2.agentId}`);
   console.log("");
   console.log("Install the AgentPay Android app (required for pairing and payments):");
   console.log(`  ${ANDROID_APK_URL}`);
+  console.log("");
+  console.log(`Default local backend: ${DEFAULT_BACKEND_URL}`);
 }
 
 // src/doctor.ts
@@ -70881,7 +72067,7 @@ var AGENTPAY_MCP_TOOLS = [
   "get_android_app_link",
   "list_x402_services",
   "fetch_paid_service",
-  "get_pairing_link",
+  "get_x402_pairing_link",
   "get_spending_status"
 ];
 var AGENTPAY_MCP_PACKAGE = "horizontalsystems/agentpay-mcp";
@@ -70892,20 +72078,20 @@ function bundlePath() {
   }
   return (0, import_node_path6.join)(process.cwd(), "build", "index.js");
 }
-function inspectBundle(path8 = bundlePath()) {
+function inspectBundle(path9 = bundlePath()) {
   const issues = [];
-  if (!(0, import_node_fs3.existsSync)(path8)) {
-    return { ok: false, path: path8, hasNewTools: false, hasOldTools: false, issues: ["bundle missing \u2014 run npm run build"] };
+  if (!(0, import_node_fs3.existsSync)(path9)) {
+    return { ok: false, path: path9, hasNewTools: false, hasOldTools: false, issues: ["bundle missing \u2014 run npm run build"] };
   }
-  const src = (0, import_node_fs3.readFileSync)(path8, "utf8");
-  const hasNewTools = src.includes("get_pairing_link") && src.includes("fetch_paid_service");
+  const src = (0, import_node_fs3.readFileSync)(path9, "utf8");
+  const hasNewTools = src.includes("get_x402_pairing_link") && src.includes("fetch_paid_service");
   const hasOldTools = /registerTool\(\s*['"]x402_session_start['"]/.test(src) || /registerTool\(\s*['"]x402_pay['"]/.test(src);
   const hasApiMarker = src.includes(AGENTPAY_MCP_API);
   if (!hasApiMarker && hasNewTools) {
     issues.push("bundle may be stale \u2014 rebuild from horizontalsystems/agentpay-mcp v2+");
   }
   if (!hasNewTools) {
-    issues.push("bundle missing fetch_paid_service / get_pairing_link");
+    issues.push("bundle missing fetch_paid_service / get_x402_pairing_link");
   }
   if (hasOldTools) {
     issues.push(
@@ -70914,7 +72100,7 @@ function inspectBundle(path8 = bundlePath()) {
   }
   return {
     ok: hasNewTools && !hasOldTools && hasApiMarker,
-    path: path8,
+    path: path9,
     hasNewTools,
     hasOldTools,
     issues
@@ -70953,25 +72139,26 @@ function runDoctor() {
 }
 
 // src/index.ts
+loadRootDotenv();
 var program2 = new Command();
 program2.name("agentpay").description("AgentPay MCP firewall \u2014 paid agent tools with WalletConnect approval").version("2.0.0");
 program2.command("setup").description("Configure backend URL, agent id, and optional API key (~/.agentpay/config.json)").action(async () => {
   await runSetup();
 });
-program2.command("init").description("Write ~/.agentpay/config.json from env (non-interactive; OpenClaw/Docker)").option("--backend-url <url>", "AgentPay API base URL (no /v1 suffix)").option("--agent-id <id>", "Agent id (default: agent_123)").option("--api-key <key>", "Optional bearer token").action((opts) => {
+program2.command("init").description("Write ~/.agentpay/config.json from env (non-interactive; OpenClaw/Docker)").option("--backend-url <url>", "AgentPay API base URL (no /v1 suffix)").option("--agent-id <id>", "Agent id (default: agent_123)").option("--api-key <key>", "Optional bearer token").action(async (opts) => {
   try {
-    const config2 = runInit({
+    const config2 = await runInit({
       backendUrl: opts.backendUrl,
       agentId: opts.agentId,
       apiKey: opts.apiKey
     });
-    printInitResult(config2);
+    await printInitResult(config2);
   } catch (err) {
     console.error(err instanceof Error ? err.message : err);
     process.exit(1);
   }
 });
-program2.command("connect").description("Pair your Android wallet via WalletConnect (prints wc: URI)").option("--url-only", "Print only the raw wc: pairing URI and exit (for agents; do not wait)").action(async (opts) => {
+program2.command("connect").description("Pair your Android wallet via WalletConnect (QR code + deep link)").option("--url-only", "Print only the raw wc: pairing URI and exit (for agents; do not wait)").action(async (opts) => {
   const config2 = loadConfig();
   if (!config2) {
     console.error("AgentPay is not configured. Run: agentpay setup or agentpay init");
@@ -70987,7 +72174,7 @@ program2.command("connect").description("Pair your Android wallet via WalletConn
 program2.command("tools").description("Print MCP tool names (verify horizontalsystems build vs npm agentpay-mcp@4.x impostor)").action(() => {
   printToolsJson();
 });
-program2.command("doctor").description("Check bundle has fetch_paid_service / get_pairing_link (not npm v4.x x402_session_* API)").action(() => {
+program2.command("doctor").description("Check bundle has fetch_paid_service / get_x402_pairing_link (not npm v4.x x402_session_* API)").action(() => {
   process.exit(runDoctor());
 });
 program2.command("start").description("Start the MCP server on stdio (for OpenClaw, Claude Desktop, Cursor, etc.)").action(async () => {

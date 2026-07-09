@@ -77,7 +77,10 @@ export class AgentPay {
 
     async getWalletConnectStatus() {
         const headers = this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : undefined;
-        const response = await axios.get(`${this.baseURL}/wc/status`, { headers });
+        const response = await axios.get(`${this.baseURL}/wc/status`, {
+            params: { agentId: this.agentId },
+            headers
+        });
         return response.data as import('./x402/types').WalletConnectStatus;
     }
 

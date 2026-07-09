@@ -136,11 +136,14 @@ agentpay init
 
 ### 3. `agentpay connect`
 
-Fetches a **WalletConnect pairing URI** from your backend and prints a raw **`wc:` URI** (open in Unstoppable Wallet — do not wrap in `link.reown.com`).
+Fetches a **WalletConnect pairing URI** from your backend and prints:
+
+- A raw **`wc:` pairing URI** (open in Unstoppable Wallet — do not wrap in `link.reown.com`)
+- A **terminal QR code** (human terminal only)
 
 ```bash
-agentpay connect              # human: wc: URI + instructions
-agentpay connect --url-only   # agents: URI only, no extra output
+agentpay connect              # human: wc: URI + QR
+agentpay connect --url-only   # agents: one wc: URI line, then exit (no wait)
 ```
 
 Requires the backend to be running and `WC_PROJECT_ID` configured server-side. The CLI **does not block** until the phone approves — agents must send the link and continue.
